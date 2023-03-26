@@ -1,0 +1,51 @@
+> init
+<<<
+
++ wug.txt wug.txt
+> add wug.txt
+<<<
+> commit "added wug"
+<<<
+
+> branch other-branch
+<<<
+> checkout other-branch
+<<<
+> rm "wug.txt"
+<<<
+> commit "removed wug.txt"
+<<<
+
+> checkout master
+<<<
++ wug.txt wugMod.txt
+> add wug.txt
+<<<
+> commit "mod wug.txt"
+<<<
+
+> merge other-branch
+Encountered a merge conflict
+<<<
+
+> checkout other-branch
+<<<
+
+> merge master
+Encountered a merge conflict
+<<<
+
+> checkout master
+<<<
+
+> merge other-branch
+Encountered a merge conflict
+<<<
+
+> checkout other-branch
+<<<
+
+> merge master
+Encountered a merge conflict
+<<<
+
