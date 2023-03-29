@@ -10,7 +10,7 @@ public class UnitTest4 {
 
     @Test
     public void specialMergeCases1() throws IOException {
-        Utils.clearCwdWithGitlet();
+
         Init.initialize();
         Utils.createRandomFile("cup.txt");
         Stage.add("cup.txt");
@@ -39,7 +39,7 @@ public class UnitTest4 {
 
     @Test
     public void remoteAddTest() throws IOException {
-        Utils.clearCwdWithGitlet();
+
         Init.initialize();
         String dr = "C:\\Users\\evpin\\Desktop\\gitTest";
         Remote.add("eric",dr);
@@ -47,7 +47,7 @@ public class UnitTest4 {
 
     @Test
     public void removeRemoteTest() throws IOException {
-        Utils.clearCwdWithGitlet();
+
         Init.initialize();
         String dr = "C:\\Users\\evpin\\Desktop\\gitTest";
         Remote.add("eric",dr);
@@ -83,7 +83,7 @@ public class UnitTest4 {
     @Test
     public void removeRemote() throws IOException {
         Remote.remove("eric");
-        Utils.clearCwdWithGitlet();
+
     }
 
     @Test

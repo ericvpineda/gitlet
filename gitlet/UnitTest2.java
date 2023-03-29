@@ -15,7 +15,7 @@
 //    // Q23 - Check global log prints out all commits
 //    @Test
 //    public void globalLogTest() throws IOException, ClassNotFoundException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("beaver.txt");
 //        Stage.add("beaver.txt");
@@ -33,7 +33,7 @@
 //    // Q24 - Check global-lgo prints out commits no longer in any branch
 //    @Test
 //    public void globalLogPrevTest() throws IOException, ClassNotFoundException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("beaver.txt");
 //        Stage.add("beaver.txt");
@@ -55,7 +55,7 @@
 //    // Note: Q25 - Test find command when it succeeds
 //    @Test
 //    public void successfulFindTest() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("beaver.txt");
 //        Stage.add("beaver.txt");
@@ -73,7 +73,7 @@
 //    // Q26 - Find command to find commits no longer on any branch
 //    @Test
 //    public void successfulFindOrphan() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("beaver.txt");
 //        Stage.add("beaver.txt");
@@ -95,7 +95,7 @@
 //    // Q27 - Checkout a previous version of file from previous commit
 //    @Test
 //    public void checkoutDetailTest() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("wug.txt");
 //        Stage.add("wug.txt");
@@ -110,7 +110,7 @@
 //    // Q28 - Checkout previous version of file form previous commit
 //    @Test
 //    public void checkoutDetailTest1() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("wug.txt");
 //        Stage.add("wug.txt");
@@ -132,28 +132,28 @@
 //    // Q29 - Checkout failure cases (3)
 //    @Test
 //    public void checkoutFailure1() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Checkout.overwriteCommit("wug.txt",Commit.zeroSha1);
 //    }
 //
 //    @Test
 //    public void checkoutFailure2() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Checkout.overwriteCommit("wug.txt","12345");
 //    }
 //
 //    @Test
 //    public void checkoutFailure3() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Checkout.overwriteBranch("serf");
 //    }
 //
 //    @Test
 //    public void checkoutFailure4() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Main.main("init");
 //        Main.main("checkout","a4adbcbfd1f2d7b07fbf8029c8ded51de5034e97", "++","wug.txt");
 //    }
@@ -163,7 +163,7 @@
 //    // 1. Files added branch test
 //    @Test
 //    public void branchesTest() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("wug.txt");
 //        Stage.add("wug.txt");
@@ -183,7 +183,7 @@
 //    // 2. Files modified
 //    @Test
 //    public void branchesTest1() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("wug.txt");
 //        Stage.add("wug.txt");
@@ -205,7 +205,7 @@
 //    // - i think it is supposed to be cleared
 //    @Test
 //    public void branchesTest2() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("wug.txt");
 //        Stage.add("wug.txt");
@@ -228,7 +228,7 @@
 //    // Q31a - Check that 2 branches can't be given same name
 //    @Test
 //    public void rmBranches() throws IOException, ClassNotFoundException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Branch.save("other-branch");
 //        Branch.save("other-branch");
@@ -237,7 +237,7 @@
 //    // Q33 - create 2 branches, merge with mather with 2 different file types -> merge conflict
 //    @Test
 //    public void fileOverWriteErrTest() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("cup.txt");
 //        Stage.add("cup.txt");
@@ -262,7 +262,7 @@
 //
 //    @Test
 //    public void fileOverWriteErrTest1() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("cup.txt");
 //        Stage.add("cup.txt");
@@ -288,7 +288,7 @@
 //
 //    @Test
 //    public void fileOverWriteErrTest2() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Branch.save("serf");
 //
@@ -310,7 +310,7 @@
 //    // Q33 - create 2 branches, merge into master with conflict caused by file changed in one and removed in other
 //    @Test
 //    public void mergeNoConflictTest() throws IOException, ClassNotFoundException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("cup.txt");
 //        Stage.add("cup.txt");
@@ -334,7 +334,7 @@
 //
 //    @Test
 //    public void mergeNoConflictTest2() throws IOException{
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("cup.txt");
 //        Stage.add("cup.txt");
@@ -360,7 +360,7 @@
 //    // - file absent at split point and contents differ in given and current branch
 //    @Test
 //    public void mergeConflictsTest() throws IOException{
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //
 //        Branch.save("serf");

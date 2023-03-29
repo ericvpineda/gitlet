@@ -11,7 +11,7 @@
 //    // merging with item still in cwd
 //    @Test
 //    public void mergeConflictTest4() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("cup.txt");
 //        Stage.add("cup.txt");
@@ -37,7 +37,7 @@
 //    // 4. reset master back to original and ensure all original commits are there (log)
 //    @Test
 //    public void mergeRmConflictTest() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("cup.txt");
 //        Stage.add("cup.txt");
@@ -67,7 +67,7 @@
 //
 //    @Test
 //    public void mergeRmConflictTest2() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("cup.txt");
 //        Stage.add("cup.txt");
@@ -103,7 +103,7 @@
 //    // - not sure what this error is
 //    @Test
 //    public void mergeErrTest() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("wug.txt");
 //        Stage.add("wug.txt");
@@ -116,7 +116,7 @@
 //    // Q36a - check that checkout works with short ID's
 //    @Test
 //    public void mergeParent2() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("wug.txt");
 //        Utils.createRandomFile("wug2.txt");
@@ -133,7 +133,7 @@
 //
 //    @Test
 //    public void mergeParent3() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("wug.txt");
 //        Stage.add("wug.txt");
@@ -159,7 +159,7 @@
 //    // - current branch is ancestor of given branch
 //    @Test
 //    public void mergeConflictTest1() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("cup.txt");
 //        Stage.add("cup.txt");
@@ -188,7 +188,7 @@
 //    // - do nothing, merge complete and ends with 'given branch is ancestor of current branch'
 //    @Test
 //    public void mergeConflictTest2() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("cup.txt");
 //        Stage.add("cup.txt");
@@ -209,7 +209,7 @@
 //    // Q38 - bad reset error (file in the way)
 //    @Test
 //    public void badResetError() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("wug.txt");
 //        Utils.createRandomFile("wug2.txt");
@@ -230,7 +230,7 @@
 //    // Q39 - checkout file at specific commit using short uid
 //    @Test
 //    public void shortUidTest() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("wug.txt");
 //        Stage.add("wug.txt");
@@ -250,7 +250,7 @@
 //    // - Note: shows 'no changes added to the commit'
 //    @Test
 //    public void specialMergeCases() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("cup.txt");
 //        Stage.add("cup.txt");
@@ -286,7 +286,7 @@
 //    // - file is removed in both branches, but name present in cwd -> file is not removed
 //    @Test
 //    public void specialMergeCases1() throws IOException {
-//        Utils.clearCwdWithGitlet();
+//
 //        Init.initialize();
 //        Utils.createRandomFile("cup.txt");
 //        Stage.add("cup.txt");
