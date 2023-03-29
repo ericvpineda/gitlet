@@ -83,6 +83,5 @@ reset
 
 merge
  - Description: Merge files from given branch into current branch.
- - Runtime:
- - Memory:
+ - Runtime: O(n log(n) + D) s.t. N is total number ancestors for merging 2 branches, D is total amount data in all files under commit.
  - Terminal command: java gitlet.Main merge <branch name>

@@ -2,19 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a070bca-0012-4399-9d5a-1db66cb80e8c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/javalib.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/proj2.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gitlet/BasicTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/BasicTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gitlet/UnitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/UnitTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gitlet/UnitTest2.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/UnitTest2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gitlet/UnitTest3.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/UnitTest3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gitlet/UnitTest4.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/UnitTest4.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
