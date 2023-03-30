@@ -417,14 +417,13 @@ public class BasicTest {
 
     // Test checkout branch
     @Test
-    public void checkOutTest3() throws IOException {
+    public void checkoutTest3() throws IOException {
 
         // Create and commit random files
         Utils.createRandomFile("wug.txt");
         Utils.createRandomFile("wug2.txt");
         Main.main("add", "wug.txt");
         Main.main("add", "wug2.txt");
-        Main.main("commit", "added wug and wug2");
         Commit commit1 = new Commit("added wug and wug2", Commit.getCurrentSha1());
         commit1.write();
 
@@ -457,7 +456,7 @@ public class BasicTest {
 
     // Test checkout branch failure cases
     @Test
-    public void checkOutTest4() throws IOException {
+    public void checkoutTest4() throws IOException {
 
         // Create and commit random files
         Utils.createRandomFile("wug.txt");

@@ -65,13 +65,28 @@
       <recent name="C:\Users\evpin\Desktop\cs61b-shared\su20-p208\proj2" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.BasicTest.branchTest">
+  <component name="RunManager" selected="JUnit.BasicTest">
     <configuration name="init" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="gitlet.Main" />
       <module name="proj2" />
       <option name="PROGRAM_PARAMETERS" value="add wug.txt" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/testing/test01-init.in" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BasicTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="proj2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="gitlet.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="gitlet" />
+      <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -87,22 +102,6 @@
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
       <option name="METHOD_NAME" value="branchTest" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="BasicTest.checkout" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="proj2" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="gitlet.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="gitlet" />
-      <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="checkout" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -140,7 +139,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BasicTest.statusTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BasicTest.checkoutTest3" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -150,7 +149,7 @@
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="statusTest" />
+      <option name="METHOD_NAME" value="checkoutTest3" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -158,19 +157,19 @@
     </configuration>
     <list>
       <item itemvalue="Application.init" />
-      <item itemvalue="JUnit.BasicTest.statusTest" />
-      <item itemvalue="JUnit.BasicTest.checkout" />
       <item itemvalue="JUnit.BasicTest.checkout2" />
       <item itemvalue="JUnit.BasicTest.checkoutTest2" />
       <item itemvalue="JUnit.BasicTest.branchTest" />
+      <item itemvalue="JUnit.BasicTest" />
+      <item itemvalue="JUnit.BasicTest.checkoutTest3" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.BasicTest" />
+        <item itemvalue="JUnit.BasicTest.checkoutTest3" />
         <item itemvalue="JUnit.BasicTest.branchTest" />
         <item itemvalue="JUnit.BasicTest.checkoutTest2" />
         <item itemvalue="JUnit.BasicTest.checkout2" />
-        <item itemvalue="JUnit.BasicTest.checkout" />
-        <item itemvalue="JUnit.BasicTest.statusTest" />
       </list>
     </recent_temporary>
   </component>
