@@ -13,16 +13,18 @@ import static org.junit.Assert.*;
 // Test basic gitlet commands with shallow depth
 public class BasicTest {
 
-    // Clear current working directory and .gitlet folder (if exists)
+    // Clear current working directory and initialize .gitlet repo
     @Before
     public void initialize() throws IOException {
         Utils.clearCwdWithGitlet();
         Main.main("init");
     }
 
+    // ----- INIT TESTS -----
+
     // Test initial commit valid and no blobs exist
     @Test
-    public void initializeGitletTest() {
+    public void initTest() {
 
         Commit c = Commit.getCurrent();
         assertNotNull(c);
@@ -32,9 +34,11 @@ public class BasicTest {
         assertTrue(t.isEmpty());
     }
 
-    // Test different files types properly added to stage 
+    // ----- ADD TESTS -----
+
+    // Test different files types properly added to stage
     @Test
-    public void addToStageTest() throws IOException {
+    public void addTest() throws IOException {
         
         Utils.createRandomFile("cube.txt");
         Stage s = Stage.read();
@@ -57,7 +61,7 @@ public class BasicTest {
 
     // Test user input of staging file
     @Test
-    public void addToStageUser() throws IOException {
+    public void addTest2() throws IOException {
 
         Utils.createRandomFile("cube.txt");
         Stage s = Stage.read();
@@ -71,6 +75,9 @@ public class BasicTest {
         Stage stage = Stage.read();
         assertTrue(stage._preStage.containsKey("cube.txt"));
     }
+
+
+    // ----- COMMIT TESTS -----
 
     // Test basic commit flow
     @Test
@@ -107,7 +114,7 @@ public class BasicTest {
 
     // Test having two committing actions
     @Test
-    public void commitTwoTest() throws IOException {
+    public void commitTest2() throws IOException {
 
         // Create and commit random file
         Utils.createRandomFile("wug.txt");
@@ -145,7 +152,7 @@ public class BasicTest {
 
     // Test staging unmodified file that has already been committed
     @Test
-    public void repeatStagingFileTest() throws IOException {
+    public void commitTest3() throws IOException {
 
         // Stage and commit random file
         Utils.createRandomFile("cube.txt");
@@ -166,7 +173,7 @@ public class BasicTest {
 
     // Test commit failure cases
     @Test
-    public void commitFailureCasesTest() throws IOException {
+    public void commitTest4() throws IOException {
 
         // Create random file
         Utils.createRandomFile("wug.txt");
@@ -188,9 +195,11 @@ public class BasicTest {
         assertEquals("Please enter a commit message.", output.toString());
     }
 
+    // ----- REMOVE TESTS -----
+
     // Test successfully removing committed file from current commit
     @Test
-    public void removeFileFromCommitTest() throws IOException {
+    public void removeTest() throws IOException {
 
         // Create random file and commit
         Utils.createRandomFile("wug.txt");
@@ -219,12 +228,16 @@ public class BasicTest {
         assertTrue(secondCommit.isEmpty());
     }
 
+    // ----- LOG TESTS -----
+
     // Test log run successfully
     @Test
     public void logTest() throws IOException {
 
         Main.main("log");
     }
+
+    // ----- GLOBAL LOG TESTS -----
 
     // Test global log runs successfully
     @Test
@@ -233,255 +246,303 @@ public class BasicTest {
         Main.main("global-log");
     }
 
-    // Test find commit
+    // ----- FIND TESTS -----
+
+    // Test find command to get commit ids of given commit message
     @Test
     public void findTest() throws IOException {
 
+        // Create and commit random file
         Utils.createRandomFile("wug.txt");
         Main.main("add", "wug.txt");
         Main.main("commit","added wug.txt");
 
+        // Use find command and check if retrieved commit is correct
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
         Main.main("find", "added wug.txt");
-
         output.close();
-        assertEquals(Commit.getCurrentSha1(), output.toString());
 
-        Utils.createRandomFile("anotherWug.txt");
-        Main.main("add","anotherWug.txt");
-        Main.main("commit","added wug.txt");
+        assertEquals(Commit.getCurrentSha1(), output.toString());
     }
 
-    // status command in spec
+    // ----- STATUS TESTS -----
+
+    // Test status of branches and files with different stagings
     @Test
     public void statusTest() throws IOException {
 
+        // Create and commit random files
         Utils.createRandomFile("goodbye.txt");
         Utils.createRandomFile("junk.txt");
         Utils.createRandomFile("wug3.txt");
-        Stage.add("goodbye.txt");
-        Stage.add("junk.txt");
-        Stage.add("wug3.txt");
-        Commit c = new Commit("added wug", Commit.getCurrentSha1());
-        c.write();
-        HashMap<String, String> h = Commit.getCurrentBlobs();
-        assertTrue(h.containsKey("goodbye.txt"));
-        assertTrue(h.containsKey("junk.txt"));
-        assertTrue(h.containsKey("wug3.txt"));
+        Main.main("add", "goodbye.txt");
+        Main.main("add", "junk.txt");
+        Main.main("add", "wug3.txt");
+        Main.main("commit", "added wug");
+        HashMap<String, String> currentBlobs = Commit.getCurrentBlobs();
 
+        // Check current commit has all staged files
+        assertTrue(currentBlobs.containsKey("goodbye.txt"));
+        assertTrue(currentBlobs.containsKey("junk.txt"));
+        assertTrue(currentBlobs.containsKey("wug3.txt"));
 
+        // Create new branch
         Branch.save("other-branch");
+
+        // Add new files
         Utils.createRandomFile("wug.txt");
         Utils.createRandomFile("wug2.txt");
-        Stage.add("wug.txt");
-        Stage.add("wug2.txt");
-        Stage.remove("goodbye.txt");
-        Stage s = Stage.read();
-        assertTrue(s._preStage.containsKey("wug.txt"));
-        assertTrue(s._preStage.containsKey("wug2.txt"));
-        assertTrue(s._deletion.containsKey("goodbye.txt"));
+        Main.main("add", "wug.txt");
+        Main.main("add", "wug2.txt");
+        Main.main("rm", "goodbye.txt");
 
+        // Check stage has new added files
+        Stage stage = Stage.read();
+        assertTrue(stage._preStage.containsKey("wug.txt"));
+        assertTrue(stage._preStage.containsKey("wug2.txt"));
+        assertTrue(stage._deletion.containsKey("goodbye.txt"));
+
+        // Delete previously committed file
         Utils.join(Main.USERDIR, "junk.txt").delete();
         assertFalse(Utils.join(Main.USERDIR, "junk.txt").exists());
 
-        s = Stage.read();
-        assertFalse(s._deletion.containsKey("junk.txt"));
-        Utils.randomChangeFileContents("wug3.txt");
-        Utils.createRandomFile("random.stuff");
+        // Check stage has deleted file in correct mapping
+        stage = Stage.read();
+        assertFalse(stage._deletion.containsKey("junk.txt"));
 
+        // Initiate status command
         Status.print();
     }
 
+    // Test status for file that was committed, removed but not committed, then re-added
     @Test
     public void statusTest1() throws IOException {
 
+        // Create and commit random file
         Utils.createRandomFile("goodbye.txt");
-        Stage.add("goodbye.txt");
-        Commit c = new Commit("added wug", Commit.getCurrentSha1());
-        c.write();
+        Main.main("add", "goodbye.txt");
+        Main.main("commit", "added wug");
 
+        // Remove random file
         Stage.remove("goodbye.txt");
-        Stage s = Stage.read();
-        assertTrue(s._deletion.containsKey("goodbye.txt"));
+        Stage stage = Stage.read();
+        assertTrue(stage._deletion.containsKey("goodbye.txt"));
 
-//        Utils.createRandomFile("goodbye.txt");
+        // Re-add random file
         Stage.add("goodbye.txt");
-        s = Stage.read();
-        assertFalse(s._deletion.containsKey("goodbye.txt"));
-        assertFalse(s._preStage.containsKey("goodbye.txt"));
 
+        // Random file should be in staged hashmap and should not exist in deletion hashmap
+        stage = Stage.read();
+        assertFalse(stage._deletion.containsKey("goodbye.txt"));
+        assertFalse(stage._preStage.containsKey("goodbye.txt"));
+
+        // Print status commaa
         Status.print();
     }
 
-    // checkout for previous versions of file work
-    @Test
-    public void checkout() throws IOException {
+    // ----- CHECKOUT TESTS -----
 
+    // Test checkout of file that had contents changed, file that does not exist (DNE), and file removed
+    @Test
+    public void checkoutTest() throws IOException {
+
+        // Create and commit random file
         Utils.createRandomFile("wug.txt");
         Stage.add("wug.txt");
-        Commit commit1 = new Commit("added dog",Commit.getCurrentSha1());
-        commit1.write();
+        Main.main("commit", "added dog");
 
-//        Utils.randomChangeFileContents("wug.txt");
-        Stage.remove("wug.txt");
+        // Change contents of random file
+        Utils.randomChangeFileContents("wug.txt");
 
-        // Checkout file that has been changed
+        // Checkout random file
         Checkout.overwriteFile("wug.txt");
+        Main.main("checkout", "--", "wug.txt");
         assertTrue(Utils.join(Main.USERDIR, "wug.txt").length() == 0);
 
-        // Error = checkout file that dne
+        // Checkout failure case: file that DNE
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
 
+        // Checkout file DNE
         Checkout.overwriteFile("wugz.txt");
         output.close();
+
         assertEquals("File does not exist in that commit.", output.toString());
 
         // Checkout file that has been removed
-        Stage.remove("wug.txt");
-        Checkout.overwriteFile("wug.txt");
+        Main.main("rm", "wug.txt");
+        Main.main("checkout", "--", "wug.txt");
     }
 
-    // checking if previous version of file is in commit works
+    // Test checkout failure cases of checkout to commit that DNE, and checkout file that DNE
     @Test
-    public void checkout2() throws IOException {
+    public void checkoutTest2() throws IOException {
 
+        // Create and commit random file
         Utils.createRandomFile("wug.txt");
-        Stage.add("wug.txt");
+        Main.main("add", "wug.txt");
         Commit commit1 = new Commit("version 1 of wug.txt", Commit.getCurrentSha1());
         commit1.write();
 
+        // Update random file contents
         Utils.randomChangeFileContents("wug.txt");
-        Stage.add("wug.txt");
-        Commit commit2 = new Commit("version 2 of wug.txt", Commit.getCurrentSha1());
-        commit2.write();
+        Main.main("add", "wug.txt");
+        Main.main("add", "version 2 of wug.txt");
 
-        // checkout overwrite commit
+        // Checkout random file
         Checkout.overwriteCommit("wug.txt", commit1._sha1);
+        Main.main("checkout", "--", "wugz.txt");
         assertTrue(Utils.join(Main.GITLET, "wug.txt").length() == 0);
 
-        // Failure case: no commit exists
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
 
-        Checkout.overwriteCommit("wugz.txt", "0023");
+        // Failure case: Checkout to commit that DNE
+        Main.main("checkout", "wugz.txt", "--", "0023");
         output.close();
+
         assertEquals("No commit with that id exists.", output.toString());
 
-        // Failure case, does not exist in commit
+        // Failure case: checkout to file that DNE in commit
         output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
 
-        Checkout.overwriteCommit("wugz.txt", commit1._sha1.substring(0,7));
+        Main.main("checkout", commit1._sha1.substring(0,7), "--", "wugz.txt");
+
         output.close();
         assertEquals("File does not exist in that commit.", output.toString());
 
     }
 
-    // test if checkout branch changes head.txt
+    // Test checkout branch
     @Test
-    public void checkOut3() throws IOException {
+    public void checkOutTest3() throws IOException {
 
+        // Create and commit random files
         Utils.createRandomFile("wug.txt");
         Utils.createRandomFile("wug2.txt");
-        Stage.add("wug.txt");
-        Stage.add("wug2.txt");
+        Main.main("add", "wug.txt");
+        Main.main("add", "wug2.txt");
+        Main.main("commit", "added wug and wug2");
         Commit commit1 = new Commit("added wug and wug2", Commit.getCurrentSha1());
         commit1.write();
 
-        Branch.save("Serf");
-        Checkout.overwriteBranch("Serf");
+        // Create and checkout new branch
+        Main.main("branch", "Serf");
+        Main.main("checkout", "Serf");
+
+        // Check branch preserves previous files and commits
         HashMap<String, String> curr = Commit.getCurrentBlobs();
         assertTrue(curr.containsKey("wug.txt"));
         assertTrue(curr.containsKey("wug2.txt"));
         assertEquals("Serf", Branch.getCurrent());
         assertEquals(commit1._sha1, Commit.getCurrentSha1());
 
-        Checkout.overwriteBranch("master");
+        // Checkout master branch
+        Main.main("checkout", "master");
+
+        // Create and commit new file
         Utils.createRandomFile("nanner.txt");
-        Stage.add("nanner.txt");
+        Main.main("add", "nanner.txt");
         Commit commit2 = new Commit("added wug and wug2", Commit.getCurrentSha1());
         commit2.write();
 
-        Checkout.overwriteBranch("Serf");
+        // Checkout Serf branch and validate file in master branch is not in current branch
+        Main.main("checkout", "Serf");
         curr = Commit.getCurrentBlobs();
         assertFalse(curr.containsKey("nanner.txt"));
         assertNotEquals(commit2._sha1, Commit.getCurrentSha1());
     }
 
-    // test if changing file in new branch doesn't affect old branch
+    // Test checkout branch failure cases
     @Test
-    public void checkOut31() throws IOException {
+    public void checkOutTest4() throws IOException {
 
+        // Create and commit random files
         Utils.createRandomFile("wug.txt");
-        Stage stage = new Stage();
-        stage.add("wug.txt");
-        Commit commit1 = new Commit("added wug and wug2", Commit.getCurrentSha1());
-        commit1.write();
+        Main.main("add", "wug.txt");
+        Main.main("commit", "added wug");
 
-        Branch.save("Serf");
-        Checkout.overwriteBranch("Serf");
+        // Create and checkout new branch
+        Main.main("branch", "Serf");
+        Main.main("checkout", "Serf");
 
-        // Failure case: checkout out branch dne
+        // Failure case: Checkout branch DNE
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
         Checkout.overwriteBranch("Cup");
         output.close();
+
         assertEquals("No such branch exists.", output.toString());
 
-        // Failure case: checkout current branch
+        // Failure case: Checkout current branch
         output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
-
         Checkout.overwriteBranch("Serf");
         output.close();
+
         assertEquals("No need to checkout the current branch.", output.toString());
 
-        // Failure case: untracked file
+        // Failure case: Untracked file prevents branch checkout
         output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
-
         Utils.createRandomFile("dwindle.txt");
-        Checkout.overwriteBranch("Serf");
+        Main.main("checkout", "Serf");
         output.close();
+
         assertEquals("There is an untracked file in the way; " +
                 "delete it, or add and commit it first.", output.toString());
     }
 
-    // check basic branch swap and naming works
+    // ----- BRANCH TESTS -----
+
+    // Test creating and checkout out new branch, and failure when creating branch with duplicate name
     @Test
     public void branchTest() throws IOException {
 
+        // Create and commit random file
         Utils.createRandomFile("wug.txt");
-        Stage.add("wug.txt");
-        Commit commit1 = new Commit("added wug and wug2", Commit.getCurrentSha1());
-        commit1.write();
+        Main.main("add", "wug.txt");
+        Main.main("commit", "added wug");
 
-        Branch.save("Serf");
-        Checkout.overwriteBranch("Serf");
+        // Create and checkout new branch
+        Main.main("branch", "Serf");
+        Main.main("checkout", "Serf");
         assertNotEquals(Commit.zeroSha1, Commit.getCurrentSha1());
-        Stage.remove("wug.txt");
+
+        // Remove and commit random file
+        Main.main("rm", "wug.txt");
         Commit commit2 = new Commit("removed wug", Commit.getCurrentSha1());
         commit2.write();
-        HashMap<String, String> h = Commit.getCurrentBlobs();
-        assertFalse(h.containsKey("wug.txt"));
+
+        // Check current commit contains correct files
+        HashMap<String, String> currentBlobs = Commit.getCurrentBlobs();
+        assertFalse(currentBlobs.containsKey("wug.txt"));
+
+        // Check new branch is current branch and contains correct HEAD commit
         assertEquals("Serf", Branch.getCurrent());
         assertEquals(commit2._sha1, Commit.getCurrentSha1());
 
-        Checkout.overwriteBranch("master");
-        h = Commit.getCurrentBlobs();
-        assertTrue(h.containsKey("wug.txt"));
+        // Checkout branch to master
+        Main.main("checkout", "master");
+
+        // Checkout master branch commit and branch valid
+        currentBlobs = Commit.getCurrentBlobs();
+        assertTrue(currentBlobs.containsKey("wug.txt"));
         assertEquals("master", Branch.getCurrent());
         assertNotEquals(commit2._sha1, Commit.getCurrentSha1());
 
+        // Failure case: Creating new branch with duplicate name
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
-
-        Branch.save("master");
+        Main.main("branch", "master");
         output.close();
+
         assertEquals("A branch with that name already exists.", output.toString());
     }
+
+    // ----- REMOVE TESTS -----
 
     // remove branch file successful
     @Test

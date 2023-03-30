@@ -65,7 +65,7 @@
       <recent name="C:\Users\evpin\Desktop\cs61b-shared\su20-p208\proj2" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.BasicTest.logTest">
+  <component name="RunManager" selected="JUnit.BasicTest.branchTest">
     <configuration name="init" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="gitlet.Main" />
       <module name="proj2" />
@@ -76,7 +76,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BasicTest.commitFailureCasesTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BasicTest.branchTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -86,13 +86,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="commitFailureCasesTest" />
+      <option name="METHOD_NAME" value="branchTest" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BasicTest.commitTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BasicTest.checkout" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -102,13 +102,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="commitTest" />
+      <option name="METHOD_NAME" value="checkout" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BasicTest.commitTwoTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BasicTest.checkout2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -118,13 +118,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="commitTwoTest" />
+      <option name="METHOD_NAME" value="checkout2" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BasicTest.logTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BasicTest.checkoutTest2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -134,13 +134,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="logTest" />
+      <option name="METHOD_NAME" value="checkoutTest2" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BasicTest.repeatStagingFileTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BasicTest.statusTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -150,7 +150,7 @@
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="repeatStagingFileTest" />
+      <option name="METHOD_NAME" value="statusTest" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -158,19 +158,19 @@
     </configuration>
     <list>
       <item itemvalue="Application.init" />
-      <item itemvalue="JUnit.BasicTest.commitTwoTest" />
-      <item itemvalue="JUnit.BasicTest.commitTest" />
-      <item itemvalue="JUnit.BasicTest.repeatStagingFileTest" />
-      <item itemvalue="JUnit.BasicTest.commitFailureCasesTest" />
-      <item itemvalue="JUnit.BasicTest.logTest" />
+      <item itemvalue="JUnit.BasicTest.statusTest" />
+      <item itemvalue="JUnit.BasicTest.checkout" />
+      <item itemvalue="JUnit.BasicTest.checkout2" />
+      <item itemvalue="JUnit.BasicTest.checkoutTest2" />
+      <item itemvalue="JUnit.BasicTest.branchTest" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.BasicTest.logTest" />
-        <item itemvalue="JUnit.BasicTest.commitFailureCasesTest" />
-        <item itemvalue="JUnit.BasicTest.repeatStagingFileTest" />
-        <item itemvalue="JUnit.BasicTest.commitTwoTest" />
-        <item itemvalue="JUnit.BasicTest.commitTest" />
+        <item itemvalue="JUnit.BasicTest.branchTest" />
+        <item itemvalue="JUnit.BasicTest.checkoutTest2" />
+        <item itemvalue="JUnit.BasicTest.checkout2" />
+        <item itemvalue="JUnit.BasicTest.checkout" />
+        <item itemvalue="JUnit.BasicTest.statusTest" />
       </list>
     </recent_temporary>
   </component>
