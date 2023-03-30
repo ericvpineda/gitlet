@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a070bca-0012-4399-9d5a-1db66cb80e8c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/algs4__2020_10_18_01_09_20_UTC_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/algs4__2020_10_18_01_09_20_UTC_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gitlet/BasicTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/BasicTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gitlet/Merge.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/Merge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gitlet/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +65,7 @@
       <recent name="C:\Users\evpin\Desktop\cs61b-shared\su20-p208\proj2" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.BasicTest">
+  <component name="RunManager" selected="JUnit.BasicTest.logTest">
     <configuration name="init" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="gitlet.Main" />
       <module name="proj2" />
@@ -80,7 +76,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BasicTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BasicTest.commitFailureCasesTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -90,28 +86,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="BasicTest.givenBranchAncestorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="proj2" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="gitlet.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="gitlet" />
-      <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="givenBranchAncestorTest" />
+      <option name="METHOD_NAME" value="commitFailureCasesTest" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BasicTest.mergeConflictTest1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BasicTest.commitTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -121,13 +102,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="mergeConflictTest1" />
+      <option name="METHOD_NAME" value="commitTest" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BasicTest.mergeFastForwardTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BasicTest.commitTwoTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -137,13 +118,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="mergeFastForwardTest" />
+      <option name="METHOD_NAME" value="commitTwoTest" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BasicTest.resetTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BasicTest.logTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -153,7 +134,23 @@
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="resetTest" />
+      <option name="METHOD_NAME" value="logTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BasicTest.repeatStagingFileTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="proj2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="gitlet.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="gitlet" />
+      <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
+      <option name="METHOD_NAME" value="repeatStagingFileTest" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -161,19 +158,19 @@
     </configuration>
     <list>
       <item itemvalue="Application.init" />
-      <item itemvalue="JUnit.BasicTest.resetTest" />
-      <item itemvalue="JUnit.BasicTest.mergeFastForwardTest" />
-      <item itemvalue="JUnit.BasicTest.givenBranchAncestorTest" />
-      <item itemvalue="JUnit.BasicTest.mergeConflictTest1" />
-      <item itemvalue="JUnit.BasicTest" />
+      <item itemvalue="JUnit.BasicTest.commitTwoTest" />
+      <item itemvalue="JUnit.BasicTest.commitTest" />
+      <item itemvalue="JUnit.BasicTest.repeatStagingFileTest" />
+      <item itemvalue="JUnit.BasicTest.commitFailureCasesTest" />
+      <item itemvalue="JUnit.BasicTest.logTest" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.BasicTest" />
-        <item itemvalue="JUnit.BasicTest.resetTest" />
-        <item itemvalue="JUnit.BasicTest.mergeConflictTest1" />
-        <item itemvalue="JUnit.BasicTest.givenBranchAncestorTest" />
-        <item itemvalue="JUnit.BasicTest.mergeFastForwardTest" />
+        <item itemvalue="JUnit.BasicTest.logTest" />
+        <item itemvalue="JUnit.BasicTest.commitFailureCasesTest" />
+        <item itemvalue="JUnit.BasicTest.repeatStagingFileTest" />
+        <item itemvalue="JUnit.BasicTest.commitTwoTest" />
+        <item itemvalue="JUnit.BasicTest.commitTest" />
       </list>
     </recent_temporary>
   </component>

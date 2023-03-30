@@ -464,6 +464,7 @@ class Utils {
         ignoreFiles.add("proj2.iml");
         ignoreFiles.add("out");
         ignoreFiles.add(".git");
+        ignoreFiles.add("readme.md");
         return ignoreFiles;
     }
 
