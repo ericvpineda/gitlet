@@ -11,8 +11,6 @@
       <root url="jar://$PROJECT_DIR$/../library-su20/javalib/xchart-3.5.1.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="file://$PROJECT_DIR$" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

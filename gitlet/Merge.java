@@ -158,11 +158,11 @@ public class Merge {
     // Note: maybe use the face that merge commits differ ?
     static String splitPoint(Commit currCom, Commit tarCom) {
         ArrayList<String> tarHistory = Utils.getTotalSha1History(tarCom, new ArrayList<>());
-        System.out.println("Given branch history = " + tarHistory);
+//        System.out.println("Given branch history = " + tarHistory);
         HashMap<String, Integer> possible = splitPointHelper(currCom, tarHistory, new HashMap<>(), 0);
-        System.out.println("Possible splitpoints = " + possible);
+//        System.out.println("Possible splitpoints = " + possible);
         String lca = Collections.min(possible.entrySet(), Map.Entry.comparingByValue()).getKey();
-        System.out.println(lca);
+//        System.out.println(lca);
         return lca;
     }
 

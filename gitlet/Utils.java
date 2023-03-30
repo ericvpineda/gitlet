@@ -240,6 +240,7 @@ class Utils {
         try {
             ObjectInputStream inp = new ObjectInputStream((new FileInputStream(file)));
             outputObj = expClass.cast(inp.readObject());
+            inp.close();
         } catch (IOException | ClassNotFoundException e) {
         }
         return outputObj;
@@ -291,6 +292,7 @@ class Utils {
         try {
             ObjectInputStream inp = new ObjectInputStream((new FileInputStream(file)));
             outputObj = inp.readObject();
+            inp.close();
         } catch (IOException | ClassNotFoundException e) {
         }
         return outputObj;
@@ -461,6 +463,7 @@ class Utils {
         ignoreFiles.add("testing");
         ignoreFiles.add("proj2.iml");
         ignoreFiles.add("out");
+        ignoreFiles.add(".git");
         return ignoreFiles;
     }
 
@@ -514,6 +517,15 @@ class Utils {
         }
     }
 
+    public static void deleteDirectory(File file) {
+        for (File subfile : file.listFiles()) {
+            if (subfile.isDirectory()) {
+                deleteDirectory(subfile);
+            }
+            subfile.delete();
+        }
+    }
+
     public static void clearCwdWithGitlet() throws IOException {
         ArrayList<String> ignoreFiles = getIgnoreArray();
         ignoreFiles.remove(0);
@@ -527,12 +539,11 @@ class Utils {
             file.delete();
             // Note: checks if file is in blob folder (tracked)
         }
+
         if (Main.GITLET.exists()) {
-            File file = Utils.join(Main.GITLET);
-            Files.walk(Paths.get(file.getAbsolutePath()))
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
+            File gitlet = Utils.join(Main.GITLET);
+            deleteDirectory(gitlet);
+            gitlet.delete();
         }
     }
 

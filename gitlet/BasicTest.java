@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
@@ -16,12 +17,12 @@ public class BasicTest {
     @Before
     public void initialize() throws IOException {
         Utils.clearCwdWithGitlet();
+        Main.main("init");
     }
 
     @Test
     public void initializeGitlet() throws IOException {
 
-        Main.main("init");
         Commit c = Commit.getCurrent();
         assertNotNull(c);
         assertEquals(Commit.zeroSha1, Commit.getCurrentSha1());
@@ -32,7 +33,7 @@ public class BasicTest {
 
     @Test
     public void addToStageTest() throws IOException {
-        Init.initialize();
+        
         Utils.createRandomFile("cube.txt");
         Stage s = Stage.read();
         assertTrue(s._preStage.isEmpty());
@@ -54,7 +55,6 @@ public class BasicTest {
     @Test
     public void addTestUser() throws IOException {
 
-        Main.main("init");
         Utils.createRandomFile("cube.txt");
         Stage s = Stage.read();
         assertTrue(s._preStage.isEmpty());
@@ -67,7 +67,7 @@ public class BasicTest {
 
     @Test
     public void commmitTest() throws IOException, ClassNotFoundException {
-        Init.initialize();
+        
         Utils.createRandomFile("wug.txt");
         Stage.add("wug.txt");
         Commit firstCommit = new Commit("version 1 wug", Commit.getCurrentSha1());
@@ -96,7 +96,6 @@ public class BasicTest {
     @Test
     public void commitPointerTest() throws IOException {
 
-        Init.initialize();
         Utils.createRandomFile("wug.txt");
         Stage.add("wug.txt");
         Commit firstCommit = new Commit("version 1 wug", Commit.getCurrentSha1());
@@ -120,7 +119,6 @@ public class BasicTest {
     public void checkRepeatBlobs() throws IOException {
         // Note: check for repeat blobs
 
-        Main.main("init");
         Utils.createRandomFile("cube.txt");
         Main.main("add","cube.txt");
         Main.main("commit","added cube");
@@ -136,7 +134,6 @@ public class BasicTest {
     @Test
     public void commitFailureCasesTest() throws IOException {
 
-        Main.main("init");
         Utils.createRandomFile("wug.txt");
 
         // Failure case: no file added
@@ -166,7 +163,6 @@ public class BasicTest {
     @Test
     public void removeInCurrentCommit() throws IOException {
 
-        Init.initialize();
         Utils.createRandomFile("wug.txt");
         Stage.add("wug.txt");
         Commit firstCommit = new Commit("version 1 wug", Commit.getCurrentSha1());
@@ -193,22 +189,19 @@ public class BasicTest {
 
     @Test
     public void logTest() throws IOException {
-//
-//        Main.main("init");
+
         Main.main("log");
     }
 
     @Test
     public void globalLogTest() throws IOException {
 
-        Main.main("init");
         Main.main("global-log");
     }
 
     @Test
     public void findTest() throws IOException {
 
-        Main.main("init");
         Utils.createRandomFile("wug.txt");
         Main.main("add", "wug.txt");
         Main.main("commit","added wug.txt");
@@ -229,7 +222,6 @@ public class BasicTest {
     @Test
     public void statusTest() throws IOException, ClassNotFoundException {
 
-        Init.initialize();
         Utils.createRandomFile("goodbye.txt");
         Utils.createRandomFile("junk.txt");
         Utils.createRandomFile("wug3.txt");
@@ -269,7 +261,6 @@ public class BasicTest {
     @Test
     public void statusTest1() throws IOException, ClassNotFoundException {
 
-        Init.initialize();
         Utils.createRandomFile("goodbye.txt");
         Stage.add("goodbye.txt");
         Commit c = new Commit("added wug", Commit.getCurrentSha1());
@@ -292,7 +283,6 @@ public class BasicTest {
     @Test
     public void checkout() throws IOException {
 
-        Init.initialize();
         Utils.createRandomFile("wug.txt");
         Stage.add("wug.txt");
         Commit commit1 = new Commit("added dog",Commit.getCurrentSha1());
@@ -322,7 +312,6 @@ public class BasicTest {
     @Test
     public void checkout2() throws IOException, ClassNotFoundException {
 
-        Init.initialize();
         Utils.createRandomFile("wug.txt");
         Stage.add("wug.txt");
         Commit commit1 = new Commit("version 1 of wug.txt", Commit.getCurrentSha1());
@@ -359,7 +348,6 @@ public class BasicTest {
     @Test
     public void checkOut3() throws IOException, ClassNotFoundException {
 
-        Init.initialize();
         Utils.createRandomFile("wug.txt");
         Utils.createRandomFile("wug2.txt");
         Stage.add("wug.txt");
@@ -369,29 +357,28 @@ public class BasicTest {
 
         Branch.save("Serf");
         Checkout.overwriteBranch("Serf");
-//        HashMap<String, String> curr = Commit.getCurrentBlobs();
-//        assertTrue(curr.containsKey("wug.txt"));
-//        assertTrue(curr.containsKey("wug2.txt"));
-//        assertEquals("Serf", Branch.getCurrent());
-//        assertEquals(commit1._sha1, Commit.getCurrentSha1());
-//
-//        Checkout.overwriteBranch("master");
-//        Utils.createRandomFile("nanner.txt");
-//        Stage.add("nanner.txt");
-//        Commit commit2 = new Commit("added wug and wug2", Commit.getCurrentSha1());
-//        commit2.write();
+        HashMap<String, String> curr = Commit.getCurrentBlobs();
+        assertTrue(curr.containsKey("wug.txt"));
+        assertTrue(curr.containsKey("wug2.txt"));
+        assertEquals("Serf", Branch.getCurrent());
+        assertEquals(commit1._sha1, Commit.getCurrentSha1());
 
-//        Checkout.overwriteBranch("Serf");
-//        curr = Commit.getCurrentBlobs();
-//        assertFalse(curr.containsKey("nanner.txt"));
-//        assertNotEquals(commit2._sha1, Commit.getCurrentSha1());
+        Checkout.overwriteBranch("master");
+        Utils.createRandomFile("nanner.txt");
+        Stage.add("nanner.txt");
+        Commit commit2 = new Commit("added wug and wug2", Commit.getCurrentSha1());
+        commit2.write();
+
+        Checkout.overwriteBranch("Serf");
+        curr = Commit.getCurrentBlobs();
+        assertFalse(curr.containsKey("nanner.txt"));
+        assertNotEquals(commit2._sha1, Commit.getCurrentSha1());
     }
 
     // Note: test if changing file in new branch doesn't affect old branch
     @Test
     public void checkOut31() throws IOException {
 
-        Init.initialize();
         Utils.createRandomFile("wug.txt");
         Stage stage = new Stage();
         stage.add("wug.txt");
@@ -431,7 +418,6 @@ public class BasicTest {
     @Test
     public void branchTest() throws IOException {
 
-        Init.initialize();
         Utils.createRandomFile("wug.txt");
         Stage.add("wug.txt");
         Commit commit1 = new Commit("added wug and wug2", Commit.getCurrentSha1());
@@ -466,7 +452,6 @@ public class BasicTest {
     @Test
     public void removeBranch() throws IOException {
 
-        Init.initialize();
         Utils.createRandomFile("dog.txt");
         Stage.add("dog.txt");
         Commit firstCommit = new Commit("first commit", Commit.getCurrentSha1());
@@ -483,7 +468,6 @@ public class BasicTest {
     @Test
     public void resetTest() throws IOException {
 
-        Init.initialize();
         Utils.createRandomFile("notwug.txt");
         Utils.randomChangeFileContents("notwug.txt");
         Stage.add("notwug.txt");
@@ -512,7 +496,6 @@ public class BasicTest {
     @Test
     public void checkResetFailureTest() throws IOException {
 
-        Init.initialize();
         Utils.createRandomFile("notwug.txt");
         Utils.randomChangeFileContents("notwug.txt");
         Stage.add("notwug.txt");
@@ -544,8 +527,6 @@ public class BasicTest {
     @Test
     public void findSplitPointTest() throws IOException {
 
-        Init.initialize();
-
         // Note: this is the splitpoint
         Utils.createRandomFile("wug.txt");
         Stage.add("wug.txt");
@@ -572,8 +553,6 @@ public class BasicTest {
 
     @Test
     public void findSplitPointTest2() throws IOException {
-
-        Init.initialize();
 
         Branch.save("serf");
         Checkout.overwriteBranch("serf");
@@ -609,7 +588,6 @@ public class BasicTest {
     @Test
     public void mergeFastForwardTest() throws IOException, ClassNotFoundException {
 
-        Init.initialize();
         Utils.createRandomFile("cup.txt");
         Stage.add("cup.txt");
         Commit commit1 = new Commit("1. commit dog", Commit.getCurrentSha1());
@@ -652,7 +630,6 @@ public class BasicTest {
     @Test
     public void mergeModifiedTest() throws IOException, ClassNotFoundException {
 
-        Init.initialize();
         Utils.createRandomFile("cup.txt");
         Stage.add("cup.txt");
         Commit commit1 = new Commit("1. commit dog", Commit.getCurrentSha1());
@@ -686,7 +663,6 @@ public class BasicTest {
     @Test
     public void givenBranchAncestorTest() throws IOException, ClassNotFoundException {
 
-        Init.initialize();
         Utils.createRandomFile("cup.txt");
         Stage.add("cup.txt");
         Commit commit1 = new Commit("1. commit dog", Commit.getCurrentSha1());
@@ -718,7 +694,6 @@ public class BasicTest {
     @Test
     public void mergeUnmodifiedTest() throws IOException, ClassNotFoundException {
 
-        Init.initialize();
         Utils.createRandomFile("cup.txt");
         Stage.add("cup.txt");
         Commit commit1 = new Commit("1. commit dog", Commit.getCurrentSha1());
@@ -750,7 +725,6 @@ public class BasicTest {
     @Test
     public void fileNoteRemovedCwdTest() throws IOException, ClassNotFoundException {
 
-        Init.initialize();
         Utils.createRandomFile("cup.txt");
         Stage.add("cup.txt");
         Commit commit1 = new Commit("1. commit dog", Commit.getCurrentSha1());
@@ -777,7 +751,6 @@ public class BasicTest {
     @Test
     public void mergeAbsentInGivenBranchRemoved1() throws IOException, ClassNotFoundException {
 
-        Init.initialize();
         Utils.createRandomFile("cup.txt");
         Stage.add("cup.txt");
         Commit commit1 = new Commit("1. commit dog", Commit.getCurrentSha1());
@@ -803,7 +776,6 @@ public class BasicTest {
     @Test
     public void mergeConflictTest1() throws IOException {
 
-        Init.initialize();
         Utils.createRandomFile("cup.txt");
         Stage.add("cup.txt");
         Commit commit1 = new Commit("1. commit dog", Commit.getCurrentSha1());
@@ -834,7 +806,6 @@ public class BasicTest {
     @Test
     public void mergeConflictTest1x5() throws IOException {
 
-        Init.initialize();
         Utils.createRandomFile("cup.txt");
         Stage.add("cup.txt");
         Commit commit1 = new Commit("1. commit dog", Commit.getCurrentSha1());
@@ -875,95 +846,94 @@ public class BasicTest {
     @Test
     public void crissCrossMergeTest() throws IOException {
 
-        Init.initialize();
-
         Branch.save("branch"); // Note does not have any fiels
 
         Utils.createRandomFile("cup.txt");
         Stage.add("cup.txt");
         // Initial commit master (splits master from initial) -- contains cup
-//        Utils.createRandomFile("cup.txt");
-//        Stage.add("cup.txt");
+        Utils.createRandomFile("cup.txt");
+        Stage.add("cup.txt");
         Commit commit1 = new Commit("1. commit cup", Commit.getCurrentSha1());
         commit1.write();
 
         // Initial commit branch -- contains cup
         Checkout.overwriteBranch("branch");
-//        Utils.createRandomFile("cup.txt");
-//        Utils.randomChangeFileContents("cup.txt"); // Note: has contents
-//        Stage.add("cup.txt"); // Note: supposed to show 'no change added' if commits have same file?
+        Utils.createRandomFile("cup.txt");
+        Utils.randomChangeFileContents("cup.txt"); // Note: has contents
+        Stage.add("cup.txt"); // Note: supposed to show 'no change added' if commits have same file?
+
+        Commit commit2 = new Commit("2. remove cup", Commit.getCurrentSha1());
+        commit2.write();
+        assertNotEquals(commit1._sha1,commit2._sha1);
+        assertEquals("branch",Branch.getCurrent());
+        assertEquals(commit2._sha1, Branch.read("branch"));
+
+        // Create temp branch
+        Branch.save("temp"); // contains cup with content
+
+        // Merge master into branch
+        new Merge().apply("master"); // Conflict file with cup.txt (branch has content)
+        System.out.print("Merge 1");
+        Commit m = Commit.getCurrent();
+        System.out.println();
+        System.out.println(m._mergedId);
+        assertEquals(m._mergedId.substring(0,7), commit2._sha1.substring(0,7));
+        assertEquals(m._mergedId.substring(8,15), commit1._sha1.substring(0,7));
+
+//         Make another commit
+        Checkout.overwriteBranch("master"); // - contains cup and mood
+        Utils.createRandomFile("mood.txt");
+        Stage.add("mood.txt");
+        Commit commit3 = new Commit("4. mood.txt", Commit.getCurrentSha1());
+        commit3.write();
+
+//         Merge temp into master
+        new Merge().apply("temp"); // Conflict file cup
+        System.out.print("Merge 2");
+        m = Commit.getCurrent();
+        System.out.println();
+        System.out.println(m._mergedId);
+        assertEquals(m._mergedId.substring(0,7), commit3._sha1.substring(0,7));
+        assertEquals(m._mergedId.substring(8,15), commit2._sha1.substring(0,7));
 //
-//        Commit commit2 = new Commit("2. remove cup", Commit.getCurrentSha1());
-//        commit2.write();
-//        assertNotEquals(commit1._sha1,commit2._sha1);
-//        assertEquals("branch",Branch.getCurrent());
-//        assertEquals(commit2._sha1, Branch.read("branch"));
+//         Make another commit branch
+        Checkout.overwriteBranch("branch"); // -- contains cup, spatula
+        Utils.createRandomFile("spatula.txt");
+        Stage.add("spatula.txt");
+        Commit commit5 = new Commit("2. spatula cup", Commit.getCurrentSha1());
+        commit5.write();
+        ArrayList<String> branch = Utils.getCommitArray(commit5, new ArrayList<>());
+
+        // Make another commit master
+        Checkout.overwriteBranch("master"); // -- contains fork, spatula, mood, cup
+        Utils.createRandomFile("fork.txt");
+        Stage.add("fork.txt");
+        Commit commit7 = new Commit("added fork", Commit.getCurrentSha1());
+        commit7.write();
+        ArrayList<String> master = Utils.getCommitArray(commit7, new ArrayList<>());
+
+        System.out.println(branch);
+        System.out.println(master);
+
+        System.out.println("Merge 3");
+        new Merge().apply("branch");
 //
-//        // Create temp branch
-//        Branch.save("temp"); // contains cup with content
-//
-//        // Merge master into branch
-//        new Merge().apply("master"); // Conflict file with cup.txt (branch has content)
-//        System.out.print("Merge 1");
-//        Commit m = Commit.getCurrent();
-//        System.out.println();
-//        System.out.println(m._mergedId);
-//        assertEquals(m._mergedId.substring(0,7), commit2._sha1.substring(0,7));
-//        assertEquals(m._mergedId.substring(8,15), commit1._sha1.substring(0,7));
-//
-////         Make another commit
-//        Checkout.overwriteBranch("master"); // - contains cup and mood
-//        Utils.createRandomFile("mood.txt");
-//        Stage.add("mood.txt");
-//        Commit commit3 = new Commit("4. mood.txt", Commit.getCurrentSha1());
-//        commit3.write();
-//
-////         Merge temp into master
-//        new Merge().apply("temp"); // Conflict file cup
-//        System.out.print("Merge 2");
-//        m = Commit.getCurrent();
-//        System.out.println();
-//        System.out.println(m._mergedId);
-//        assertEquals(m._mergedId.substring(0,7), commit3._sha1.substring(0,7));
-//        assertEquals(m._mergedId.substring(8,15), commit2._sha1.substring(0,7));
-////
-////         Make another commit branch
-//        Checkout.overwriteBranch("branch"); // -- contains cup, spatula
-//        Utils.createRandomFile("spatula.txt");
-//        Stage.add("spatula.txt");
-//        Commit commit5 = new Commit("2. spatula cup", Commit.getCurrentSha1());
-//        commit5.write();
-//        ArrayList<String> branch = Utils.getCommitArray(commit5, new ArrayList<>());
-//
-//        // Make another commit master
-//        Checkout.overwriteBranch("master"); // -- contains fork, spatula, mood, cup
-//        Utils.createRandomFile("fork.txt");
-//        Stage.add("fork.txt");
-//        Commit commit7 = new Commit("added fork", Commit.getCurrentSha1());
-//        commit7.write();
-//        ArrayList<String> master = Utils.getCommitArray(commit7, new ArrayList<>());
-//
-//        System.out.println(branch);
-//        System.out.println(master);
-//
-//        System.out.println("Merge 3");
-//        new Merge().apply("branch");
-////
-//        Collections.reverse(master);
-//        Collections.reverse(branch);
-//
-//        String sp = Merge.splitPoint(commit7, commit5);
-//        Commit merge = Utils.deserializeCommit(Commit.getCurrentSha1());
-//        System.out.println();
-//        System.out.println(merge._mergedId); // Criss cross merge doesn't work
-//        assertEquals(sp, branch.get(1));
+        Collections.reverse(master);
+        Collections.reverse(branch);
+
+        String sp = Merge.splitPoint(commit7, commit5);
+        Commit merge = Utils.deserializeCommit(Commit.getCurrentSha1());
+        System.out.println();
+        System.out.println(merge._mergedId); // Criss cross merge doesn't work
+        assertEquals(sp, branch.get(1));
     }
 
-//    // Note: works! (rebase command)
+//    ----- REBASE TESTS -----
+
 //    @Test
 //    public void findBranchSplitPointTest() throws IOException {
 //
-//        Init.initialize();
+//        
 //        Utils.createRandomFile("cup.txt");
 //        Stage.add("cup.txt");
 //        Commit commit1 = new Commit("1. commit dog", Commit.getCurrentSha1());
@@ -996,7 +966,7 @@ public class BasicTest {
 //    @Test
 //    public void rebaseTest() throws IOException {
 //
-//        Init.initialize();
+//        
 //        Utils.createRandomFile("cup.txt");
 //        Stage.add("cup.txt");
 //        Commit commit1 = new Commit("1. commit cup", Commit.getCurrentSha1());
