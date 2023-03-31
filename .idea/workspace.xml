@@ -4,6 +4,9 @@
     <list default="true" id="8a070bca-0012-4399-9d5a-1db66cb80e8c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gitlet/BasicTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/BasicTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/UnitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/UnitTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/UnitTest4.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/UnitTest4.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/Utils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +94,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BasicTest.branchTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BasicTest.mergeAbsentInGivenBranchRemoved1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -101,13 +104,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="branchTest" />
+      <option name="METHOD_NAME" value="mergeAbsentInGivenBranchRemoved1" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BasicTest.checkout2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BasicTest.mergeConflictTest1x5" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -117,13 +120,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="checkout2" />
+      <option name="METHOD_NAME" value="mergeConflictTest1x5" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BasicTest.checkoutTest2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BasicTest.mergeTest11" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -133,13 +136,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="checkoutTest2" />
+      <option name="METHOD_NAME" value="mergeTest11" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BasicTest.checkoutTest3" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BasicTest.mergeTest7" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -149,7 +152,7 @@
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
       <option name="MAIN_CLASS_NAME" value="gitlet.BasicTest" />
-      <option name="METHOD_NAME" value="checkoutTest3" />
+      <option name="METHOD_NAME" value="mergeTest7" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -157,19 +160,19 @@
     </configuration>
     <list>
       <item itemvalue="Application.init" />
-      <item itemvalue="JUnit.BasicTest.checkout2" />
-      <item itemvalue="JUnit.BasicTest.checkoutTest2" />
-      <item itemvalue="JUnit.BasicTest.branchTest" />
+      <item itemvalue="JUnit.BasicTest.mergeTest7" />
+      <item itemvalue="JUnit.BasicTest.mergeAbsentInGivenBranchRemoved1" />
+      <item itemvalue="JUnit.BasicTest.mergeConflictTest1x5" />
+      <item itemvalue="JUnit.BasicTest.mergeTest11" />
       <item itemvalue="JUnit.BasicTest" />
-      <item itemvalue="JUnit.BasicTest.checkoutTest3" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.BasicTest" />
-        <item itemvalue="JUnit.BasicTest.checkoutTest3" />
-        <item itemvalue="JUnit.BasicTest.branchTest" />
-        <item itemvalue="JUnit.BasicTest.checkoutTest2" />
-        <item itemvalue="JUnit.BasicTest.checkout2" />
+        <item itemvalue="JUnit.BasicTest.mergeTest11" />
+        <item itemvalue="JUnit.BasicTest.mergeConflictTest1x5" />
+        <item itemvalue="JUnit.BasicTest.mergeAbsentInGivenBranchRemoved1" />
+        <item itemvalue="JUnit.BasicTest.mergeTest7" />
       </list>
     </recent_temporary>
   </component>

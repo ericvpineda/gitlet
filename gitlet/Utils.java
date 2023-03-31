@@ -309,7 +309,7 @@ class Utils {
         return null;
     }
 
-    public static void createRandomFile(String name) throws IOException {
+    public static void createEmptyFile(String name) throws IOException {
         File random = Utils.join(Main.USERDIR,name);
         random.createNewFile();
     }
