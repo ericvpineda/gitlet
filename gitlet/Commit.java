@@ -16,7 +16,7 @@ public class Commit implements GitletObject, Serializable {
     String _mergedId;       // Merge commit identifier
 
     /**
-     * Commit constructor
+     * Constructor
      */
     public Commit(String msg, String parentSha1) throws IOException {
         _parentSha1 = parentSha1;   // Parent identifier
@@ -27,7 +27,7 @@ public class Commit implements GitletObject, Serializable {
         _mergedId = null;           // Merge commit identifier
     }
 
-    // Note: Create a deep copy of commit (Rebase command)
+    /** Constructor for Rebase command */
     public Commit(Commit deepCopy, String parentSha1, String tree) {
         _parentSha1 = parentSha1;            // Parent identifier
         _logMessage = deepCopy._logMessage;  // Commit message
@@ -37,7 +37,7 @@ public class Commit implements GitletObject, Serializable {
         _mergedId = null;                    // Merge commit identifier
     }
 
-    // Note: Create a deep copy of commit (For remote)
+    /** Constructor for Remote command) */
     public Commit(Commit deepCopy, String parent) {
         _parentSha1 = parent;                // Parent identifier
         _logMessage = deepCopy._logMessage;  // Commit message
@@ -47,7 +47,7 @@ public class Commit implements GitletObject, Serializable {
         _mergedId = deepCopy._mergedId;      // Merge commit identifier
     }
 
-    /** Constructor to create commit based on file directory */
+    /** Constructor for file directory input */
     public Commit(String msg, String parentSha1, File dir) throws IOException {
         _parentSha1 = parentSha1;       // Parent identifier
         _logMessage = msg;              // Commit message
