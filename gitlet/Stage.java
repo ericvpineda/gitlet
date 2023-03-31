@@ -4,74 +4,93 @@ import java.io.*;
 import java.util.HashMap;
 
 
-/* Class for add command and remove command */
+/* Class for add command and rm (remove) command */
 public class Stage implements Serializable {
-    HashMap<String, String> _preStage;
-    HashMap<String, String> _deletion;
+    HashMap<String, String> _preStage;  // Current/previous stage contents
+    HashMap<String, String> _deletion;  // Files staged for deletion
 
     /**
      * Constructor
      */
     public Stage() {
-        _preStage = new HashMap<>(); // Note: map name,sha1
-        _deletion = new HashMap<>(); // Note: map name,sha1
+        // Note: Hashmap is configured as: {Name of file: SHA1}
+        _preStage = new HashMap<>();    // Current/previous stage contents
+        _deletion = new HashMap<>();    // Files staged for deletion
     }
 
     /**
-     * Adds files to Main.INDEX.txt by name
+     * Adds file to stage if exists. If applicable, removed file staged for deletion. Does not add file is not contents has not changed.
      */
     public static void add(String fileName) throws IOException {
-        File temp = Utils.join(Main.USERDIR, fileName);
-//      Note: check if file has been deleted cwd
-        if (!temp.exists()) {
+
+        // Check if file deleted or does not exist
+        File file = Utils.join(Main.USERDIR, fileName);
+        if (!file.exists()) {
+
+            // Remove unknown file from stage and deletion stage if exists
             if (restore(fileName)) {
-                // ---------- Check more info on this?? -----------
-//                Checkout.overwriteFile(fileName);
                 return;
             }
             System.out.print("File does not exist.");
             return;
         }
-        Blob newBlob = new Blob(temp);
+
+        // Create new file blob
+        Blob newBlob = new Blob(file);
+
         // Note: Checks if there is identical version of file in current commit
-        if (checkIdenticalVer(newBlob)) {
+        if (isIdenticalBlob(newBlob)) {
             removeFromIndex(newBlob._name, Stage.read());
             return;
         }
+
+        // Write file blob to disk
         newBlob.write();
-        // Note: Need to manually write blobs to file
+
+        // Create new stage and add blob
         HashMap<String, String> newStage = new HashMap<>();
         newStage.put(newBlob._name, newBlob._sha1);
-        // Note: reads Index and adds items to new HM
-        Stage prev = Stage.read();
-        if (prev._preStage.containsKey(newBlob._name) &&
-            prev._preStage.get(newBlob._name).equals(newBlob._sha1)) {
-            // Note: if the stage already contains the file
+
+        // Check if previous stage contains same copy of added file
+        Stage previousStage = Stage.read();
+        if (previousStage._preStage.containsKey(newBlob._name) &&
+            previousStage._preStage.get(newBlob._name).equals(newBlob._sha1)) {
             return;
         }
-        if (prev._deletion.containsValue(newBlob._sha1)) {
+
+        // Check if file staged for deletion, remove form deletion hashmap
+        if (previousStage._deletion.containsValue(newBlob._sha1)) {
             restore(newBlob._name);
         }
-        prev._preStage.putAll(newStage);
-        write(prev);
+
+        // Update previous stage with current stage contents
+        previousStage._preStage.putAll(newStage);
+
+        // Write update stage to disk
+        write(previousStage);
     }
 
     /**
-     * Remove file command
+     * rm (remove) file command
      */
     public static void remove(String name) throws IOException {
-        // Note: Remove requirement #1
+        // Remove file from previous stage and deletion stage
         Stage stage = Stage.read();
-        boolean removedOutput = removeFromIndex(name, stage);
-        // Note: Remove requirement #2
-        boolean delatedOutput = markDeleted(name, stage);
-        if (!removedOutput && !delatedOutput) {
+        boolean isFileRemoved = removeFromIndex(name, stage);
+
+        // Mark file as deleted
+        boolean isFileMarkDeleted = markDeleted(name, stage);
+
+        // Check if file is removed and deleted successfully
+        if (!isFileRemoved && !isFileMarkDeleted) {
             System.out.print("No reason to remove the file.");
         }
     }
 
-    /** Helper method to remove file from Index */
+    /** Helper method to remove file from Stage */
     private static boolean removeFromIndex(String name, Stage stage) {
+
+        // If stage and deletion stage contains file, remove the file and update stage to disk.
         if (stage._preStage.containsKey(name) ||
                  stage._deletion.containsKey(name)) {
             stage._preStage.remove(name);
@@ -86,11 +105,17 @@ public class Stage implements Serializable {
      * Helper method to mark file as deleted
      */
     private static boolean markDeleted(String fileName, Stage stage) {
+
+        // Get list of blobs from current comment
         HashMap<String,String> currentBlobList = Commit.getCurrentBlobs();
-        // Note: only removes the file if in in the commit
+
+        // If commit contains file, stage file for deletion and write stage to disk.
         if (currentBlobList.containsKey(fileName)) {
-            // Note: remove from cwd
+
+            // Remove file from current working directory (CWD)
             Utils.join(Main.USERDIR,fileName).delete();
+
+            // Stage file for deletion
             stage._deletion.put(fileName,currentBlobList.get(fileName));
             write(stage);
             return true;
@@ -98,7 +123,7 @@ public class Stage implements Serializable {
         return false;
     }
 
-    /** Remove file from deleted if file is restored */
+    /** Remove file from being staged for deletion */
     public static boolean restore(String name) {
         Stage stage = read();
         if (stage._deletion.containsKey(name)) {
@@ -110,9 +135,9 @@ public class Stage implements Serializable {
     }
 
     /**
-     * Checks if identical blob exists
+     * Checks if given Blob is identical to that in current commit
      */
-    public static boolean checkIdenticalVer(Blob blob) {
+    public static boolean isIdenticalBlob(Blob blob) {
         HashMap<String, String> curr = Commit.getCurrentBlobs();
         if (curr.containsKey(blob._name) &&
                 curr.get(blob._name).equals(blob._sha1)) {
@@ -122,21 +147,21 @@ public class Stage implements Serializable {
     }
 
     /**
-     * Read Main.INDEX.txt
+     * Read Stage from disk
      */
     public static Stage read() {
         return Utils.deserialize(Main.INDEX, Stage.class);
     }
 
     /**
-     * Write object to Main.INDEX.txt
+     * Write Stage to disk
      */
     public static void write(Stage stage) {
         Utils.writeObject(Main.INDEX, stage);
     }
 
     /**
-     * Clear what is currently on Main.INDEX
+     * Clear current Stage and write to disk.
      */
     public static void clear() {
         Stage stage = new Stage();
