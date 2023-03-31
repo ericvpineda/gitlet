@@ -51,7 +51,7 @@ public class UnitTest1 {
         // Create duplicate repository (Note: @Before already creates a repository)
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
-
+        Main.main("init");
         output.close();
 
         assertEquals("A Gitlet version-control system already exists in the current directory.", output.toString());
