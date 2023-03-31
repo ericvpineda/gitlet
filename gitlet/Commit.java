@@ -84,20 +84,27 @@ public class Commit implements GitletObject, Serializable {
      * Serialize and update the branch based on the commit SHA1
      */
     public void write() throws IOException {
-        Commit curr = Commit.getCurrent();
-        if (curr != null && curr._tree.equals(_tree)) {
+
+        // Check if given commit differs from current commit
+        Commit currentCommit = Commit.getCurrent();
+        if (currentCommit != null && currentCommit._tree.equals(_tree)) {
             System.out.print("No changes added to the commit.");
             return;
         }
+
+        // Note: Write command part of GitletObject interface
         write(_sha1, this, Main.COMMITS);
-        String currBranch = Branch.getCurrent();
-        Branch.update(_sha1, currBranch, Main.BRANCH);
+
+        // Update HEAD commit in current branch
+        Branch.update(_sha1, Branch.getCurrent(), Main.BRANCH);
         Stage.clear();
     }
 
     /** Write to remote branch */
     public void writeRemote(File rPath) throws IOException {
         File commitFile = Utils.join(rPath, "objects", "commits");
+
+        // Note: Write command part of GitletObject interface
         write(_sha1, this, commitFile);
     }
 
@@ -113,6 +120,8 @@ public class Commit implements GitletObject, Serializable {
      * Get the current commit SHA1
      */
     public static String getCurrentSha1() {
+
+        // Create first commit if there exists no commits
         if (Main.INDEX.length() == 0) {
             return Commit.zeroSha1;
         }
@@ -128,8 +137,8 @@ public class Commit implements GitletObject, Serializable {
 
     /** Get list of blobs from given tree SHA1 */
     public static HashMap<String,String> getBlobs(String treeSha1) {
-        File sectreeFile = Utils.findFile(treeSha1, Main.TREE);
-        Tree tree = Utils.deserialize(sectreeFile, Tree.class);
+        File foundTreeFile = Utils.findFile(treeSha1, Main.TREE);
+        Tree tree = Utils.deserialize(foundTreeFile, Tree.class);
         return tree._blobList;
     }
 
