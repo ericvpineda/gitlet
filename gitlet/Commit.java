@@ -137,8 +137,8 @@ public class Commit implements GitletObject, Serializable {
 
     /** Get list of blobs from given tree SHA1 */
     public static HashMap<String,String> getBlobs(String treeSha1) {
-        File foundTreeFile = Utils.findFile(treeSha1, Main.TREE);
-        Tree tree = Utils.deserialize(foundTreeFile, Tree.class);
+        File foundFile = Utils.findFile(treeSha1, Main.TREE);
+        Tree tree = Utils.deserialize(foundFile, Tree.class);
         return tree._blobList;
     }
 
