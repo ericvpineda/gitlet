@@ -11,16 +11,22 @@ import java.io.Serializable;
 public class Branch implements Serializable {
 
     /**
-     * Saves a new branch file with headCommit SHA1
+     * Write new branch file to disk using branch name (if applicable).
      */
     public static void save(String name) throws IOException {
+
+        // Verify that given name does not already exist
         File newBranchFile = Utils.join(Main.BRANCH, name);
         if (newBranchFile.exists()) {
             System.out.print("A branch with that name already exists.");
             return;
         }
+
+        // Create new branch file and write to disk
         newBranchFile.createNewFile();
         Utils.writeObject(newBranchFile, name);
+
+        // Update current commit with new branch file
         update(Commit.getCurrentSha1(), name, Main.BRANCH);
     }
 
