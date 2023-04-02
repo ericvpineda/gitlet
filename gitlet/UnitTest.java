@@ -10,7 +10,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import static org.junit.Assert.*;
 
-// Test basic gitlet commands with shallow depth
+// Test basic gitlet commands with shallow depth [32 Tests Total]
+// Tests include: init, add, commit, remove, log, global-log, find, status, checkout, branch, rm-branch, merge
 public class UnitTest {
 
     // Clear current working directory and initialize .gitlet repo
@@ -288,7 +289,7 @@ public class UnitTest {
         assertTrue(currentBlobs.containsKey("wug3.txt"));
 
         // Create new branch
-        Branch.save("other-branch");
+        Main.main("branch", "other-branch");
 
         // Add new files
         Utils.createEmptyFile("wug.txt");
@@ -356,7 +357,6 @@ public class UnitTest {
         Utils.randomChangeFileContents("wug.txt");
 
         // Checkout random file
-        Checkout.overwriteFile("wug.txt");
         Main.main("checkout", "--", "wug.txt");
         assertTrue(Utils.join(Main.USERDIR, "wug.txt").length() == 0);
 
@@ -365,7 +365,7 @@ public class UnitTest {
         System.setOut(new PrintStream(output));
 
         // Checkout file DNE
-        Checkout.overwriteFile("wugz.txt");
+        Main.main("checkout", "--", "wugz.txt");
         output.close();
 
         assertEquals("File does not exist in that commit.", output.toString());
@@ -391,7 +391,7 @@ public class UnitTest {
         Main.main("add", "version 2 of wug.txt");
 
         // Checkout random file
-        Checkout.overwriteCommit("wug.txt", commit1._sha1);
+        Main.main("checkout", Commit.zeroSha1, "--", "wug.txt");
         Main.main("checkout", "--", "wugz.txt");
         assertTrue(Utils.join(Main.GITLET, "wug.txt").length() == 0);
 
@@ -412,7 +412,6 @@ public class UnitTest {
 
         output.close();
         assertEquals("File does not exist in that commit.", output.toString());
-
     }
 
     // Test checkout branch
@@ -470,7 +469,7 @@ public class UnitTest {
         // Failure case: Checkout branch DNE
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
-        Checkout.overwriteBranch("Cup");
+        Main.main("checkout", "CUP");
         output.close();
 
         assertEquals("No such branch exists.", output.toString());
@@ -478,7 +477,7 @@ public class UnitTest {
         // Failure case: Checkout current branch
         output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
-        Checkout.overwriteBranch("Serf");
+        Main.main("checkout", "Serf");
         output.close();
 
         assertEquals("No need to checkout the current branch.", output.toString());
@@ -541,7 +540,7 @@ public class UnitTest {
         assertEquals("A branch with that name already exists.", output.toString());
     }
 
-    // ----- REMOVE TESTS -----
+    // ----- REMOVE BRANCH TESTS -----
 
     // Test removing new branch
     @Test
@@ -554,8 +553,8 @@ public class UnitTest {
         firstCommit.write();
 
         // Create and remove new branch
-        Branch.save("serf");
-        Branch.remove("serf");
+        Main.main("branch", "serf");
+        Main.main("rm-branch", "serf");
 
         // Check if new branch still exists and commits preserved
         assertFalse(Utils.join(Main.BRANCH, "serf").exists());
@@ -588,7 +587,7 @@ public class UnitTest {
         commit2.write();
 
         // Reset back to first commit
-        Checkout.reset(commit1._sha1);
+        Main.main("reset", commit1._sha1);
 
         // Check current commit is first commit and valid files exist
         assertEquals(commit1._sha1,Commit.getCurrentSha1());
@@ -597,7 +596,8 @@ public class UnitTest {
         assertTrue(Utils.join(Main.USERDIR, "notwug.txt").length() > 0);
 
         // Reset to second commit
-        Checkout.reset(commit2._sha1);
+        Main.main("reset", commit2._sha1);
+
 
         // Check current commit is second commit and valid files exist
         assertEquals(commit2._sha1,Commit.getCurrentSha1());
@@ -616,7 +616,7 @@ public class UnitTest {
         Main.main("commit", "test Commit");
 
         // Reset back to zero SHA1 commit
-        Checkout.reset(Commit.zeroSha1);
+        Main.main("reset", Commit.zeroSha1);
 
         // Validate zero SHA1 is current commit and valid files
         assertEquals(Commit.zeroSha1, Commit.getCurrentSha1());
@@ -625,7 +625,8 @@ public class UnitTest {
         // Failure case: Reset back to commit ID that DNE
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
-        Checkout.reset("1234");
+        Main.main("reset", "1234");
+
         output.close();
 
         assertEquals("No commit with that id exists.", output.toString());
@@ -635,7 +636,7 @@ public class UnitTest {
         output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
 
-        Checkout.reset("1234");
+        Main.main("reset", "1234");
         output.close();
         assertEquals("There is an untracked file in the way; " +
                 "delete it, or add and commit it first.", output.toString());
@@ -655,8 +656,8 @@ public class UnitTest {
         commit1.write();
 
         // Create and checkout new branch
-        Branch.save("serf");
-        Checkout.overwriteBranch("serf");
+        Main.main("branch", "serf");
+        Main.main("checkout", "serf");
 
         // Create and commit file onto new branch
         Utils.createEmptyFile("scratch.txt");
@@ -665,7 +666,7 @@ public class UnitTest {
         commit2.write();
 
         // Checkout back to master
-        Checkout.overwriteBranch("master");
+        Main.main("checkout", "master");
 
         // Create and commit new file on master branch
         Utils.createEmptyFile("face.txt");
@@ -682,8 +683,8 @@ public class UnitTest {
     public void mergeTest2() throws IOException {
 
         // Create and checkout new branch
-        Branch.save("serf");
-        Checkout.overwriteBranch("serf");
+        Main.main("branch", "serf");
+        Main.main("checkout", "serf");
 
         // Create and commit new file (Note: This is the split-point)
         Utils.createEmptyFile("wug.txt");
@@ -697,7 +698,7 @@ public class UnitTest {
         Main.main("commit", "1. added wug");
 
         // Checkout back to master branch
-        Checkout.overwriteBranch("master");
+        Main.main("checkout", "master");
 
         // Create and commit new file on master branch
         Utils.createEmptyFile("scratch.txt");
@@ -725,8 +726,8 @@ public class UnitTest {
         Main.main("commit", "1. commit dog");
 
         // Create and checkout new branch
-        Branch.save("serf");
-        Checkout.overwriteBranch("serf");
+        Main.main("branch", "serf");
+        Main.main("checkout", "serf");
 
         // Create and commit new file on new branch
         Utils.createEmptyFile("mag.txt");
@@ -740,7 +741,7 @@ public class UnitTest {
         commit3.write();
 
         // Checkout back to master
-        Checkout.overwriteBranch("master");
+        Main.main("checkout", "master");
 
         // Check branch is fast-forwarded with correct message
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -757,7 +758,7 @@ public class UnitTest {
         assertEquals(fastCommit._sha1, commit3._sha1);
 
         // Check new branch commits unchanged
-        Checkout.overwriteBranch("serf");
+        Main.main("checkout", "serf");
         assertEquals(fastCommit._sha1, Commit.getCurrentSha1());
     }
 
@@ -1159,14 +1160,14 @@ public class UnitTest {
 //        Commit commit1 = new Commit("1. commit dog", Commit.getCurrentSha1());
 //        commit1.write();
 ////
-//        Branch.save("serf");
-//        Checkout.overwriteBranch("serf");
+//     Main.main("branch", "serf");
+//        Main.main("checkout", "serf");
 //        Utils.randomChangeFileContents("cup.txt");
 //        Main.main("add","cup.txt");
 //        Commit commit2 = new Commit("2. commit scratch", Commit.getCurrentSha1());
 //        commit2.write();
 //
-//        Checkout.overwriteBranch("master");
+//        Main.main("checkout", "master");
 //        Utils.createEmptyFile("dog.txt");
 //        Main.main("add","dog.txt");
 //        Commit commit3 = new Commit("2. commit scratch", Commit.getCurrentSha1());
@@ -1175,7 +1176,7 @@ public class UnitTest {
 //        String sp = Merge.splitPoint(commit2,commit3);
 //        Commit spCommit = Merge.findBranchSplit(commit2,sp);
 //
-//        Checkout.overwriteBranch("serf");
+//        Main.main("checkout", "serf");
 //        System.out.println("Splitpoint = " + sp);
 //        System.out.println("Branch split = " + spCommit._sha1);
 //
@@ -1192,13 +1193,13 @@ public class UnitTest {
 //        Commit commit1 = new Commit("1. commit cup", Commit.getCurrentSha1());
 //        commit1.write();
 ////
-//        Branch.save("serf");
-//        Checkout.overwriteBranch("serf");
+//     Main.main("branch", "serf");
+//        Main.main("checkout", "serf");
 //        Utils.randomChangeFileContents("cup.txt");
 //        Commit commit2 = new Commit("2. modified cup", Commit.getCurrentSha1());
 //        commit2.write();
 //
-//        Checkout.overwriteBranch("master");
+//        Main.main("checkout", "master");
 //        Utils.createEmptyFile("dog.txt");
 //        Main.main("add","dog.txt");
 //        Commit commit3 = new Commit("3. commit dog", Commit.getCurrentSha1());
