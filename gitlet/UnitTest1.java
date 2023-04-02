@@ -11,8 +11,9 @@ import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
-/* The suite of all JUnit tests for the gitlet package. Biased toward CS61b gitlet autograder.
-   @author Eric Pineda
+/**
+Test cases with greater-depth testing (i.e. failure/conflict cases) [Contains tests 1-22]
+ Tests commands: init, commit, log, status, remove
  */
 public class UnitTest1 {
     
