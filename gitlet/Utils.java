@@ -332,26 +332,6 @@ class Utils {
         bw.close();
     }
 
-    static void testFileMergeConflict(String object) throws IOException {
-        File file = Utils.join(Main.USERDIR,object);
-        FileOutputStream fos = new FileOutputStream(file.getAbsolutePath());
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-        Random rand = new Random();
-        bw.write("This is the same file.");
-        bw.write(System.getProperty("line.separator"));
-        bw.write("Random change: " + rand.nextInt(100));
-        bw.write(System.getProperty("line.separator"));
-        bw.write("Here are some other changes: ");
-        bw.write(System.getProperty("line.separator"));
-        bw.write("Change 1");
-        bw.write(System.getProperty("line.separator"));
-        bw.write("Change 2");
-        bw.write(System.getProperty("line.separator"));
-        bw.write("Change 3");
-
-        bw.close();
-    }
-
     public static ArrayList<String> getCommitArray(Commit commit,ArrayList<String> array) throws IOException {
         if (commit == null) {
             return null;
