@@ -139,12 +139,12 @@ class Utils {
         }
     }
 
-    /** Write OBJ to FILE. */
-    static void writeObject(File file, Serializable obj) {
-        writeContents(file, serialize(obj));
+    /** Write single object to FILE. */
+    static void writeObject(File file, Serializable object) {
+        writeContents(file, serialize(object));
     }
 
-    /* DIRECTORIES */
+        /* DIRECTORIES */
 
     /** Filter out all but plain files. */
     private static final FilenameFilter PLAIN_FILES =
@@ -248,9 +248,10 @@ class Utils {
 
     /* Private method that returns a File object*/
     // Note: can look up files up to 5 characters and above (commits)
-    static File findFile(String name, File objectsFile) {
-        // Note: check commit with fewer than 40 characters
-        if (objectsFile.equals(Main.COMMITS) && name.length() < 40) {
+    static File createFilePath(String name, File file) {
+
+        // Check if file is Commit object with short hash
+        if (file.equals(Main.COMMITS) && name.length() < 40) {
             for (File folder : Main.COMMITS.listFiles()) {
                 // Note: check if folder contains first 2 charac
                 if (folder.getName().equals(name.substring(0,2))) {
@@ -264,17 +265,21 @@ class Utils {
                 }
             }
         }
-        if (objectsFile.equals(Main.COMMITS) || objectsFile.equals(Main.BLOB) ||
-            objectsFile.equals(Main.TREE)) {
-            return Utils.join(objectsFile, name.substring(0, 2), name.substring(2));
+
+        // Return file path for commits, blobs or tree objects
+        if (file.equals(Main.COMMITS) || file.equals(Main.BLOB) ||
+            file.equals(Main.TREE)) {
+            return Utils.join(file, name.substring(0, 2), name.substring(2));
         }
-        return Utils.join(objectsFile, name);
+        return Utils.join(file, name);
     }
 
     /** Custom method to deserialize commit */
     static Commit deserializeCommit(String SHA1) {
+        System.out.println("DEBUG: commit to deserialize=" + SHA1);
         if (SHA1 != null) {
-            File foundFile = findFile(SHA1, Main.COMMITS);
+            File foundFile = createFilePath(SHA1, Main.COMMITS);
+            System.out.println("DEBUG: found commit file=" + foundFile);
             if (foundFile.exists()) {
                 return deserialize(foundFile, Commit.class);
             }
@@ -356,11 +361,11 @@ class Utils {
         String curr = "";
         String tar = "";
         if (current != null) {
-            Blob currBlob = deserialize(findFile(current, Main.BLOB), Blob.class);
+            Blob currBlob = deserialize(createFilePath(current, Main.BLOB), Blob.class);
             curr = currBlob._fileContent;
         }
         if (target != null) {
-            Blob tarBlob = deserialize(findFile(target, Main.BLOB), Blob.class);
+            Blob tarBlob = deserialize(createFilePath(target, Main.BLOB), Blob.class);
             tar = tarBlob._fileContent;
         }
         byte[] conflict = (header + curr + middle + tar + end).getBytes();
@@ -396,8 +401,8 @@ class Utils {
         }
         if (commit._mergedId != null) {
             String merge = commit._mergedId;
-            File c1 = Utils.findFile(merge.substring(0,7), Main.COMMITS);
-            File c2 = Utils.findFile(merge.substring(8,15), Main.COMMITS);
+            File c1 = Utils.createFilePath(merge.substring(0,7), Main.COMMITS);
+            File c2 = Utils.createFilePath(merge.substring(8,15), Main.COMMITS);
             getTotalSha1History(Utils.deserialize(c1, Commit.class), arr);
             getTotalSha1History(Utils.deserialize(c2, Commit.class), arr);
         }
@@ -464,7 +469,7 @@ class Utils {
     public static void overwriteHelper(String fileName, String sha1) throws IOException {
         if (findInCwd(fileName)) {
             // Find object in Main.Objects
-            File blobFile = Utils.findFile(sha1, Main.BLOB);
+            File blobFile = Utils.createFilePath(sha1, Main.BLOB);
             Blob blob = Utils.deserialize(blobFile, Blob.class);
             Utils.writeContents(join(Main.USERDIR,fileName), blob._fileContent);
         } else {
@@ -476,7 +481,7 @@ class Utils {
 
     /** Uploads file into CWD based on SHA1 */
     public static void uploadFileCWD(String fileSHA1) throws IOException {
-        File blobFile = findFile(fileSHA1, Main.BLOB);
+        File blobFile = createFilePath(fileSHA1, Main.BLOB);
         Blob blob = deserialize(blobFile,Blob.class);
         File innerFile = join(Main.USERDIR,blob._name);
         innerFile.createNewFile();
@@ -587,7 +592,7 @@ class Utils {
         for (Iterator it = iter; it.hasNext(); ) {
             Map.Entry obj = (Map.Entry) it.next();
             if (!blobFolder.contains(obj.getValue())) {
-                File currBlob = Utils.findFile((String) obj.getValue(), Main.BLOB);
+                File currBlob = Utils.createFilePath((String) obj.getValue(), Main.BLOB);
                 Blob blob = Utils.deserialize(currBlob, Blob.class);
                 writeRemote(blob._sha1, blob, blobFile);
             }
@@ -652,9 +657,9 @@ class Utils {
                 commit._parentSha1.substring(0,2), commit._parentSha1.substring(2));
 //        if (commit._mergedId != null) {
 //            String merge = commit._mergedId;
-//            File c1 = Utils.findFile(merge.substring(0,7), Main.COMMITS);
+//            File c1 = Utils.createFilePath(merge.substring(0,7), Main.COMMITS);
 //            Commit c1Commit = Utils.deserialize(c1, Commit.class);
-//            File c2 = Utils.findFile(merge.substring(9,15), Main.COMMITS);
+//            File c2 = Utils.createFilePath(merge.substring(9,15), Main.COMMITS);
 //            Commit c2Commit = Utils.deserialize(c2, Commit.class);
 //            getCommitHistoryRemote(remote, c1Commit, arr);
 //            getCommitHistoryRemote(remote, c2Commit, arr);
@@ -691,7 +696,7 @@ class Utils {
     }
 
     public static void overwriteRemote(String fileName, String sha1, File remoteDir) throws IOException {
-        File blobFile = Utils.findFile(sha1, Utils.join(Main.BLOB, sha1.substring(0,2), sha1.substring(2)));
+        File blobFile = Utils.createFilePath(sha1, Utils.join(Main.BLOB, sha1.substring(0,2), sha1.substring(2)));
         Blob blob = Utils.deserialize(blobFile, Blob.class);
         File cwdFile = join(remoteDir,fileName);
         if (Utils.join(remoteDir, fileName).exists()) {
