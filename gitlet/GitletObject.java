@@ -7,13 +7,13 @@ import java.io.Serializable;
 /* Interface to save objects to disk */
 public interface GitletObject extends Serializable {
 
-    /** Helper function that will call overloaded write call in GitletObject */
+    /** Write data to disk */
     void write() throws IOException;
 
-    /** Create SHA1 for file or folder */
-    String createSha1();
+    /** Create SHA1 hash */
+    String createHash();
 
-    /** Writes content into Main.objects file */
+    /** Writes content into objects file in .gitlet folder */
     default void write(String sha1, Object contents, File location) throws IOException {
 
         // Create folder based on first two characters of file identifier
