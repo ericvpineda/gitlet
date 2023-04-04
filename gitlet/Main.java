@@ -14,7 +14,7 @@ import java.io.IOException;
 public class Main {
     static final File USERDIR = Utils.join(System.getProperty("user.dir"));
     static final File GITLET = Utils.join(USERDIR,".gitlet");
-    static final File INDEX = Utils.join(GITLET,"index.txt");
+    static final File STAGE = Utils.join(GITLET,"index.txt");
     static final File OBJECTS = Utils.join(GITLET,"objects");
     static final File COMMITS = Utils.join(OBJECTS,"commits");
     static final File BLOB = Utils.join(OBJECTS,"blobs");
