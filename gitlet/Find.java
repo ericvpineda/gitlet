@@ -8,16 +8,16 @@ public class Find {
 
     // Question: have a commit folder to improve runtime?
     /**
-     * Gitlet command to find Commit with certain message
+     * Finds Commit with given message
      */
-    static void find(String comMessage) {
+    static void find(String message) {
         ArrayList<String> commits = new ArrayList<>();
         File[] objectList = Main.COMMITS.listFiles();
         for (int i = 0; i < objectList.length; i++) {
             for (File inner : objectList[i].listFiles()) {
-                Commit comFile = (Commit) Utils.deserializeObject(inner);
-                if (comFile._logMessage.equals(comMessage)) {
-                    commits.add(comFile._sha1);
+                Commit file = (Commit) Utils.deserializeObject(inner);
+                if (file._logMessage.equals(message)) {
+                    commits.add(file._sha1);
                 }
             }
         }
