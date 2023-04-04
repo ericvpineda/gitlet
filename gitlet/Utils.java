@@ -385,13 +385,13 @@ class Utils {
 
     /** Helper method to check if working file is untracked in current branch */
     public static boolean checkUntrackedCwd() {
-        List<String> ignoreFiles = getFilesToIgnore();
+        ArrayList<String> filesToIgnore = getFilesToIgnore();
         ArrayList<String> firstCommitFiles = Utils.getBlobFolderArray();
         File[] objectList = Main.USERDIR.listFiles();
 
         for (File file : objectList) {
             String fileName = file.getName();
-            if (ignoreFiles.contains(fileName)) {
+            if (filesToIgnore.contains(fileName)) {
                 continue;
             }
             byte[] fileByte = Utils.readContents(file);
@@ -422,12 +422,12 @@ class Utils {
     }
 
     public static void clearCwdRemote(File remoteDir) {
-        List<String> ignoreFiles = getFilesToIgnore();
+        ArrayList<String> filesToIgnore = getFilesToIgnore();
         File[] objectList = remoteDir.listFiles();
 
         for (File file : objectList) {
             String fileName = file.getName();
-            if (ignoreFiles.contains(fileName)) {
+            if (filesToIgnore.contains(fileName)) {
                 continue;
             }
             file.delete();
@@ -450,8 +450,8 @@ class Utils {
         return null;
     }
 
-    public static List<String> getFilesToIgnore() {
-        List<String> files = Arrays.asList(
+    public static ArrayList<String> getFilesToIgnore() {
+        List<String> list = Arrays.asList(
             ".gitlet",
             ".gitignore",
             "gitlet",
@@ -463,7 +463,7 @@ class Utils {
             "readme.md",
             "notes.md"
         );
-        return files;
+        return new ArrayList<>(list);
     }
 
     /** Replace files in cwd (branch) */
@@ -503,12 +503,12 @@ class Utils {
 
 
     public static void clearCwd() {
-        List<String> ignoreFiles = getFilesToIgnore();
+        ArrayList<String> filesToIgnore = getFilesToIgnore();
         File[] objectList = Main.USERDIR.listFiles();
 
         for (File file : objectList) {
             String fileName = file.getName();
-            if (ignoreFiles.contains(fileName)) {
+            if (filesToIgnore.contains(fileName)) {
                 continue;
             }
             file.delete();
@@ -529,13 +529,14 @@ class Utils {
     }
 
     public static void clearCwdWithGitlet() throws IOException {
-        List<String> ignoreFiles = getFilesToIgnore();
-        ignoreFiles.remove(0); // Remove
+        ArrayList<String> filesToIgnore = getFilesToIgnore();
+        System.out.println("DEBUG: ignored files=" + filesToIgnore);
+        filesToIgnore.remove(0);
         File[] objectList = Main.USERDIR.listFiles();
 
         for (File file : objectList) {
             String fileName = file.getName();
-            if (ignoreFiles.contains(fileName)) {
+            if (filesToIgnore.contains(fileName)) {
                 continue;
             }
             file.delete();
@@ -552,13 +553,13 @@ class Utils {
     }
 
     public static void clearCwdWithGitletRemote(File remote) throws IOException {
-        List<String> ignoreFiles = getFilesToIgnore();
-        ignoreFiles.remove(0);
+        ArrayList<String> filesToIgnore = getFilesToIgnore();
+        filesToIgnore.remove(0);
         File[] objectList = remote.listFiles();
 
         for (File file : objectList) {
             String fileName = file.getName();
-            if (ignoreFiles.contains(fileName)) {
+            if (filesToIgnore.contains(fileName)) {
                 continue;
             }
             file.delete();
@@ -626,14 +627,14 @@ class Utils {
     }
 
     public static boolean checkUntrackedCwdRemote(File remote) {
-        List<String> ignoreFiles = getFilesToIgnore();
+        ArrayList<String> filesToIgnore = getFilesToIgnore();
         File blobFolder = Utils.join(remote,".gitlet", "objects", "blobs");
         ArrayList<String> firstCommitFiles = Utils.getBlobFolderArrayRemote(blobFolder);
         File[] objectList = remote.listFiles();
 
         for (File file : objectList) {
             String fileName = file.getName();
-            if (ignoreFiles.contains(fileName)) {
+            if (filesToIgnore.contains(fileName)) {
                 continue;
             }
             byte[] fileByte = Utils.readContents(file);
