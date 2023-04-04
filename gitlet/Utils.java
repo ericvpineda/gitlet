@@ -250,38 +250,49 @@ class Utils {
     // Note: can look up files up to 5 characters and above (commits)
     static File createFilePath(String name, File file) {
 
+        // Return file path
+        File path = null;
+
         // Check if file is Commit object with short hash
         if (file.equals(Main.COMMITS) && name.length() < 40) {
             for (File folder : Main.COMMITS.listFiles()) {
-                // Note: check if folder contains first 2 charac
+                // Note: check if folder contains first 2 characters
                 if (folder.getName().equals(name.substring(0,2))) {
                     for (File innerFile : folder.listFiles()) {
                         int len = name.substring(2).length();
                         // Note: if innerfile name until equal to name
                         if (innerFile.getName().substring(0, len).equals(name.substring(2))) {
-                            return innerFile;
+                            path = innerFile;
+                            break;
                         }
                     }
                 }
             }
         }
 
-        // Return file path for commits, blobs or tree objects
-        if (file.equals(Main.COMMITS) || file.equals(Main.BLOB) ||
-            file.equals(Main.TREE)) {
-            return Utils.join(file, name.substring(0, 2), name.substring(2));
+        // Return key file path for commits, blobs or tree objects
+        List<File> keyFiles = Arrays.asList(Main.COMMITS, Main.BLOB, Main.TREE);
+        if (keyFiles.contains(file)) {
+            File tempPath = Utils.join(file, name.substring(0, 2), name.substring(2));
+            if (tempPath.exists()) {
+                path = tempPath;
+            }
         }
-        return Utils.join(file, name);
+
+        // Return non-key file paths
+        File tempPath = Utils.join(file, name);
+        if (tempPath.exists()) {
+            path = tempPath;
+        }
+        return path;
     }
 
-    /** Custom method to deserialize commit */
-    static Commit deserializeCommit(String SHA1) {
-        System.out.println("DEBUG: commit to deserialize=" + SHA1);
-        if (SHA1 != null) {
-            File foundFile = createFilePath(SHA1, Main.COMMITS);
-            System.out.println("DEBUG: found commit file=" + foundFile);
-            if (foundFile.exists()) {
-                return deserialize(foundFile, Commit.class);
+    /** Custom method to deserialize commit by SHA1 identifier */
+    static Commit deserializeCommit(String id) {
+        if (id != null) {
+            File file = createFilePath(id, Main.COMMITS);
+            if (file != null) {
+                return deserialize(file, Commit.class);
             }
         }
         return null;
@@ -374,7 +385,7 @@ class Utils {
 
     /** Helper method to check if working file is untracked in current branch */
     public static boolean checkUntrackedCwd() {
-        ArrayList<String> ignoreFiles = getIgnoreArray();
+        List<String> ignoreFiles = getFilesToIgnore();
         ArrayList<String> firstCommitFiles = Utils.getBlobFolderArray();
         File[] objectList = Main.USERDIR.listFiles();
 
@@ -411,7 +422,7 @@ class Utils {
     }
 
     public static void clearCwdRemote(File remoteDir) {
-        ArrayList<String> ignoreFiles = getIgnoreArray();
+        List<String> ignoreFiles = getFilesToIgnore();
         File[] objectList = remoteDir.listFiles();
 
         for (File file : objectList) {
@@ -439,18 +450,20 @@ class Utils {
         return null;
     }
 
-    public static ArrayList<String> getIgnoreArray() {
-        ArrayList<String> ignoreFiles = new ArrayList<>();
-        ignoreFiles.add(".gitlet");
-        ignoreFiles.add(".gitignore");
-        ignoreFiles.add("gitlet");
-        ignoreFiles.add(".idea");
-        ignoreFiles.add("testing");
-        ignoreFiles.add("proj2.iml");
-        ignoreFiles.add("out");
-        ignoreFiles.add(".git");
-        ignoreFiles.add("readme.md");
-        return ignoreFiles;
+    public static List<String> getFilesToIgnore() {
+        List<String> files = Arrays.asList(
+            ".gitlet",
+            ".gitignore",
+            "gitlet",
+            ".idea",
+            "testing",
+            "proj2.iml",
+            "out",
+            ".git",
+            "readme.md",
+            "notes.md"
+        );
+        return files;
     }
 
     /** Replace files in cwd (branch) */
@@ -490,7 +503,7 @@ class Utils {
 
 
     public static void clearCwd() {
-        ArrayList<String> ignoreFiles = getIgnoreArray();
+        List<String> ignoreFiles = getFilesToIgnore();
         File[] objectList = Main.USERDIR.listFiles();
 
         for (File file : objectList) {
@@ -508,13 +521,16 @@ class Utils {
             if (subfile.isDirectory()) {
                 deleteDirectory(subfile);
             }
-            subfile.delete();
+            boolean result = subfile.delete();
+            if (!result) {
+                System.out.println("DEBUG: unable to delete=" + subfile.toString());
+            }
         }
     }
 
     public static void clearCwdWithGitlet() throws IOException {
-        ArrayList<String> ignoreFiles = getIgnoreArray();
-        ignoreFiles.remove(0);
+        List<String> ignoreFiles = getFilesToIgnore();
+        ignoreFiles.remove(0); // Remove
         File[] objectList = Main.USERDIR.listFiles();
 
         for (File file : objectList) {
@@ -526,15 +542,17 @@ class Utils {
             // Note: checks if file is in blob folder (tracked)
         }
 
+        System.out.println("DEBUG: gitlet folder exists=" + Main.GITLET.exists());
         if (Main.GITLET.exists()) {
-            File gitlet = Utils.join(Main.GITLET);
-            deleteDirectory(gitlet);
-            gitlet.delete();
+            File file = Utils.join(Main.GITLET);
+            deleteDirectory(file);
+            boolean result = file.delete();
+            System.out.println("DEBUG: Gitlet folder deleted=" + result);
         }
     }
 
     public static void clearCwdWithGitletRemote(File remote) throws IOException {
-        ArrayList<String> ignoreFiles = getIgnoreArray();
+        List<String> ignoreFiles = getFilesToIgnore();
         ignoreFiles.remove(0);
         File[] objectList = remote.listFiles();
 
@@ -608,7 +626,7 @@ class Utils {
     }
 
     public static boolean checkUntrackedCwdRemote(File remote) {
-        ArrayList<String> ignoreFiles = getIgnoreArray();
+        List<String> ignoreFiles = getFilesToIgnore();
         File blobFolder = Utils.join(remote,".gitlet", "objects", "blobs");
         ArrayList<String> firstCommitFiles = Utils.getBlobFolderArrayRemote(blobFolder);
         File[] objectList = remote.listFiles();
