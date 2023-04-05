@@ -47,7 +47,7 @@ public class Init {
         initCommit.write();
 
 //         Create remote branch [TODO-LATER]
-//        Remote remote = new Remote();
-//        Remote.write(remote);
+        Remote remote = new Remote();
+        Remote.write(remote);
     }
 }
