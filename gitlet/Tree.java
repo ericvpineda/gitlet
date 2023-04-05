@@ -13,24 +13,17 @@ public class Tree implements GitletObject, Serializable {
 
     /** Constructor for general Tree objects */
     public Tree() {
-        _blobList = getBlobList();
-        _sha1 = createHash();
-    }
-
-    /** Create Tree identifier */
-    public String createHash() {
-        String branchName = Branch.getCurrentName();
-        return Utils.sha1(_blobList.toString(), branchName);
+        _blobList = getBlobList();      // List of blobs that tree currently holds
+        _sha1 = createHash();           // Tree identifier
     }
 
     /** Get updated list of blobs that are staged for addition. Remove blobs that are staged for deletion. */
     public HashMap<String, String> getBlobList() {
         HashMap<String,String> blobList = Commit.getCurrentBlobs();
+        // Note: Stage never null since created in initialization
         Stage stage = Stage.read();
-        if (stage != null) {
-            blobList.putAll(stage._additions);
-            blobList.keySet().removeAll(stage._deletions.keySet());
-        }
+        blobList.putAll(stage._additions);
+        blobList.keySet().removeAll(stage._deletions.keySet());
         return blobList;
     }
 
@@ -47,6 +40,12 @@ public class Tree implements GitletObject, Serializable {
     /** Write Tree object to disk */
     public void write() throws IOException {
         writeToDisk(_sha1, this, Main.TREE);
+    }
+
+    /** Create Tree identifier */
+    public String createHash() {
+        String branchName = Branch.getCurrentName();
+        return Utils.sha1(_blobList.toString(), branchName);
     }
 }
 
