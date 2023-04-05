@@ -124,7 +124,7 @@ public class UnitTest {
 
         // Check added files does not change commit blobs
         Utils.createEmptyFile("notwug.txt");
-        commitBlobs = Commit.getBlobs(firstCommit._tree);
+        commitBlobs = Tree.getBlobs(firstCommit._tree);
         assertFalse(commitBlobs.containsKey("notwug.txt"));
 
         // Check total SHA1's commits have
@@ -244,7 +244,7 @@ public class UnitTest {
         assertFalse(stage._deletions.containsKey("wug.txt"));
 
         // Check file untracked in current commit
-        HashMap<String, String> secondCommit = Commit.getBlobs(second._tree);
+        HashMap<String, String> secondCommit = Tree.getBlobs(second._tree);
         assertFalse(secondCommit.containsKey("wug.txt"));
         assertTrue(secondCommit.isEmpty());
     }
@@ -1059,8 +1059,8 @@ public class UnitTest {
         assertEquals(commit1._sha1, splitPoint);
 
         // Check contents of cup.txt differs between both branches
-        HashMap<String, String> masterCurrentCommit = Commit.getBlobs(commit3._tree);
-        HashMap<String, String> serfCurrentCommit = Commit.getBlobs(commit2._tree);
+        HashMap<String, String> masterCurrentCommit = Tree.getBlobs(commit3._tree);
+        HashMap<String, String> serfCurrentCommit = Tree.getBlobs(commit2._tree);
         HashMap<String, String> headCommit = Commit.getCurrentBlobs();
         assertNotEquals(masterCurrentCommit.get("cup.txt"), headCommit.get("cup.txt"));
         assertNotEquals(serfCurrentCommit.get("cup.txt"), headCommit.get("cup.txt"));

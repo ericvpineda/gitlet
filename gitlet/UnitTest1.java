@@ -72,7 +72,7 @@ public class UnitTest1 {
 
         // Verify updated contents files and previous version different
         Commit currentCommit = Commit.getCurrent();
-        HashMap<String, String> currentCommitBlobList = Commit.getBlobs(currentCommit._tree);
+        HashMap<String, String> currentCommitBlobList = Tree.getBlobs(currentCommit._tree);
         String previousFileSHA1 = currentCommitBlobList.get("wug.txt");
 
         File file = Utils.join(Main.USERDIR, "wug.txt");

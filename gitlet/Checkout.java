@@ -21,7 +21,7 @@ public class Checkout {
             return;
         }
         // Note: given commit exists here
-        HashMap<String, String> givenBlobList = Commit.getBlobs(givenCom._tree);
+        HashMap<String, String> givenBlobList = Tree.getBlobs(givenCom._tree);
         // 1. checks out all files tracked by commit && remove tracked files not being tracked in given commit
         Utils.replaceCwdFiles(givenBlobList);
         // 3. Move current branch pointer && head pointer to commit
@@ -57,7 +57,7 @@ public class Checkout {
             return;
         }
         // Check if file exist in given commit
-        HashMap<String, String> current = Commit.getBlobs(commit._tree);
+        HashMap<String, String> current = Tree.getBlobs(commit._tree);
         if (current.containsKey(fileName)) {
             Utils.overwriteHelper(fileName, current.get(fileName));
         } else {
@@ -93,7 +93,7 @@ public class Checkout {
         }
 
         Commit branchCom = Commit.getByID(branchSha1);
-        HashMap<String, String> branchHistory = Commit.getBlobs(branchCom._tree);
+        HashMap<String, String> branchHistory = Tree.getBlobs(branchCom._tree);
         // 3. Takes HEAD commit in given branch and replaces files in CWD
         // 4. Files tracked in current branch but not in given branch -> delete
         Utils.replaceCwdFiles(branchHistory);

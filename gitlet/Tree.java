@@ -1,5 +1,6 @@
 package gitlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -13,12 +14,6 @@ public class Tree implements GitletObject, Serializable {
     /** Constructor for general Tree objects */
     public Tree() {
         _blobList = getBlobList();
-        _sha1 = createHash();
-    }
-
-    /** Constructor for given list of blobs */
-    public Tree(HashMap<String, String> blobList) {
-        _blobList = blobList;
         _sha1 = createHash();
     }
 
@@ -37,6 +32,16 @@ public class Tree implements GitletObject, Serializable {
             blobList.keySet().removeAll(stage._deletions.keySet());
         }
         return blobList;
+    }
+
+    /** Get list of blobs from given tree SHA1 */
+    public static HashMap<String,String> getBlobs(String treeID) {
+        File file = Utils.createFilePath(treeID, Main.TREE);
+        if (file != null) {
+            Tree tree = Utils.readObject(file, Tree.class);
+            return tree._blobList;
+        }
+        return new HashMap<>();
     }
 
     /** Write Tree object to disk */

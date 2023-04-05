@@ -61,9 +61,9 @@ public class Merge {
         }
 
         // Note: check modifications/removals between splitpoint,current branch, target branch history files
-        HashMap<String, String> splitPointCommitHistory = Commit.getBlobs(splitPoint._tree);
-        HashMap<String, String> givenCommitHistory = Commit.getBlobs(givenCommit._tree);
-        HashMap<String, String> currentCommitHistory = Commit.getBlobs(currentCommit._tree);
+        HashMap<String, String> splitPointCommitHistory = Tree.getBlobs(splitPoint._tree);
+        HashMap<String, String> givenCommitHistory = Tree.getBlobs(givenCommit._tree);
+        HashMap<String, String> currentCommitHistory = Tree.getBlobs(currentCommit._tree);
 
         // 1. files modified in given branch since splitPoint, not modified in currB since splitPoint
         // -> changed to versions in branch

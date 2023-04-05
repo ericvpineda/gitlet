@@ -27,90 +27,6 @@ public class Commit implements GitletObject, Serializable {
         _mergedId = null;                   // Merge commit identifier
     }
 
-    /** Constructor for file directory input */
-    // ISSUE: dont want to write tree until commit is written
-    public Commit(String msg, String parentSha1, File dir) throws IOException {
-        _parentSha1 = parentSha1;       // Parent identifier
-        _logMessage = msg;              // Commit message
-        _time = Utils.createTime();     // Time commit created
-        _treeObject = createTree(dir);  // Container for file blobs (Note: This field is deleted upon commit.)
-        _tree = _treeObject._sha1;      // Tree identifier
-        _sha1 = createHash();           // Commit identifier
-        _mergedId = null;               // Merge commit identifier
-    }
-
-    /** Constructor for Rebase command */
-    public Commit(Commit deepCopy, String parentSha1, String tree) {
-        _parentSha1 = parentSha1;            // Parent identifier
-        _logMessage = deepCopy._logMessage;  // Commit message
-        _time = Utils.createTime();          // Time commit created
-        _tree = tree;                        // Commit tree identifier
-        _sha1 = createHash();                // Commit identifier
-        _mergedId = null;                    // Merge commit identifier
-    }
-
-    /** Constructor for deep copy commits */
-    public Commit(Commit deepCopy, String parentSha1) {
-        _parentSha1 = parentSha1;            // Parent identifier
-        _logMessage = deepCopy._logMessage;  // Commit message
-        _time = deepCopy._time;              // Time commit created
-        _tree = deepCopy._tree;              // Commit tree identifier
-        _sha1 = createHash();                // Commits identifier
-        _mergedId = deepCopy._mergedId;      // Merge commit identifier
-    }
-
-    /** Create Tree object based on file directory */
-    public Tree createTree(File dir) throws IOException {
-        if (dir == null) {
-            return new Tree();
-        }
-        return new Tree(dir);
-    }
-
-    /** Create commit identifier */
-    public String createHash() {
-        if (_parentSha1 == null) {
-            return zeroSha1;
-        }
-        String branchName = Branch.getCurrentName();
-        return Utils.sha1(_tree, _logMessage, _time, branchName);
-    }
-
-    /** Write commit to disk and update the HEAD branch based on new commit id */
-    public void write() throws IOException {
-
-        // Check if new commit does not have any changes to files
-        Commit currentCommit = getCurrent();
-        boolean isUnchangedTree = currentCommit != null && currentCommit._tree != null && currentCommit._tree.equals(this._tree);
-
-        if (!this._sha1.equals(Commit.zeroSha1) && isUnchangedTree) {
-            System.out.print("No changes added to the commit.");
-            return;
-        }
-
-        // Write Tree to disk
-        this._treeObject.write();
-
-        // Remove tree object to reduce memory overhead
-        this._treeObject = null;
-
-        // Write commit to disk
-        // Note: This function is part of GitlitObject interface
-        writeToDisk(_sha1, this, Main.COMMITS);
-
-        // Update HEAD commit in current branch
-        Branch.update(_sha1, Branch.getCurrentName(), Main.BRANCH);
-        Stage.clear();
-    }
-
-    /** Write to remote branch */
-    public void writeRemote(File rPath) throws IOException {
-        File commitFile = Utils.join(rPath, "objects", "commits");
-
-        // Note: Write command part of GitletObject interface
-        writeToDisk(_sha1, this, commitFile);
-    }
-
     /**
      * Get the HEAD commit of the current branch
      */
@@ -138,21 +54,10 @@ public class Commit implements GitletObject, Serializable {
     public static HashMap<String,String> getCurrentBlobs() {
         Commit currentCommit = getCurrent();
         if (currentCommit != null && currentCommit._tree != null) {
-            return getBlobs(currentCommit._tree);
+            return Tree.getBlobs(currentCommit._tree);
         }
         return new HashMap<>();
     }
-
-    /** Get list of blobs from given tree SHA1 */
-    public static HashMap<String,String> getBlobs(String treeID) {
-        File file = Utils.createFilePath(treeID, Main.TREE);
-        if (file != null) {
-            Tree tree = Utils.readObject(file, Tree.class);
-            return tree._blobList;
-        }
-        return new HashMap<>();
-    }
-
 
     /** Get commits based on SHA1 identifier */
     static Commit getByID(String id) {
@@ -163,5 +68,43 @@ public class Commit implements GitletObject, Serializable {
             }
         }
         return null;
+    }
+
+    /** Write commit to disk and update the HEAD branch based on new commit id */
+    public void write() throws IOException {
+
+        // Check if new commit does not have any changes to files
+        Commit currentCommit = getCurrent();
+        boolean isUnchangedTree = currentCommit != null && currentCommit._tree != null && currentCommit._tree.equals(this._tree);
+
+        if (!this._sha1.equals(Commit.zeroSha1) && isUnchangedTree) {
+            System.out.print("No changes added to the commit.");
+            return;
+        }
+
+        // Write Tree to disk
+        this._treeObject.write();
+
+        // Remove tree object to reduce memory overhead
+        this._treeObject = null;
+
+        // Write commit to disk
+        // Note: This function is part of GitlitObject interface
+        writeToDisk(_sha1, this, Main.COMMITS);
+
+        // Update HEAD commit in current branch
+        Branch.update(_sha1, Branch.getCurrentName(), Main.BRANCH);
+
+        // Clear stage of any file additions or deletions
+        Stage.clear();
+    }
+
+    /** Create commit identifier */
+    public String createHash() {
+        if (_parentSha1 == null) {
+            return zeroSha1;
+        }
+        String branchName = Branch.getCurrentName();
+        return Utils.sha1(_tree, _logMessage, _time, branchName);
     }
 }
