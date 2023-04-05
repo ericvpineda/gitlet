@@ -31,7 +31,7 @@ public class Tree implements GitletObject, Serializable {
 
     /** Create Tree identifier */
     public String createHash() {
-        String branchName = Branch.getCurrent();
+        String branchName = Branch.getCurrentName();
         return Utils.sha1(_blobList.toString(), branchName);
     }
 

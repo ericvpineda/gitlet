@@ -27,7 +27,7 @@ public class Status {
      */
     private static void printBranches() {
         System.out.println("=== Branches ===");
-        String curr = Branch.getCurrent();
+        String curr = Branch.getCurrentName();
         for (File file : Main.BRANCH.listFiles()) {
             if (file.getName().equals(curr)) {
                 System.out.println("*" + file.getName());

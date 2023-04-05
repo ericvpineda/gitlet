@@ -72,7 +72,7 @@ public class Commit implements GitletObject, Serializable {
         if (_parentSha1 == null) {
             return zeroSha1;
         }
-        String branchName = Branch.getCurrent();
+        String branchName = Branch.getCurrentName();
         return Utils.sha1(_tree, _logMessage, _time, branchName);
     }
 
@@ -99,7 +99,7 @@ public class Commit implements GitletObject, Serializable {
         writeToDisk(_sha1, this, Main.COMMITS);
 
         // Update HEAD commit in current branch
-        Branch.update(_sha1, Branch.getCurrent(), Main.BRANCH);
+        Branch.update(_sha1, Branch.getCurrentName(), Main.BRANCH);
         Stage.clear();
     }
 

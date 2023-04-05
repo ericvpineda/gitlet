@@ -454,7 +454,7 @@ public class UnitTest {
         HashMap<String, String> blobList = Commit.getCurrentBlobs();
         assertTrue(blobList.containsKey("wug.txt"));
         assertTrue(blobList.containsKey("wug2.txt"));
-        assertEquals("Serf", Branch.getCurrent());
+        assertEquals("Serf", Branch.getCurrentName());
         assertEquals(commit1._sha1, Commit.getCurrentID());
 
         // Checkout master branch
@@ -468,7 +468,7 @@ public class UnitTest {
 
         // Checkout Serf branch and validate file in master branch is not in current branch
         Main.main("checkout", "Serf");
-        assertEquals("Serf", Branch.getCurrent());
+        assertEquals("Serf", Branch.getCurrentName());
 
         Main.main("log");
 
@@ -543,7 +543,7 @@ public class UnitTest {
         assertFalse(currentBlobs.containsKey("wug.txt"));
 
         // Check new branch is current branch and contains correct HEAD commit
-        assertEquals("Serf", Branch.getCurrent());
+        assertEquals("Serf", Branch.getCurrentName());
         assertEquals(commit2._sha1, Commit.getCurrentID());
 
         // Checkout branch to master
@@ -552,7 +552,7 @@ public class UnitTest {
         // Checkout master branch commit and branch valid
         currentBlobs = Commit.getCurrentBlobs();
         assertTrue(currentBlobs.containsKey("wug.txt"));
-        assertEquals("master", Branch.getCurrent());
+        assertEquals("master", Branch.getCurrentName());
         assertNotEquals(commit2._sha1, Commit.getCurrentID());
 
         // Failure case: Creating new branch with duplicate name
@@ -1092,7 +1092,7 @@ public class UnitTest {
         assertNotEquals(commit1._sha1,commit2._sha1);
 
         // Check new branch HEAD commit is commit2
-        assertEquals("branch", Branch.getCurrent());
+        assertEquals("branch", Branch.getCurrentName());
         assertEquals(commit2._sha1, Branch.read("branch"));
 
         // Create new branch called temp

@@ -34,7 +34,7 @@ public class Blob implements GitletObject, Serializable {
     }
 
     /**
-     * Create sha1 of blob
+     * Create SHA1 hash for blob
      */
     public String createHash() {
         return Utils.sha1(_fileContent, _name);

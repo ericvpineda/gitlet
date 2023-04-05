@@ -11,7 +11,7 @@ public class Merge {
 
     // Constructor
     public Merge() {
-        _currentBranch = Branch.getCurrent(); // Current branch
+        _currentBranch = Branch.getCurrentName(); // Current branch
         _conflict = false;                 // Boolean for any conflicts
     }
 

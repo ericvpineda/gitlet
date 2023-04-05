@@ -39,7 +39,7 @@ public class UnitTest1 {
         assertEquals(Commit.zeroSha1, Commit.getCurrentID());
 
         // Check master branch is current branch
-        assertEquals("master", Branch.getCurrent());
+        assertEquals("master", Branch.getCurrentName());
 
         // Check stage is clean
         assertNotNull(Stage.read());

@@ -30,7 +30,7 @@ public class Checkout {
         // 3. Move current branch pointer && head pointer to commit
         Stage.clear();
         // Note: if the commits's blobs are empty (ex: initial commit) ?
-        Branch.update(givenCom._sha1, Branch.getCurrent(), Main.BRANCH);
+        Branch.update(givenCom._sha1, Branch.getCurrentName(), Main.BRANCH);
         }
 
     /**
@@ -84,7 +84,7 @@ public class Checkout {
             branchName = branchName.substring(0,i) + "_" + branchName.substring(i+1);
         }
         branchSha1 = Branch.read(branchName);
-        String currBranchName = Branch.getCurrent();
+        String currBranchName = Branch.getCurrentName();
         // 1. check if branch exists
         if (branchSha1 == null) {
             System.out.print("No such branch exists.");
