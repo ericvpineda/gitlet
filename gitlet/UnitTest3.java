@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /** Test cases with greater-depth testing (i.e. failure/conflict cases) [Contains tests 41-]
  Tests commands: 
@@ -295,7 +296,7 @@ public class UnitTest3 {
 
         // Remove file in new branch
         Main.main("rm", "wug.txt");
-        Commit commit2 = new Commit("added wug.txt",Commit.getCurrentID());
+        Commit commit2 = new Commit("removed wug.txt other-branch",Commit.getCurrentID());
         commit2.write();
 
         // Checkout back to master
@@ -303,19 +304,27 @@ public class UnitTest3 {
 
         // Remove file in master branch
         Main.main("rm", "wug.txt");
-        Commit commit3 = new Commit("added wug.txt",Commit.getCurrentID());
+        Commit commit3 = new Commit("removed wug.txt master",Commit.getCurrentID());
         commit3.write();
 
         // Create new file with identical name that was deleted
         Utils.createEmptyFile("wug.txt");
 
-//        // Check split-point is first commit
-//        String splitPoint = Merge.splitPoint(commit2, commit3);
-//        assertEquals(commit1._sha1, splitPoint);
+        // Check split-point is first commit
+        String splitPoint = Merge.splitPoint(commit2, commit3);
+        assertEquals(commit1._sha1, splitPoint);
 
+        // Attempt to merge other-branch onto master branch
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
         Main.main("merge", "other-branch");
-//        Checkout.overwriteBranch("serf");
-//        assertEquals(commit2._tree,commit3._tree); // Note: trees are the same
+        output.close();
+
+        assertEquals("No changes added to the commit.", output.toString());
+
+        // Check file still exists
+        File file = Utils.join(Main.USERDIR, "wug.txt");
+        assertTrue(file.exists());
     }
 
 

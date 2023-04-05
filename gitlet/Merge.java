@@ -72,9 +72,11 @@ public class Merge {
         // -> removed??
         checkAbsentCurrentBranch(tarHM, currHM, spHM);
         // Check any merge conflicts
-        Commit mergeCommit = new Commit("Merged " + givenBranch + " into " + _currBranch + ".", currentCommit._sha1);
-        mergeCommit._mergedId = currentBranchSHA1.substring(0, 7) + " " + givenBranchSHA1.substring(0, 7);
-        mergeCommit.write();
+        Commit commit = new Commit("Merged " + givenBranch + " into " + _currBranch + ".", currentCommit._sha1);
+        commit._mergedId = currentBranchSHA1.substring(0, 7) + " " + givenBranchSHA1.substring(0, 7);
+        commit.write();
+
+        // Note: Will still create commit even if there is merge conflict (in documentation)
         if (_conflict) {
             System.out.print("Encountered a merge conflict.");
         }
@@ -164,14 +166,13 @@ public class Merge {
         // Get given commit history
         ArrayList<String> givenCommitHistory = Utils.getTotalSha1History(givenCommit, new ArrayList<>());
 //        System.out.println("Given branch history = " + givenCommitHistory);
-
-//        ArrayList<String> currentCommitHistory = Utils.getTotalSha1History(givenCommit, new ArrayList<>());
+//
+//        ArrayList<String> currentCommitHistory = Utils.getTotalSha1History(currentCommit, new ArrayList<>());
 //        System.out.println("Current branch history = " + currentCommitHistory);
 
         // Get possible split points between current commit and given commit
         HashMap<String, Integer> possible = splitPointHelper(currentCommit, givenCommitHistory, new HashMap<>(), 0);
-//        System.out.println("Possible splitpoints = " + possible);
-//        System.out.println("\n");
+
         // Get shortest distance split-point
         return Collections.min(possible.entrySet(), Map.Entry.comparingByValue()).getKey();
     }

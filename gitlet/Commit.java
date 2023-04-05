@@ -72,9 +72,8 @@ public class Commit implements GitletObject, Serializable {
         if (_parentSha1 == null) {
             return zeroSha1;
         }
-        String currentBranchName = Branch.getCurrent();
-        return Utils.sha1(_tree, _logMessage, _time, currentBranchName);
-
+        String branchName = Branch.getCurrent();
+        return Utils.sha1(_tree, _logMessage, _time, branchName);
     }
 
     /** Write commit to disk and update the HEAD branch based on new commit id */
@@ -116,8 +115,7 @@ public class Commit implements GitletObject, Serializable {
      * Get the HEAD commit of the current branch
      */
     public static Commit getCurrent()  {
-        String id = Commit.getCurrentID();
-        return getByID(id);
+        return getByID(getCurrentID());
     }
 
     /**
