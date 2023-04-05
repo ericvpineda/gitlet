@@ -76,7 +76,7 @@ public class Remote implements Serializable {
             return;
         }
         for (int i = missing; i >= 0; i--) {
-            Commit copy = Utils.deserializeCommit(current.get(missing));
+            Commit copy = Commit.getByID(current.get(missing));
             // Note: write blobs to remote
             Utils.writeRemoteBlobs(copy._tree, rGitlet);
             // Note: write commit to remote

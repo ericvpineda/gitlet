@@ -18,7 +18,7 @@ public class Checkout {
                     "delete it, or add and commit it first.");
             return;
         }
-        Commit givenCom = Utils.deserializeCommit(commitID);
+        Commit givenCom = Commit.getByID(commitID);
         if (givenCom == null) {
             System.out.print("No commit with that id exists.");
             return;
@@ -53,7 +53,7 @@ public class Checkout {
      */
     public static void overwriteCommit(String fileName, String commitID) throws IOException {
         // Note: Check if commit exists in given commit
-        Commit commit = Utils.deserializeCommit(commitID);
+        Commit commit = Commit.getByID(commitID);
         if (commit == null) {
             System.out.print("No commit with that id exists.");
             return;
@@ -95,7 +95,7 @@ public class Checkout {
             return;
         }
         // Note: given branch
-        Commit branchCom = Utils.deserializeCommit(branchSha1);
+        Commit branchCom = Commit.getByID(branchSha1);
         HashMap<String, String> branchHistory = Commit.getBlobs(branchCom._tree);
         // 3. Takes HEAD commit in given branch and replaces files in CWD
         // 4. Files tracked in current branch but not in given branch -> delete

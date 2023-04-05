@@ -63,7 +63,7 @@ public class Status {
             Iterator iter = stage._deletion.entrySet().iterator();
             for (Iterator it = iter; it.hasNext(); ) {
                 Map.Entry obj = (Map.Entry) it.next();
-                if (!Utils.findInCwd((String) obj.getKey())) {
+                if (!Utils.existsInCWD((String) obj.getKey())) {
                     System.out.println(obj.getKey());
                 }
             }

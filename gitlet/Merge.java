@@ -40,14 +40,14 @@ public class Merge {
         // Retrieve both branch names and HEAD commits
         String currentBranchSHA1 = Branch.read(_currBranch);
         String givenBranchSHA1 = Branch.read(givenBranch);
-        Commit currentCommit = Utils.deserializeCommit(currentBranchSHA1);
-        Commit givenCommit = Utils.deserializeCommit(givenBranchSHA1);
+        Commit currentCommit = Commit.getByID(currentBranchSHA1);
+        Commit givenCommit = Commit.getByID(givenBranchSHA1);
 
         // Find split point SHA1
         String splitPointSHA1 = splitPoint(currentCommit, givenCommit);
 
         // Get split point commit
-        Commit splitPoint = Utils.deserializeCommit(splitPointSHA1);
+        Commit splitPoint = Commit.getByID(splitPointSHA1);
 
         // Check if given branch is ancestor (split-point is same commit as given branch)
         if (givenBranchSHA1.equals(splitPointSHA1)) {
@@ -197,7 +197,7 @@ public class Merge {
             splitPointHelper(Utils.readObject(c1, Commit.class), tarHistory, sp, distance + 1);
             splitPointHelper(Utils.readObject(c2, Commit.class), tarHistory, sp, distance + 1);
         } else {
-            splitPointHelper(Utils.deserializeCommit(commit._parentSha1), tarHistory, sp, distance + 1);
+            splitPointHelper(Commit.getByID(commit._parentSha1), tarHistory, sp, distance + 1);
         }
         return sp;
     }

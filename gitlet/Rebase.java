@@ -20,11 +20,11 @@ public class Rebase {
         } else if (targetSha1.equals(Commit.getCurrentID())) {
             System.out.print("Already up-to-date.");
         }
-        Commit targetCom = Utils.deserializeCommit(targetSha1);
+        Commit targetCom = Commit.getByID(targetSha1);
         Commit currentCom = Commit.getCurrent();
 
         String splitPoint = Merge.splitPoint(currentCom,targetCom);
-        Commit splitPointCom = Utils.deserializeCommit(splitPoint);
+        Commit splitPointCom = Commit.getByID(splitPoint);
         // Note: find the split right before splitpoint
 
         // Note: Check null cases??
@@ -39,7 +39,7 @@ public class Rebase {
         while (target != null && target._parentSha1 != null &&
                 !target._parentSha1.equals(splitpoint._parentSha1)) {
             replayBranch.push(target);
-            target = Utils.deserializeCommit(target._parentSha1);
+            target = Commit.getByID(target._parentSha1);
         }
         // Note: creating replayed commits
         String parent = current._sha1;

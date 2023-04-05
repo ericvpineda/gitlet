@@ -35,7 +35,7 @@ public class Log {
         if (headCommit._parentSha1 == null) {
             return null;
         }
-        return Utils.deserializeCommit(headCommit._parentSha1);
+        return Commit.getByID(headCommit._parentSha1);
     }
 
     /**

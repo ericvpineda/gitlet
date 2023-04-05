@@ -15,7 +15,7 @@ public class Find {
         File[] objectList = Main.COMMITS.listFiles();
         for (int i = 0; i < objectList.length; i++) {
             for (File inner : objectList[i].listFiles()) {
-                Commit file = (Commit) Utils.deserializeObject(inner);
+                Commit file = Utils.readObject(inner, Commit.class);
                 if (file._logMessage.equals(message)) {
                     commits.add(file._sha1);
                 }

@@ -117,7 +117,7 @@ public class Commit implements GitletObject, Serializable {
      */
     public static Commit getCurrent()  {
         String id = Commit.getCurrentID();
-        return Utils.deserializeCommit(id);
+        return getByID(id);
     }
 
     /**
@@ -153,5 +153,17 @@ public class Commit implements GitletObject, Serializable {
             return tree._blobList;
         }
         return new HashMap<>();
+    }
+
+
+    /** Get commits based on SHA1 identifier */
+    static Commit getByID(String id) {
+        if (id != null) {
+            File file = Utils.createFilePath(id, Main.COMMITS);
+            if (file != null) {
+                return Utils.readObject(file, Commit.class);
+            }
+        }
+        return null;
     }
 }

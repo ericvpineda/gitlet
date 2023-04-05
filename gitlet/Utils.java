@@ -246,19 +246,7 @@ class Utils {
         return "Date: " + f.toString();
     }
 
-//    static <Object extends Serializable> Object deserialize(File file,
-//                                                            Class<Object> expClass) {
-//        Object outputObj = null;
-//        try {
-//            ObjectInputStream inp = new ObjectInputStream((new FileInputStream(file)));
-//            outputObj = expClass.cast(inp.readObject());
-//            inp.close();
-//        } catch (IOException | ClassNotFoundException e) {
-//        }
-//        return outputObj;
-//    }
-
-    /* Private method that returns a File object*/
+    /** Create a file path for gitlet files or folders */
     // Note: can look up files up to 5 characters and above (commits)
     static File createFilePath(String name, File file) {
 
@@ -299,37 +287,14 @@ class Utils {
         return path;
     }
 
-    /** Custom method to deserialize commit by SHA1 identifier */
-    static Commit deserializeCommit(String id) {
-        if (id != null) {
-            File file = createFilePath(id, Main.COMMITS);
-            if (file != null) {
-                return readObject(file, Commit.class);
-            }
-        }
-        return null;
-    }
-
-    /* Find file in CWD */
-    static boolean findInCwd(String fileName) {
+    /** Check if file exists in current working directory */
+    static boolean existsInCWD(String fileName) {
         return join(Main.USERDIR,fileName).exists();
     }
 
-    static Object deserializeObject(File file) {
-        Object outputObj = null;
-        try {
-            FileInputStream inp = new FileInputStream(file);
-            outputObj = inp.read();
-            inp.close();
-        } catch (IOException e) {
-        }
-        return outputObj;
-    }
-
-
     /* Find find in CWD and create sha1 for it */
     static String findFileCWDsha1(String fileName) {
-        if (findInCwd(fileName)) {
+        if (existsInCWD(fileName)) {
             File file = join(Main.USERDIR,fileName);
             Blob blob = new Blob(file);
             return blob._sha1;
@@ -369,7 +334,7 @@ class Utils {
             return array;
         }
         array.add(commit._sha1);
-        Commit next = Utils.deserializeCommit(commit._parentSha1);
+        Commit next = Commit.getByID(commit._parentSha1);
         return getCommitArray(next,array);
     }
 
@@ -429,7 +394,7 @@ class Utils {
             getTotalSha1History(Utils.readObject(c1, Commit.class), arr);
             getTotalSha1History(Utils.readObject(c2, Commit.class), arr);
         }
-        getTotalSha1History(Utils.deserializeCommit(commit._parentSha1), arr);
+        getTotalSha1History(Commit.getByID(commit._parentSha1), arr);
         return arr;
     }
 
@@ -475,7 +440,7 @@ class Utils {
 
     /** Helper method to overwrite file based on sha1 */
     public static void overwriteHelper(String fileName, String sha1) throws IOException {
-        if (findInCwd(fileName)) {
+        if (existsInCWD(fileName)) {
             // Find object in Main.Objects
             File blobFile = Utils.createFilePath(sha1, Main.BLOB);
             Blob blob = Utils.readObject(blobFile, Blob.class);
@@ -497,6 +462,7 @@ class Utils {
     }
 
 
+    /** Helper function to clear current working directory */
     public static void clearCwd() {
         File[] objectList = Main.USERDIR.listFiles();
 
@@ -510,37 +476,39 @@ class Utils {
         }
     }
 
+    /** Helper function for clearCwdWithGitlet */
     public static void deleteDirectory(File file) {
         for (File subfile : file.listFiles()) {
             if (subfile.isDirectory()) {
                 deleteDirectory(subfile);
             }
-            boolean result = subfile.delete();
-            if (!result) {
-                System.out.println("DEBUG: unable to delete=" + subfile.toString());
+            boolean isDeleted = subfile.delete();
+            if (!isDeleted) {
+                System.out.println("DEBUG: Cannot delete file=" + subfile.toString());
             }
         }
     }
 
-    public static void clearCwdWithGitlet() throws IOException {
+    /** Clear current working directory along with gitlet repository */
+    public static void clearCwdWithGitlet() {
         ArrayList<String> filesToIgnore = IGNORE_FILES;
         filesToIgnore.remove(0);
-        File[] objectList = Main.USERDIR.listFiles();
+        File[] userDirectory = Main.USERDIR.listFiles();
 
-        for (File file : objectList) {
-            String fileName = file.getName();
-            if (filesToIgnore.contains(fileName)) {
-                continue;
+        if (userDirectory != null) {
+            for (File file : userDirectory) {
+                String fileName = file.getName();
+                if (filesToIgnore.contains(fileName)) {
+                    continue;
+                }
+                if (file.isDirectory()) {
+                    deleteDirectory(file);
+                }
+                boolean isDeleted = file.delete();
+                if (!isDeleted) {
+                    System.out.println("DEBUG: Unable to delete file=" + file.getName());
+                }
             }
-            file.delete();
-            // Note: checks if file is in blob folder (tracked)
-        }
-
-        if (Main.GITLET.exists()) {
-            File file = Utils.join(Main.GITLET);
-            deleteDirectory(file);
-            boolean result = file.delete();
-            System.out.println("DEBUG: Gitlet folder deleted=" + result);
         }
     }
 
@@ -727,7 +695,7 @@ class Utils {
                     "delete it, or add and commit it first.");
             return;
         }
-        Commit givenCom = Utils.deserializeCommit(commit);
+        Commit givenCom = Commit.getByID(commit);
         HashMap<String, String> givenBlobList = Commit.getBlobs(givenCom._tree);
         Utils.replaceCwdFilesRemote(givenBlobList, remoteDir);
     }

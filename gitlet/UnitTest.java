@@ -3,7 +3,10 @@ package gitlet;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import static org.junit.Assert.*;
 
@@ -24,10 +27,23 @@ public class UnitTest {
     // Test initial commit valid and no blobs exist
     @Test
     public void initTest() {
-        assertTrue(Main.GITLET.exists());
-        assertTrue(Main.HEAD.exists());
 
+        // Check initial folders and files for .gitlet repository exists
+        assertTrue(Main.GITLET.exists());
+        assertTrue(Main.OBJECTS.exists());
+        assertTrue(Main.COMMITS.exists());
+        assertTrue(Main.BLOB.exists());
+        assertTrue(Main.TREE.exists());
+        assertTrue(Main.CONFIG.exists());
+        assertTrue(Main.STAGE.exists());
+        assertTrue(Main.HEAD.exists());
+        File refs = Utils.join(Main.GITLET, "refs");
+        assertTrue(refs.exists());
+        assertTrue(Utils.join(refs, "heads").exists());
+
+        // Check initial commit exists with correct identifier and file size
         Commit currentCommit = Commit.getCurrent();
+
         assertNotNull(currentCommit);
         assertEquals(Commit.zeroSha1, Commit.getCurrentID());
         assertNotNull(currentCommit._tree);
@@ -40,24 +56,23 @@ public class UnitTest {
     @Test
     public void addTest() throws IOException {
 
-//        Utils.createEmptyFile("cube.txt");
-//        Stage stage = Stage.read();
-//        System.out.println("DEBUG: stage=" + stage);
-//        assertTrue(stage._preStage.isEmpty());
-//        assertTrue(stage._deletion.isEmpty());
-//
-//        // Check if news files added to stage
-//        Main.main("add","cube.txt");
-//        stage = Stage.read();
-//        assertTrue(stage._preStage.containsKey("cube.txt"));
+        Utils.createEmptyFile("cube.txt");
+        Stage stage = Stage.read();
+        assertTrue(stage._preStage.isEmpty());
+        assertTrue(stage._deletion.isEmpty());
 
-//        // Check adding file that DNE
-//        ByteArrayOutputStream output = new ByteArrayOutputStream();
-//        System.setOut(new PrintStream(output));
-//        Main.main("add","map.txt");
-//        output.close();
-//
-//        assertEquals("File does not exist.", output.toString());
+        // Check if news files added to stage
+        Main.main("add","cube.txt");
+        stage = Stage.read();
+        assertTrue(stage._preStage.containsKey("cube.txt"));
+
+        // Check adding file that DNE
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
+        Main.main("add","map.txt");
+        output.close();
+
+        assertEquals("File does not exist.", output.toString());
     }
 
 //
