@@ -31,7 +31,7 @@ public class Checkout {
         }
 
     /**
-     * Replace file contents with version in HEAD commit.
+     * Replace contents of given file with version in HEAD commit.
      */
     public static void overwriteFile(String fileName) throws IOException {
         // Get all blobs in current comment
@@ -47,7 +47,7 @@ public class Checkout {
     }
 
     /**
-     * Replace file contents with version in GIVEN commit.
+     * Replace contents of given file with version in GIVEN commit.
      */
     public static void overwriteCommit(String fileName, String commitID) throws IOException {
         // Check if commit id exists
@@ -66,7 +66,7 @@ public class Checkout {
     }
 //
     /**
-     * Replace file contents with version in GIVEN branch.
+     * Replace contents of files in current working directory with version in GIVEN branch.
      */
     public static void overwriteBranch(String branchName) throws IOException {
         // 1. Checks if there exists untracked file
