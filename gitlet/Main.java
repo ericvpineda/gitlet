@@ -7,16 +7,16 @@ import java.io.IOException;
    @Eric Pineda
 */
 public class Main {
-    static final File USERDIR = Utils.join(System.getProperty("user.dir"));
-    static final File GITLET = Utils.join(USERDIR,".gitlet");
-    static final File STAGE = Utils.join(GITLET,"index.txt");
-    static final File OBJECTS = Utils.join(GITLET,"objects");
-    static final File COMMITS = Utils.join(OBJECTS,"commits");
-    static final File BLOB = Utils.join(OBJECTS,"blobs");
-    static final File TREE = Utils.join(OBJECTS,"trees");
-    static final File BRANCH = Utils.join(GITLET,"refs","heads");
-    static final File HEAD = Utils.join(GITLET,"HEAD.txt");
-    static final File CONFIG = Utils.join(GITLET,"config.txt");
+    static final File USERDIR = Utils.join(System.getProperty("user.dir")); // User directory
+    static final File GITLET = Utils.join(USERDIR,".gitlet");        // Gitlet directory
+    static final File STAGE = Utils.join(GITLET,"index.txt");        // Stage directory for file additions and deletions
+    static final File OBJECTS = Utils.join(GITLET,"objects");        // Folder that contains subfolders for blobs, commits, trees
+    static final File COMMITS = Utils.join(OBJECTS,"commits");       // Commit directory
+    static final File BLOB = Utils.join(OBJECTS,"blobs");            // Blob directory
+    static final File TREE = Utils.join(OBJECTS,"trees");            // Tree directory
+    static final File BRANCH = Utils.join(GITLET,"refs","heads");    // Branch name directory
+    static final File HEAD = Utils.join(GITLET,"HEAD.txt");          // File shows current branch
+    static final File CONFIG = Utils.join(GITLET,"config.txt");      // Configuration file
 
     /* Usage: java gitlet.Main ARGS, where ARGS contains <COMMAND> <OPERAND> .... */
     public static void main(String... args) throws IOException {
@@ -27,8 +27,7 @@ public class Main {
             System.out.print("Not in an initialized Gitlet directory");
             return;
         }
-        String command = args[0];
-        switch (command) {
+        switch (args[0]) {
             case "init":
                 init(args);
                 break;
@@ -94,8 +93,7 @@ public class Main {
             errorMessage();
             return;
         }
-        Stage stage = new Stage();
-        stage.add(args[1]);
+        Stage.add(args[1]);
     }
 
     /**
@@ -121,8 +119,7 @@ public class Main {
             errorMessage();
             return;
         }
-        Stage stage = new Stage();
-        stage.remove(fileName[1]);
+        Stage.remove(fileName[1]);
     }
 
     /**
