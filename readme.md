@@ -1,4 +1,4 @@
-## Gitlet [Class Project]
+## Gitlet
 
 ## Description
 Version Control System (VCS) for user files. The main functionality includes:
@@ -9,7 +9,7 @@ Version Control System (VCS) for user files. The main functionality includes:
 - Branching sequence of commits
 - Merging branches
 
-Note: Project was completed in Summer 2020 and received 100% test completion on class testing server. 
+Note: This project was a class project completed in Summer 2020 and received 100% test completion on class testing server. 
 
 ## Commands
 init
@@ -87,3 +87,13 @@ merge
 - Description: Merge files from given branch into current branch.
 - Runtime: O(n log(n) + D) s.t. N is total number ancestors for merging 2 branches, D is total amount data in all files under commit.
 - Terminal command: java gitlet.Main merge [branch name]
+
+## API
+- Backend: Java
+- SDK: Java Eclipse Adoptium v17.0.6
+- IDE: Intellij 2020.2.4
+- Testing Library: Junit v4.12 
+
+## Future Improvements 
+- Improve gitlet to be distributed VSC [remote repository + commands]
+- Create simple GUI for gitlet
