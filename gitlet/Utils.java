@@ -219,7 +219,9 @@ class Utils {
         System.out.println();
     }
 
-    /**-------------Personal Methods------------------- */
+
+
+    /* ----- Custom methods and variables ----- */
 
     /** Files to ignore when updating .gitlet directory */
     static final ArrayList<String> IGNORE_FILES = new ArrayList<>(Arrays.asList(
