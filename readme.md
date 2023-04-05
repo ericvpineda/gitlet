@@ -9,6 +9,8 @@ Version Control System (VCS) for user files. The main functionality includes:
 - Branching sequence of commits
 - Merging branches
 
+Note: Project was completed in Summer 2020 and received 100% test completion on class testing server. 
+
 ## Commands
 init
 - Description: Creates new gitlet VCS in current directory
