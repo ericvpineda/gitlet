@@ -91,7 +91,7 @@ merge
 ## API
 - Backend: Java
 - SDK: Java Eclipse Adoptium v17.0.6
-- IDE: Intellij 2020.2.4
+- IDE: Intellij v2020.2.4
 - Testing Library: Junit v4.12 
 
 ## Future Improvements 
