@@ -94,7 +94,7 @@ public class Merge {
                 // Conflict 3. checks if file absent at sp and diff contents in target & current branch
                 if (currHM.containsKey(name) && !currHM.get(name).equals(sha1)) {
                     _conflict = true;
-                    Utils.createConflictFile(name, currHM.get(name), sha1);
+                    createConflictFile(name, currHM.get(name), sha1);
                     Stage.add(name);
                 }
                 // 2. files not present at sp and only present in given branch -> checkout, staged
@@ -132,7 +132,7 @@ public class Merge {
                 if (!currHM.get(name).equals(tarHM.get(name)) &&
                         !currHM.get(name).equals(sha1) && !tarHM.get(name).equals(sha1)) {
                     _conflict = true;
-                    Utils.createConflictFile(name, currHM.get(name), tarHM.get(name));
+                    createConflictFile(name, currHM.get(name), tarHM.get(name));
                     Stage.add(name);
                     continue;
                 }
@@ -140,12 +140,12 @@ public class Merge {
             // Conflict 2: contents of one branch change, deleted in other & in diff in sp
             if (currHM.containsKey(name) && !currHM.get(name).equals(sha1) && !tarHM.containsKey(name)) {
                 _conflict = true;
-                Utils.createConflictFile(name, currHM.get(name), null);
+                createConflictFile(name, currHM.get(name), null);
                 Stage.add(name);
             }
             if (tarHM.containsKey(name) && !tarHM.get(name).equals(sha1) && !currHM.containsKey(name)) {
                 _conflict = true;
-                Utils.createConflictFile(name, null, tarHM.get(name));
+                createConflictFile(name, null, tarHM.get(name));
                 Stage.add(name);
             }
             // 5. present at sp, unmodified in current branch, absent in given -> removed and untracked
@@ -164,7 +164,7 @@ public class Merge {
     static String splitPoint(Commit currentCommit, Commit givenCommit) {
 
         // Get given commit history
-        ArrayList<String> givenCommitHistory = Utils.getTotalSha1History(givenCommit, new ArrayList<>());
+        ArrayList<String> givenCommitHistory = Utils.getAllCommitHistory(givenCommit, new ArrayList<>());
 
         // Get possible split points between current commit and given commit
         HashMap<String, Integer> possible = splitPointHelper(currentCommit, givenCommitHistory, new HashMap<>(), 0);
@@ -197,6 +197,26 @@ public class Merge {
             splitPointHelper(Commit.getByID(commit._parentSha1), tarHistory, sp, distance + 1);
         }
         return sp;
+    }
+
+
+    /** Method to replace contents of a file with conflict message */
+    public static void createConflictFile(String fileName, String current, String target) {
+        String header = "<<<<<<< HEAD\n";
+        String middle = "=======\n";
+        String end = ">>>>>>>\n";
+        String curr = "";
+        String tar = "";
+        if (current != null) {
+            Blob currBlob = Utils.readObject(Utils.createFilePath(current, Main.BLOB), Blob.class);
+            curr = currBlob._fileContent;
+        }
+        if (target != null) {
+            Blob tarBlob = Utils.readObject(Utils.createFilePath(target, Main.BLOB), Blob.class);
+            tar = tarBlob._fileContent;
+        }
+        byte[] conflict = (header + curr + middle + tar + end).getBytes();
+        Utils.writeContents(Utils.join(Main.USERDIR, fileName), conflict);
     }
 }
 

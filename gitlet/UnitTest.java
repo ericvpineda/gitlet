@@ -128,7 +128,7 @@ public class UnitTest {
         assertFalse(commitBlobs.containsKey("notwug.txt"));
 
         // Check total SHA1's commits have
-        ArrayList<String> commitHistory = Utils.getTotalSha1History(firstCommit, new ArrayList<>());
+        ArrayList<String> commitHistory = Utils.getAllCommitHistory(firstCommit, new ArrayList<>());
         assertTrue(commitHistory.contains(firstCommit._sha1));
         assertTrue(commitHistory.size() == 2);
     }

@@ -83,7 +83,7 @@ public class Status {
             Map.Entry obj = (Map.Entry) it.next();
             String blobName = (String) obj.getKey();
             String blobSHA1 = (String) obj.getValue();
-            String cwdSha1 = Utils.findFileCWDsha1(blobName);
+            String cwdSha1 = Utils.findByFileName(blobName);
             // 1. Tracked currCom, changed in CWD, not staged
             if (cwdSha1 != null && !blobSHA1.equals(cwdSha1) &&
                 !stage._additions.containsValue(cwdSha1)) {
@@ -99,7 +99,7 @@ public class Status {
             Map.Entry obj = (Map.Entry) it.next();
             String blobName = (String) obj.getKey();
             String blobSha1 = (String) obj.getValue();
-            String fileSHA1 = Utils.findFileCWDsha1(blobName);
+            String fileSHA1 = Utils.findByFileName(blobName);
             // 2. Staged, different content in CWD
             if (fileSHA1 != null && !fileSHA1.equals(blobSha1)) {
                 System.out.println(blobName + " (modified)");

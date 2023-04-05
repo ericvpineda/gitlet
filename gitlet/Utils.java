@@ -10,7 +10,7 @@ import java.util.*;
 
 
 /** Assorted utilities.
- *  @author P. N. Hilfinger
+ *  @author P. N. Hilfinger, Eric Pineda
  */
 class Utils {
 
@@ -18,20 +18,6 @@ class Utils {
 
     /** The length of a complete SHA-1 UID as a hexadecimal numeral. */
     static final int UID_LENGTH = 40;
-
-    /** Files to ignore when updating .gitlet directory */
-    static final ArrayList<String> IGNORE_FILES = new ArrayList<>(Arrays.asList(
-            ".gitlet",
-            ".gitignore",
-            "gitlet",
-            ".idea",
-            "testing",
-            "proj2.iml",
-            "out",
-            ".git",
-            "readme.md",
-            "notes.md"
-    ));
 
     /** Returns the SHA-1 hash of the concatenation of VALS, which may
      *  be any mixture of byte arrays and Strings. */
@@ -187,16 +173,16 @@ class Utils {
 
     /* OTHER FILE UTILITIES */
 
-//    /** Return the concatentation of FIRST and OTHERS into a File designator,
-//     *  analogous to the {@link java.nio.file.Paths.#\get(String, String[])}
-//     *  method. */
+    /** Return the concatentation of FIRST and OTHERS into a File designator,
+     *  analogous to the {@link //java.nio.file.Paths.#\get(String, String[])}
+     *  method. */
     static File join(String first, String... others) {
         return Paths.get(first, others).toFile();
     }
 
-//    /** Return the concatentation of FIRST and OTHERS into a File designator,
-//     *  analogous to the {@link java.nio.file.Paths.#get(String, String[])}
-//     *  method. */
+    /** Return the concatentation of FIRST and OTHERS into a File designator,
+     *  analogous to the {@link //java.nio.file.Paths.#get(String, String[])}
+     *  method. */
     static File join(File first, String... others) {
         return Paths.get(first.getPath(), others).toFile();
     }
@@ -235,6 +221,20 @@ class Utils {
 
     /**-------------Personal Methods------------------- */
 
+    /** Files to ignore when updating .gitlet directory */
+    static final ArrayList<String> IGNORE_FILES = new ArrayList<>(Arrays.asList(
+            ".gitlet",
+            ".gitignore",
+            "gitlet",
+            ".idea",
+            "testing",
+            "proj2.iml",
+            "out",
+            ".git",
+            "readme.md",
+            "notes.md"
+    ));
+
     /** Create time stamp for commits */
     public static String createTime() {
         Calendar cal = Calendar.getInstance();
@@ -251,7 +251,7 @@ class Utils {
         File path = null;
 
         // Check if file is Commit object with short hash
-        if (file.equals(Main.COMMITS) && name.length() < 40) {
+        if (file.equals(Main.COMMITS) && name.length() < UID_LENGTH) {
             for (File folder : Main.COMMITS.listFiles()) {
                 // Note: check if folder contains first 2 characters
                 if (folder.getName().equals(name.substring(0,2))) {
@@ -289,8 +289,8 @@ class Utils {
         return join(Main.USERDIR,fileName).exists();
     }
 
-    /* Find find in CWD and create sha1 for it */
-    static String findFileCWDsha1(String fileName) {
+    /** Find file in current working directory. Returns file's hash/ */
+    static String findByFileName(String fileName) {
         if (existsInCWD(fileName)) {
             File file = join(Main.USERDIR,fileName);
             Blob blob = new Blob(file);
@@ -299,14 +299,15 @@ class Utils {
         return null;
     }
 
+    /** Create empty file. Used for testing. */
     public static void createEmptyFile(String name) throws IOException {
         File random = Utils.join(Main.USERDIR,name);
         random.createNewFile();
     }
 
-    /* Randomly change inner contents of file */
-    static void randomChangeFileContents(String object) throws IOException {
-        File file = Utils.join(Main.USERDIR,object);
+    /** Randomly change inner contents of file. Used for testing. */
+    static void randomChangeFileContents(String fileName) throws IOException {
+        File file = Utils.join(Main.USERDIR, fileName);
         FileOutputStream fos = new FileOutputStream(file.getAbsolutePath());
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
         Random rand = new Random();
@@ -314,6 +315,7 @@ class Utils {
         bw.close();
     }
 
+    /** Deterministically change file contents. Used for testing */
     static void sameChangeFileContents(String object) throws IOException {
         File file = Utils.join(Main.USERDIR,object);
         FileOutputStream fos = new FileOutputStream(file.getAbsolutePath());
@@ -323,6 +325,7 @@ class Utils {
         fos.close();
     }
 
+    /** Get tree of commits beginning at given commit */
     public static ArrayList<String> getCommitArray(Commit commit,ArrayList<String> array) throws IOException {
         if (commit == null) {
             return null;
@@ -334,33 +337,10 @@ class Utils {
         Commit next = Commit.getByID(commit._parentSha1);
         return getCommitArray(next,array);
     }
-
-    // Note:
-    // - concatenate as string and do .getByte()
-    // - remove extra '\n'
-
-    /* Method to replace contents of a file with conflict message */
-    public static void createConflictFile(String fileName, String current, String target) {
-        String header = "<<<<<<< HEAD\n";
-        String middle = "=======\n";
-        String end = ">>>>>>>\n";
-        String curr = "";
-        String tar = "";
-        if (current != null) {
-            Blob currBlob = readObject(createFilePath(current, Main.BLOB), Blob.class);
-            curr = currBlob._fileContent;
-        }
-        if (target != null) {
-            Blob tarBlob = readObject(createFilePath(target, Main.BLOB), Blob.class);
-            tar = tarBlob._fileContent;
-        }
-        byte[] conflict = (header + curr + middle + tar + end).getBytes();
-        Utils.writeContents(Utils.join(Main.USERDIR, fileName), conflict);
-    }
-
-    /** Helper method to check if working file is untracked in current branch */
+    
+    /** Check if there exists file that is untracked in current working directory */
     public static boolean checkUntrackedCwd() {
-        ArrayList<String> firstCommitFiles = Utils.getBlobFolderArray();
+        ArrayList<String> firstCommitFiles = Utils.getAllBlobs();
         File[] objectList = Main.USERDIR.listFiles();
 
         for (File file : objectList) {
@@ -378,7 +358,8 @@ class Utils {
         return false;
     }
 
-    public static ArrayList<String> getTotalSha1History(Commit commit, ArrayList<String> arr) {
+    /** Get all commits starting from given commit. Returns ArrayList of commit hash */
+    public static ArrayList<String> getAllCommitHistory(Commit commit, ArrayList<String> arr) {
         if (commit == null) {
             return arr;
         } else if (!arr.contains(commit._sha1)) {
@@ -388,14 +369,15 @@ class Utils {
             String merge = commit._mergedId;
             File c1 = Utils.createFilePath(merge.substring(0,7), Main.COMMITS);
             File c2 = Utils.createFilePath(merge.substring(8,15), Main.COMMITS);
-            getTotalSha1History(Utils.readObject(c1, Commit.class), arr);
-            getTotalSha1History(Utils.readObject(c2, Commit.class), arr);
+            getAllCommitHistory(Utils.readObject(c1, Commit.class), arr);
+            getAllCommitHistory(Utils.readObject(c2, Commit.class), arr);
         }
-        getTotalSha1History(Commit.getByID(commit._parentSha1), arr);
+        getAllCommitHistory(Commit.getByID(commit._parentSha1), arr);
         return arr;
     }
 
-    public static ArrayList<String> getBlobFolderArray() {
+    /** Get all blobs contained in .gitlet blob folder */
+    public static ArrayList<String> getAllBlobs() {
         ArrayList<String> blobFiles = new ArrayList<>();
         File[] files = Main.BLOB.listFiles();
         if (files.length > 0) {
@@ -410,10 +392,13 @@ class Utils {
         return null;
     }
 
-    /** Replace files in cwd (branch) */
-    public static void replaceCwdFiles(HashMap<String,String> hm) throws IOException {
+    /** Replace files in current working directory. */
+    public static void replaceCwdFiles(HashMap<String,String> filesList) throws IOException {
+        // Clear current working directory of all files
         Utils.clearCwd();
-        Iterator iter = hm.entrySet().iterator();
+
+        // Replace given files contents from version in given hash
+        Iterator iter = filesList.entrySet().iterator();
         for (Iterator it = iter; it.hasNext(); ) {
             Map.Entry obj = (Map.Entry) it.next();
             String name = (String) obj.getKey();
@@ -425,28 +410,21 @@ class Utils {
     /** Helper method to overwrite file based on sha1 */
     public static void overwriteHelper(String fileName, String sha1) throws IOException {
         if (existsInCWD(fileName)) {
-            // Find object in Main.Objects
             File blobFile = Utils.createFilePath(sha1, Main.BLOB);
             Blob blob = Utils.readObject(blobFile, Blob.class);
             Utils.writeContents(join(Main.USERDIR,fileName), blob._fileContent);
         } else {
-            // Note: checkout command doesn't use this functionality?
-            Utils.uploadFileCWD(sha1);
+            // Adds file to current working directory based on version in SHA1 hash
+            File blobFile = createFilePath(sha1, Main.BLOB);
+            Blob blob = readObject(blobFile,Blob.class);
+            File innerFile = join(Main.USERDIR,blob._name);
+            innerFile.createNewFile();
+            Utils.writeContents(innerFile,blob._fileContent);
             Stage.restore(fileName);
         }
     }
 
-    /** Uploads file into CWD based on SHA1 */
-    public static void uploadFileCWD(String fileSHA1) throws IOException {
-        File blobFile = createFilePath(fileSHA1, Main.BLOB);
-        Blob blob = readObject(blobFile,Blob.class);
-        File innerFile = join(Main.USERDIR,blob._name);
-        innerFile.createNewFile();
-        Utils.writeContents(innerFile,blob._fileContent);
-    }
-
-
-    /** Helper function to clear current working directory */
+    /** Clear current working directory. Does not remove files in IGNORE_FILES. */
     public static void clearCwd() {
         File[] objectList = Main.USERDIR.listFiles();
 
@@ -456,7 +434,6 @@ class Utils {
                 continue;
             }
             file.delete();
-            // Note: checks if file is in blob folder (tracked)
         }
     }
 
@@ -473,7 +450,7 @@ class Utils {
         }
     }
 
-    /** Clear current working directory along with gitlet repository */
+    /** Clear current working directory along with gitlet repository. Ignores files in IGNORE_FILES except for .gitlet folder. */
     public static void clearCwdWithGitlet() {
         File[] userDirectory = Main.USERDIR.listFiles();
 
