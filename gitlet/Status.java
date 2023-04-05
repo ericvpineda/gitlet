@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-// Note:
-// - if file is removed and re added to stage -> shows up as deleted??
-
 /* Class for status command */
 public class Status {
     static Stage stage = Stage.read();
@@ -23,7 +20,7 @@ public class Status {
     }
 
     /**
-     * Print the current branches
+     * Print the current branches.
      */
     private static void printBranches() {
         System.out.println("=== Branches ===");
@@ -39,7 +36,7 @@ public class Status {
     }
 
     /**
-     * Print staged files of current branch
+     * Print staged files in current branch.
      */
     private static void printStagedFiles() {
         System.out.println("=== Staged Files ===");
@@ -54,7 +51,7 @@ public class Status {
     }
 
     /**
-     * Print files that are currently removed
+     * Print files that are currently marked for removal.
      */
     private static void printRemovedFiles() {
         System.out.println("=== Removed Files ===");
@@ -72,7 +69,7 @@ public class Status {
     }
 
     /**
-     * Print files that have been modified
+     * Print files that have been modified.
      */
     private static void printModifications() {
         System.out.println("=== Modifications Not Staged For Commit ===");
@@ -113,7 +110,7 @@ public class Status {
     }
 
     /**
-     * Print files in CWD that are not tracked
+     * Print files in current working directory that are not tracked.
      */
     static void printUntracked() {
         System.out.print("=== Untracked Files ===");
