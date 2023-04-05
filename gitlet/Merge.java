@@ -9,7 +9,7 @@ public class Merge {
     String _currentBranch;
     Boolean _conflict;
 
-    // Constructor
+    /** Constructor */
     public Merge() {
         _currentBranch = Branch.getCurrentName(); // Current branch
         _conflict = false;                 // Boolean for any conflicts
@@ -61,16 +61,15 @@ public class Merge {
         }
 
         // Note: check modifications/removals between splitpoint,current branch, target branch history files
-        HashMap<String, String> spHM = Commit.getBlobs(splitPoint._tree);
-        HashMap<String, String> tarHM = Commit.getBlobs(givenCommit._tree);
-        HashMap<String, String> currHM = Commit.getBlobs(currentCommit._tree);
+        HashMap<String, String> splitPointCommitHistory = Commit.getBlobs(splitPoint._tree);
+        HashMap<String, String> givenCommitHistory = Commit.getBlobs(givenCommit._tree);
+        HashMap<String, String> currentCommitHistory = Commit.getBlobs(currentCommit._tree);
 
-        // 1. files modified in given branch since SP, not modified in currB since SP
+        // 1. files modified in given branch since splitPoint, not modified in currB since splitPoint
         // -> changed to versions in branch
-        checkModified(tarHM, currHM, spHM);
-        // 5. files present @ SP, unmodified in currB, absent in givenbranch
-        // -> removed??
-        checkAbsentCurrentBranch(tarHM, currHM, spHM);
+        checkModified(givenCommitHistory, currentCommitHistory, splitPointCommitHistory);
+        // 5. files present at splitPoint, unmodified in currB, absent in givenbranch
+        checkAbsentCurrentBranch(givenCommitHistory, currentCommitHistory, splitPointCommitHistory);
         // Check any merge conflicts
         Commit commit = new Commit("Merged " + givenBranch + " into " + _currentBranch + ".", currentCommit._sha1);
         commit._mergedId = currentBranchSHA1.substring(0, 7) + " " + givenBranchSHA1.substring(0, 7);
@@ -82,34 +81,35 @@ public class Merge {
         }
     }
 
-    private void checkModified(HashMap<String, String> tarHM, HashMap<String, String> currHM,
-                               HashMap<String, String> spHM) throws IOException {
+    /** Check modified files in given branch and current branch since split-point commit */
+    private void checkModified(HashMap<String, String> givenCommitHistory, HashMap<String, String> currentCommitHistory,
+                               HashMap<String, String> splitPointCommitHistory) throws IOException {
         // Note: iterate over target hm
-        Iterator iter = tarHM.entrySet().iterator();
+        Iterator iter = givenCommitHistory.entrySet().iterator();
         for (Iterator it = iter; it.hasNext(); ) {
             Map.Entry obj = (Map.Entry) iter.next();
             String name = (String) obj.getKey();
             String sha1 = (String) obj.getValue();
-            if (!spHM.containsKey(name)) {
-                // Conflict 3. checks if file absent at sp and diff contents in target & current branch
-                if (currHM.containsKey(name) && !currHM.get(name).equals(sha1)) {
+            if (!splitPointCommitHistory.containsKey(name)) {
+                // Conflict 3. checks if file absent at splitPoint and diff contents in target & current branch
+                if (currentCommitHistory.containsKey(name) && !currentCommitHistory.get(name).equals(sha1)) {
                     _conflict = true;
-                    createConflictFile(name, currHM.get(name), sha1);
+                    createConflictFile(name, currentCommitHistory.get(name), sha1);
                     Stage.add(name);
                 }
-                // 2. files not present at sp and only present in given branch -> checkout, staged
-                if (!currHM.containsKey(name)) {
+                // 2. files not present at splitPoint and only present in given branch -> checkout, staged
+                if (!currentCommitHistory.containsKey(name)) {
                     Utils.overwriteHelper(name, sha1);
                     Stage.add(name);
                     continue;
                 }
             }
-            // 1. files modified in given branch, not modified in current branch since sp -> files staged
-            if (currHM.containsKey(name) && spHM.containsKey(name)) {
-                if (currHM.get(name).equals(spHM.get(name)) && !currHM.get(name).equals(sha1)) {
+            // 1. files modified in given branch, not modified in current branch since splitPoint -> files staged
+            if (currentCommitHistory.containsKey(name) && splitPointCommitHistory.containsKey(name)) {
+                if (currentCommitHistory.get(name).equals(splitPointCommitHistory.get(name)) && !currentCommitHistory.get(name).equals(sha1)) {
                     Utils.overwriteHelper(name, sha1);
                     Stage.add(name);
-                    // 2. modified in curr branch, not mod in given branch since sp
+                    // 2. modified in curr branch, not mod in given branch since splitPoint
                     // 3. files modified in body given and curr branch = unchanged
                 }
             }
@@ -118,49 +118,49 @@ public class Merge {
 
 
     /**
-     * Helper method to check files present at SP, unmodified in current branch, absent in given branch
+     * Check files present at split-point, unmodified in current branch, absent in given branch.
      */
-    private void checkAbsentCurrentBranch(HashMap<String, String> tarHM, HashMap<String, String> currHM,
-                                          HashMap<String, String> spHM) throws IOException {
-        Iterator iterSP = spHM.entrySet().iterator();
+    private void checkAbsentCurrentBranch(HashMap<String, String> givenCommitHistory, HashMap<String, String> currentCommitHistory,
+                                          HashMap<String, String> splitPointCommitHistory) throws IOException {
+        Iterator iterSP = splitPointCommitHistory.entrySet().iterator();
         for (Iterator it = iterSP; it.hasNext(); ) {
             Map.Entry obj = (Map.Entry) it.next();
             String name = (String) obj.getKey();
             String sha1 = (String) obj.getValue();
-            // Conflict 1: present in sp, both are changed (diff from sp)
-            if (currHM.containsKey(name) && tarHM.containsKey(name)) {
-                if (!currHM.get(name).equals(tarHM.get(name)) &&
-                        !currHM.get(name).equals(sha1) && !tarHM.get(name).equals(sha1)) {
+            // Conflict 1: present in splitPoint, both are changed (diff from splitPoint)
+            if (currentCommitHistory.containsKey(name) && givenCommitHistory.containsKey(name)) {
+                if (!currentCommitHistory.get(name).equals(givenCommitHistory.get(name)) &&
+                        !currentCommitHistory.get(name).equals(sha1) && !givenCommitHistory.get(name).equals(sha1)) {
                     _conflict = true;
-                    createConflictFile(name, currHM.get(name), tarHM.get(name));
+                    createConflictFile(name, currentCommitHistory.get(name), givenCommitHistory.get(name));
                     Stage.add(name);
                     continue;
                 }
             }
-            // Conflict 2: contents of one branch change, deleted in other & in diff in sp
-            if (currHM.containsKey(name) && !currHM.get(name).equals(sha1) && !tarHM.containsKey(name)) {
+            // Conflict 2: contents of one branch change, deleted in other & in diff in splitPoint
+            if (currentCommitHistory.containsKey(name) && !currentCommitHistory.get(name).equals(sha1) && !givenCommitHistory.containsKey(name)) {
                 _conflict = true;
-                createConflictFile(name, currHM.get(name), null);
+                createConflictFile(name, currentCommitHistory.get(name), null);
                 Stage.add(name);
             }
-            if (tarHM.containsKey(name) && !tarHM.get(name).equals(sha1) && !currHM.containsKey(name)) {
+            if (givenCommitHistory.containsKey(name) && !givenCommitHistory.get(name).equals(sha1) && !currentCommitHistory.containsKey(name)) {
                 _conflict = true;
-                createConflictFile(name, null, tarHM.get(name));
+                createConflictFile(name, null, givenCommitHistory.get(name));
                 Stage.add(name);
             }
-            // 5. present at sp, unmodified in current branch, absent in given -> removed and untracked
-            if (currHM.containsKey(name) && currHM.get(name).equals(sha1)) {
-                if (!tarHM.containsKey(name)) {
+            // 5. present at splitPoint, unmodified in current branch, absent in given -> removed and untracked
+            if (currentCommitHistory.containsKey(name) && currentCommitHistory.get(name).equals(sha1)) {
+                if (!givenCommitHistory.containsKey(name)) {
                     Stage.remove(name);
                 }
             }
-            // Note: present at sp && contents in one branch is change and other branch deleted  (conflict 3)
+            // Note: present at splitPoint && contents in one branch is change and other branch deleted  (conflict 3)
             // 4. Curr and given branch have file removed = do nothing
             // - if file removed in both but in cwd = do nothing
         }
     }
 
-    // Get split-point between two different commits
+    /** Get split-point between two different commits */
     static String splitPoint(Commit currentCommit, Commit givenCommit) {
 
         // Get given commit history
@@ -173,34 +173,35 @@ public class Merge {
         return Collections.min(possible.entrySet(), Map.Entry.comparingByValue()).getKey();
     }
 
-    private static HashMap<String, Integer> splitPointHelper(Commit commit, ArrayList<String> tarHistory,
-                                           HashMap<String, Integer> sp, int distance) {
+    /** Get all possible split-points between commit and given branch commit history */
+    private static HashMap<String, Integer> splitPointHelper(Commit commit, ArrayList<String> givenCommitHistory,
+                                           HashMap<String, Integer> splitPoint, int distance) {
         if (commit == null) {
-            return sp;
+            return splitPoint;
         }
-        if (tarHistory.contains(commit._sha1)) {
-            if (sp.containsKey(commit._sha1)) {
-                if (distance < sp.get(commit._sha1)) {
-                    sp.put(commit._sha1, distance);
+        if (givenCommitHistory.contains(commit._sha1)) {
+            if (splitPoint.containsKey(commit._sha1)) {
+                if (distance < splitPoint.get(commit._sha1)) {
+                    splitPoint.put(commit._sha1, distance);
                 }
             } else {
-                sp.put(commit._sha1, distance);
+                splitPoint.put(commit._sha1, distance);
             }
         }
         if (commit._mergedId != null) {
             String merge = commit._mergedId;
             File c1 = Utils.createFilePath(merge.substring(0, 7), Main.COMMITS);
             File c2 = Utils.createFilePath(merge.substring(8, 15), Main.COMMITS);
-            splitPointHelper(Utils.readObject(c1, Commit.class), tarHistory, sp, distance + 1);
-            splitPointHelper(Utils.readObject(c2, Commit.class), tarHistory, sp, distance + 1);
+            splitPointHelper(Utils.readObject(c1, Commit.class), givenCommitHistory, splitPoint, distance + 1);
+            splitPointHelper(Utils.readObject(c2, Commit.class), givenCommitHistory, splitPoint, distance + 1);
         } else {
-            splitPointHelper(Commit.getByID(commit._parentSha1), tarHistory, sp, distance + 1);
+            splitPointHelper(Commit.getByID(commit._parentSha1), givenCommitHistory, splitPoint, distance + 1);
         }
-        return sp;
+        return splitPoint;
     }
 
 
-    /** Method to replace contents of a file with conflict message */
+    /** Replace contents of a file with conflict message */
     public static void createConflictFile(String fileName, String current, String target) {
         String header = "<<<<<<< HEAD\n";
         String middle = "=======\n";

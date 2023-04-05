@@ -3,11 +3,6 @@ package gitlet;
 import java.io.File;
 import java.io.IOException;
 
-// ------ Fix Issues -------
-// - check merge, rebase class
-// - don't forget style check
-// - change all read/write object <- should not have extra bytes
-
 /* Driver class for Gitlet, the tiny stupid version-control system.
    @Eric Pineda
 */
