@@ -13,15 +13,15 @@ public interface GitletObject extends Serializable {
     /** Create SHA1 hash */
     String createHash();
 
-    /** Writes content into objects file in .gitlet folder using first two character of id as folder */
-    default void writeToDisk(String sha1, Object contents, File location) throws IOException {
+    /** Writes content into objects file in .gitlet folder using first two character of SHA1 id as folder */
+    default void writeToDisk(String id, Object contents, File location) throws IOException {
 
         // Create folder based on first two characters of file identifier
-        File innerFile = Utils.join(location,sha1.substring(0,2));
+        File innerFile = Utils.join(location,id.substring(0,2));
         innerFile.mkdir();
 
         // Create file inside of previously created folder
-        File loc = Utils.join(location,sha1.substring(0,2),sha1.substring(2));
+        File loc = Utils.join(location,id.substring(0,2),id.substring(2));
         loc.createNewFile();
 
         // Write file contents to disk
