@@ -4,11 +4,28 @@
     <list default="true" id="8a070bca-0012-4399-9d5a-1db66cb80e8c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gitlet/Init.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/Init.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gitlet/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Blob.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Branch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Checkout.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Commit.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Find.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/GitletException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/GitletObject.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Init.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Log.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Merge.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/gitlet/Rebase.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/gitlet/Remote.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gitlet/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Stage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Status.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Tree.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/UnitTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/UnitTest1.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/UnitTest2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/UnitTest3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/UnitTest4.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Utils.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +88,7 @@
       <recent name="C:\Users\evpin\Desktop\cs61b-shared\su20-p208\proj2" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.UnitTest2">
+  <component name="RunManager" selected="JUnit.UnitTest">
     <configuration name="init" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="gitlet.Main" />
       <module name="proj2" />
@@ -97,7 +114,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UnitTest1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="UnitTest.addTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -106,13 +123,14 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
-      <option name="MAIN_CLASS_NAME" value="gitlet.UnitTest1" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="MAIN_CLASS_NAME" value="gitlet.UnitTest" />
+      <option name="METHOD_NAME" value="addTest" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UnitTest2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="UnitTest.checkoutTest3" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -121,13 +139,14 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
-      <option name="MAIN_CLASS_NAME" value="gitlet.UnitTest2" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="MAIN_CLASS_NAME" value="gitlet.UnitTest" />
+      <option name="METHOD_NAME" value="checkoutTest3" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UnitTest3" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="UnitTest.initTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -136,13 +155,14 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
-      <option name="MAIN_CLASS_NAME" value="gitlet.UnitTest3" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="MAIN_CLASS_NAME" value="gitlet.UnitTest" />
+      <option name="METHOD_NAME" value="initTest" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UnitTest3.resetBasicTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="UnitTest.mergeTest11" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="proj2" />
       <extension name="coverage">
         <pattern>
@@ -151,8 +171,8 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="gitlet" />
-      <option name="MAIN_CLASS_NAME" value="gitlet.UnitTest3" />
-      <option name="METHOD_NAME" value="resetBasicTest" />
+      <option name="MAIN_CLASS_NAME" value="gitlet.UnitTest" />
+      <option name="METHOD_NAME" value="mergeTest11" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -160,19 +180,19 @@
     </configuration>
     <list>
       <item itemvalue="Application.init" />
+      <item itemvalue="JUnit.UnitTest.mergeTest11" />
       <item itemvalue="JUnit.UnitTest" />
-      <item itemvalue="JUnit.UnitTest1" />
-      <item itemvalue="JUnit.UnitTest3" />
-      <item itemvalue="JUnit.UnitTest3.resetBasicTest" />
-      <item itemvalue="JUnit.UnitTest2" />
+      <item itemvalue="JUnit.UnitTest.checkoutTest3" />
+      <item itemvalue="JUnit.UnitTest.initTest" />
+      <item itemvalue="JUnit.UnitTest.addTest" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.UnitTest2" />
-        <item itemvalue="JUnit.UnitTest3.resetBasicTest" />
-        <item itemvalue="JUnit.UnitTest1" />
         <item itemvalue="JUnit.UnitTest" />
-        <item itemvalue="JUnit.UnitTest3" />
+        <item itemvalue="JUnit.UnitTest.addTest" />
+        <item itemvalue="JUnit.UnitTest.initTest" />
+        <item itemvalue="JUnit.UnitTest.checkoutTest3" />
+        <item itemvalue="JUnit.UnitTest.mergeTest11" />
       </list>
     </recent_temporary>
   </component>

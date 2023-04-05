@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="algs4 (2020_10_18 01_09_20 UTC)">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../library-su20/javalib/algs4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../library-su20/javalib/hamcrest-core-1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../library-su20/javalib/jh61b.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../library-su20/javalib/junit-4.12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../library-su20/javalib/stdlib-package.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../library-su20/javalib/stdlib.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../library-su20/javalib/ucb.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../library-su20/javalib/xchart-3.5.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

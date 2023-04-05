@@ -74,21 +74,6 @@ public class Main {
             case "merge":
                 merge(args);
                 break;
-            case "rebase":
-                rebase(args);
-                break;
-            case "add-remote":
-                addRemote(args);
-                break;
-            case "rm-remote":
-                removeRemote(args);
-                break;
-            case "push":
-                push(args);
-                break;
-            case "fetch":
-                fetch(args);
-                break;
             default:
                 System.out.print("No command with that name exists.");
                 break;
@@ -246,45 +231,6 @@ public class Main {
         if (args.length == 2) {
             Merge m = new Merge();
             m.apply(args[1]);
-        } else {
-            errorMessage();
-        }
-    }
-
-    public static void rebase(String[] args) throws IOException {
-        if (args.length == 2) {
-            Rebase.apply(args[1]);
-        } else {
-            errorMessage();
-        }
-    }
-
-    public static void addRemote(String[] args) throws IOException {
-        if (args.length == 3) {
-            Remote.add(args[1],args[2]);
-        } else {
-            errorMessage();
-        }
-    }
-
-    public static void removeRemote(String[] args) throws IOException {
-        if (args.length == 2) {
-            Remote.remove(args[1]);
-        } else {
-            errorMessage();
-        }
-    }
-    public static void push(String[] args) throws IOException {
-        if (args.length == 3) {
-            Remote.push(args[1],args[2]);
-        } else {
-            errorMessage();
-        }
-    }
-
-    public static void fetch(String[] args) throws IOException {
-        if (args.length == 3) {
-            Remote.fetch(args[1],args[2]);
         } else {
             errorMessage();
         }
