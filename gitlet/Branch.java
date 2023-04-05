@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 // Note: difference between write object vs content
 /**
- * Class for Branch pointer
+ * Class for Branch command
  */
 public class Branch implements Serializable {
 

@@ -8,17 +8,17 @@ import java.io.Serializable;
  * Class for Blob objects
  */
 public class Blob implements GitletObject, Serializable {
-    String _sha1;
-    String _name;
-    String _fileContent;
+    String _name;           // Name of file
+    String _fileContent;    // Contents of file
+    String _sha1;           // Blob hash
 
     /**
      * Blob constructor
      */
     public Blob(File file) {
-        this._name = file.getName();
-        this._fileContent = Utils.readContentsAsString(file);
-        this._sha1 = createHash();
+        this._name = file.getName();                            // Name of file
+        this._fileContent = Utils.readContentsAsString(file);   // Contents of file
+        this._sha1 = createHash();                              // Blob hash
     }
 
     /**
