@@ -12,6 +12,8 @@ import java.util.*;
 /** Assorted utilities.
  *  @author P. N. Hilfinger, Eric Pineda
  */
+
+/* Class for utility functions for gitlet project. */
 class Utils {
 
     /* SHA-1 HASH VALUES. */
