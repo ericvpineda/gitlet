@@ -20,6 +20,20 @@ class Utils {
     /** The length of a complete SHA-1 UID as a hexadecimal numeral. */
     static final int UID_LENGTH = 40;
 
+    /** Files to ignore when updating .gitlet directory */
+    static final ArrayList<String> IGNORE_FILES = new ArrayList<>(Arrays.asList(
+            ".gitlet",
+            ".gitignore",
+            "gitlet",
+            ".idea",
+            "testing",
+            "proj2.iml",
+            "out",
+            ".git",
+            "readme.md",
+            "notes.md"
+    ));
+
     /** Returns the SHA-1 hash of the concatenation of VALS, which may
      *  be any mixture of byte arrays and Strings. */
     static String sha1(Object... vals) {
@@ -125,23 +139,20 @@ class Utils {
 
     /** Return an object of type T read from FILE, casting it to EXPECTEDCLASS.
      *  Throws IllegalArgumentException in case of problems. */
-    static <T extends Serializable> T readObject(File file,
-                                                 Class<T> expectedClass) {
+    static <T extends Serializable> T readObject(File file, Class<T> expectedClass) {
         try {
-            ObjectInputStream in =
-                new ObjectInputStream(new FileInputStream(file));
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
             T result = expectedClass.cast(in.readObject());
             in.close();
             return result;
-        } catch (IOException | ClassCastException
-                 | ClassNotFoundException excp) {
+        } catch (IOException | ClassCastException | ClassNotFoundException excp) {
             throw new IllegalArgumentException(excp.getMessage());
         }
     }
 
     /** Write single object to FILE. */
     static void writeObject(File file, Serializable object) {
-        writeContents(file, serialize(object));
+        writeContents(file, (Object) serialize(object));
     }
 
         /* DIRECTORIES */
@@ -201,6 +212,7 @@ class Utils {
             ObjectOutputStream objectStream = new ObjectOutputStream(stream);
             objectStream.writeObject(obj);
             objectStream.close();
+            stream.close();
             return stream.toByteArray();
         } catch (IOException excp) {
             throw error("Internal error serializing commit.");
@@ -234,17 +246,17 @@ class Utils {
         return "Date: " + f.toString();
     }
 
-    static <Object extends Serializable> Object deserialize(File file,
-                                                            Class<Object> expClass) {
-        Object outputObj = null;
-        try {
-            ObjectInputStream inp = new ObjectInputStream((new FileInputStream(file)));
-            outputObj = expClass.cast(inp.readObject());
-            inp.close();
-        } catch (IOException | ClassNotFoundException e) {
-        }
-        return outputObj;
-    }
+//    static <Object extends Serializable> Object deserialize(File file,
+//                                                            Class<Object> expClass) {
+//        Object outputObj = null;
+//        try {
+//            ObjectInputStream inp = new ObjectInputStream((new FileInputStream(file)));
+//            outputObj = expClass.cast(inp.readObject());
+//            inp.close();
+//        } catch (IOException | ClassNotFoundException e) {
+//        }
+//        return outputObj;
+//    }
 
     /* Private method that returns a File object*/
     // Note: can look up files up to 5 characters and above (commits)
@@ -292,7 +304,7 @@ class Utils {
         if (id != null) {
             File file = createFilePath(id, Main.COMMITS);
             if (file != null) {
-                return deserialize(file, Commit.class);
+                return readObject(file, Commit.class);
             }
         }
         return null;
@@ -306,10 +318,10 @@ class Utils {
     static Object deserializeObject(File file) {
         Object outputObj = null;
         try {
-            ObjectInputStream inp = new ObjectInputStream((new FileInputStream(file)));
-            outputObj = inp.readObject();
+            FileInputStream inp = new FileInputStream(file);
+            outputObj = inp.read();
             inp.close();
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
         }
         return outputObj;
     }
@@ -346,6 +358,7 @@ class Utils {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
         bw.write("This is the same file.");
         bw.close();
+        fos.close();
     }
 
     public static ArrayList<String> getCommitArray(Commit commit,ArrayList<String> array) throws IOException {
@@ -372,11 +385,11 @@ class Utils {
         String curr = "";
         String tar = "";
         if (current != null) {
-            Blob currBlob = deserialize(createFilePath(current, Main.BLOB), Blob.class);
+            Blob currBlob = readObject(createFilePath(current, Main.BLOB), Blob.class);
             curr = currBlob._fileContent;
         }
         if (target != null) {
-            Blob tarBlob = deserialize(createFilePath(target, Main.BLOB), Blob.class);
+            Blob tarBlob = readObject(createFilePath(target, Main.BLOB), Blob.class);
             tar = tarBlob._fileContent;
         }
         byte[] conflict = (header + curr + middle + tar + end).getBytes();
@@ -385,13 +398,12 @@ class Utils {
 
     /** Helper method to check if working file is untracked in current branch */
     public static boolean checkUntrackedCwd() {
-        ArrayList<String> filesToIgnore = getFilesToIgnore();
         ArrayList<String> firstCommitFiles = Utils.getBlobFolderArray();
         File[] objectList = Main.USERDIR.listFiles();
 
         for (File file : objectList) {
             String fileName = file.getName();
-            if (filesToIgnore.contains(fileName)) {
+            if (IGNORE_FILES.contains(fileName)) {
                 continue;
             }
             byte[] fileByte = Utils.readContents(file);
@@ -414,20 +426,19 @@ class Utils {
             String merge = commit._mergedId;
             File c1 = Utils.createFilePath(merge.substring(0,7), Main.COMMITS);
             File c2 = Utils.createFilePath(merge.substring(8,15), Main.COMMITS);
-            getTotalSha1History(Utils.deserialize(c1, Commit.class), arr);
-            getTotalSha1History(Utils.deserialize(c2, Commit.class), arr);
+            getTotalSha1History(Utils.readObject(c1, Commit.class), arr);
+            getTotalSha1History(Utils.readObject(c2, Commit.class), arr);
         }
         getTotalSha1History(Utils.deserializeCommit(commit._parentSha1), arr);
         return arr;
     }
 
     public static void clearCwdRemote(File remoteDir) {
-        ArrayList<String> filesToIgnore = getFilesToIgnore();
         File[] objectList = remoteDir.listFiles();
 
         for (File file : objectList) {
             String fileName = file.getName();
-            if (filesToIgnore.contains(fileName)) {
+            if (IGNORE_FILES.contains(fileName)) {
                 continue;
             }
             file.delete();
@@ -441,29 +452,13 @@ class Utils {
         if (files.length > 0) {
             for (File folder : files) {
                 for (File innerFile : folder.listFiles()) {
-                    Blob blob = Utils.deserialize(innerFile, Blob.class);
+                    Blob blob = Utils.readObject(innerFile, Blob.class);
                     blobFiles.add(blob._sha1);
                 }
             }
             return blobFiles;
         }
         return null;
-    }
-
-    public static ArrayList<String> getFilesToIgnore() {
-        List<String> list = Arrays.asList(
-            ".gitlet",
-            ".gitignore",
-            "gitlet",
-            ".idea",
-            "testing",
-            "proj2.iml",
-            "out",
-            ".git",
-            "readme.md",
-            "notes.md"
-        );
-        return new ArrayList<>(list);
     }
 
     /** Replace files in cwd (branch) */
@@ -483,7 +478,7 @@ class Utils {
         if (findInCwd(fileName)) {
             // Find object in Main.Objects
             File blobFile = Utils.createFilePath(sha1, Main.BLOB);
-            Blob blob = Utils.deserialize(blobFile, Blob.class);
+            Blob blob = Utils.readObject(blobFile, Blob.class);
             Utils.writeContents(join(Main.USERDIR,fileName), blob._fileContent);
         } else {
             // Note: checkout command doesn't use this functionality?
@@ -495,7 +490,7 @@ class Utils {
     /** Uploads file into CWD based on SHA1 */
     public static void uploadFileCWD(String fileSHA1) throws IOException {
         File blobFile = createFilePath(fileSHA1, Main.BLOB);
-        Blob blob = deserialize(blobFile,Blob.class);
+        Blob blob = readObject(blobFile,Blob.class);
         File innerFile = join(Main.USERDIR,blob._name);
         innerFile.createNewFile();
         Utils.writeContents(innerFile,blob._fileContent);
@@ -503,12 +498,11 @@ class Utils {
 
 
     public static void clearCwd() {
-        ArrayList<String> filesToIgnore = getFilesToIgnore();
         File[] objectList = Main.USERDIR.listFiles();
 
         for (File file : objectList) {
             String fileName = file.getName();
-            if (filesToIgnore.contains(fileName)) {
+            if (IGNORE_FILES.contains(fileName)) {
                 continue;
             }
             file.delete();
@@ -529,8 +523,7 @@ class Utils {
     }
 
     public static void clearCwdWithGitlet() throws IOException {
-        ArrayList<String> filesToIgnore = getFilesToIgnore();
-        System.out.println("DEBUG: ignored files=" + filesToIgnore);
+        ArrayList<String> filesToIgnore = IGNORE_FILES;
         filesToIgnore.remove(0);
         File[] objectList = Main.USERDIR.listFiles();
 
@@ -543,7 +536,6 @@ class Utils {
             // Note: checks if file is in blob folder (tracked)
         }
 
-        System.out.println("DEBUG: gitlet folder exists=" + Main.GITLET.exists());
         if (Main.GITLET.exists()) {
             File file = Utils.join(Main.GITLET);
             deleteDirectory(file);
@@ -553,7 +545,7 @@ class Utils {
     }
 
     public static void clearCwdWithGitletRemote(File remote) throws IOException {
-        ArrayList<String> filesToIgnore = getFilesToIgnore();
+        ArrayList<String> filesToIgnore = IGNORE_FILES;
         filesToIgnore.remove(0);
         File[] objectList = remote.listFiles();
 
@@ -600,7 +592,7 @@ class Utils {
         Commit remoteC = new Commit("initial commit", null, remoteDir);
         remoteC.writeRemote(remoteDir);
         Branch.saveRemote("master", Utils.join(remoteDir, "refs", "heads"), Commit.zeroSha1);
-        Branch.savePointer("master", Utils.join(remoteDir, "HEAD.txt"));
+        Branch.writeHead("master", Utils.join(remoteDir, "HEAD.txt"));
     }
 
     public static void writeRemoteBlobs(String treeSha1, File remoteDir) throws IOException {
@@ -612,7 +604,7 @@ class Utils {
             Map.Entry obj = (Map.Entry) it.next();
             if (!blobFolder.contains(obj.getValue())) {
                 File currBlob = Utils.createFilePath((String) obj.getValue(), Main.BLOB);
-                Blob blob = Utils.deserialize(currBlob, Blob.class);
+                Blob blob = Utils.readObject(currBlob, Blob.class);
                 writeRemote(blob._sha1, blob, blobFile);
             }
         }
@@ -627,14 +619,13 @@ class Utils {
     }
 
     public static boolean checkUntrackedCwdRemote(File remote) {
-        ArrayList<String> filesToIgnore = getFilesToIgnore();
         File blobFolder = Utils.join(remote,".gitlet", "objects", "blobs");
         ArrayList<String> firstCommitFiles = Utils.getBlobFolderArrayRemote(blobFolder);
         File[] objectList = remote.listFiles();
 
         for (File file : objectList) {
             String fileName = file.getName();
-            if (filesToIgnore.contains(fileName)) {
+            if (IGNORE_FILES.contains(fileName)) {
                 continue;
             }
             byte[] fileByte = Utils.readContents(file);
@@ -654,7 +645,7 @@ class Utils {
         if (files != null && files.length > 0) {
             for (File folder : files) {
                 for (File innerFile : folder.listFiles()) {
-                    Blob blob = Utils.deserialize(innerFile, Blob.class);
+                    Blob blob = Utils.readObject(innerFile, Blob.class);
                     blobFiles.add(blob._sha1);
                 }
             }
@@ -677,13 +668,13 @@ class Utils {
 //        if (commit._mergedId != null) {
 //            String merge = commit._mergedId;
 //            File c1 = Utils.createFilePath(merge.substring(0,7), Main.COMMITS);
-//            Commit c1Commit = Utils.deserialize(c1, Commit.class);
+//            Commit c1Commit = Utils.readObject(c1, Commit.class);
 //            File c2 = Utils.createFilePath(merge.substring(9,15), Main.COMMITS);
-//            Commit c2Commit = Utils.deserialize(c2, Commit.class);
+//            Commit c2Commit = Utils.readObject(c2, Commit.class);
 //            getCommitHistoryRemote(remote, c1Commit, arr);
 //            getCommitHistoryRemote(remote, c2Commit, arr);
 //        }
-        commit = Utils.deserialize(next, Commit.class);
+        commit = Utils.readObject(next, Commit.class);
         getCommitHistoryRemote(remote, commit, arr);
         return arr;
     }
@@ -701,14 +692,14 @@ class Utils {
 
     public static void writeBlobsToDisk(File remoteDir, String treeSha1) throws IOException {
         File treeLoc = Utils.join(remoteDir, "objects", "trees", treeSha1.substring(0,2), treeSha1.substring(2));
-        HashMap<String, String> treeHm = Utils.deserialize(treeLoc, Tree.class)._blobList;
+        HashMap<String, String> treeHm = Utils.readObject(treeLoc, Tree.class)._blobList;
         Iterator iter = treeHm.entrySet().iterator();
         for (Iterator it = iter; it.hasNext(); ) {
             Map.Entry obj = (Map.Entry) it.next();
             String sha1 = (String) obj.getValue();
             File blobFile = Utils.join(Main.BLOB, "objects", "blobs", sha1.substring(0,2), sha1.substring(2));
             if (!blobFile.exists()) {
-                Blob newBlob = Utils.deserialize(blobFile, Blob.class);
+                Blob newBlob = Utils.readObject(blobFile, Blob.class);
                 newBlob.write();
             }
         }
@@ -716,7 +707,7 @@ class Utils {
 
     public static void overwriteRemote(String fileName, String sha1, File remoteDir) throws IOException {
         File blobFile = Utils.createFilePath(sha1, Utils.join(Main.BLOB, sha1.substring(0,2), sha1.substring(2)));
-        Blob blob = Utils.deserialize(blobFile, Blob.class);
+        Blob blob = Utils.readObject(blobFile, Blob.class);
         File cwdFile = join(remoteDir,fileName);
         if (Utils.join(remoteDir, fileName).exists()) {
             Utils.writeContents(cwdFile, blob._fileContent);

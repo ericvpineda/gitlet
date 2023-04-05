@@ -14,7 +14,7 @@ public interface GitletObject extends Serializable {
     String createHash();
 
     /** Writes content into objects file in .gitlet folder */
-    default void write(String sha1, Object contents, File location) throws IOException {
+    default void writeToDisk(String sha1, Object contents, File location) throws IOException {
 
         // Create folder based on first two characters of file identifier
         File innerFile = Utils.join(location,sha1.substring(0,2));

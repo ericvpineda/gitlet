@@ -101,7 +101,7 @@ public class Checkout {
         // 4. Files tracked in current branch but not in given branch -> delete
         Utils.replaceCwdFiles(branchHistory);
         Stage.clear();
-        Branch.savePointer(branchName, Main.HEAD);
+        Branch.writeHead(branchName, Main.HEAD);
     }
 }
 

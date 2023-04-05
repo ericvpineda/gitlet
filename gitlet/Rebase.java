@@ -17,7 +17,7 @@ public class Rebase {
             return;
         } else if (branch.equals(Branch.getCurrent())) {
             System.out.print("Cannot rebase a branch onto itself.");
-        } else if (targetSha1.equals(Commit.getCurrentSha1())) {
+        } else if (targetSha1.equals(Commit.getCurrentID())) {
             System.out.print("Already up-to-date.");
         }
         Commit targetCom = Utils.deserializeCommit(targetSha1);

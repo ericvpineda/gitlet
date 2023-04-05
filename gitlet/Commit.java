@@ -131,7 +131,7 @@ public class Commit implements GitletObject, Serializable {
         }
 
         // Get current branch name and head commit branch is pointing to 
-        String branch = Utils.readObject(Main.HEAD, String.class);
+        String branch = Utils.readContentsAsString(Main.HEAD);
         File commitID = Utils.join(Main.BRANCH, branch);
 
         // Else, find commit pointed to by HEAD pointer
@@ -154,7 +154,7 @@ public class Commit implements GitletObject, Serializable {
     public static HashMap<String,String> getBlobs(String treeID) {
         File file = Utils.createFilePath(treeID, Main.TREE);
         if (file != null) {
-            Tree tree = Utils.deserialize(file, Tree.class);
+            Tree tree = Utils.readObject(file, Tree.class);
             return tree._blobList;
         }
         return new HashMap<>();

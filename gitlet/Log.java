@@ -45,7 +45,7 @@ public class Log {
         File[] commitList = Main.COMMITS.listFiles();
         for (int i = 0; i < commitList.length; i++) {
             for (File file : commitList[i].listFiles()) {
-                Commit commit = Utils.deserialize(file,Commit.class);
+                Commit commit = Utils.readObject(file,Commit.class);
                 System.out.println("===");
                 System.out.println("commit " + commit._sha1);
                 // Note: parent1 = branch did merge, parent2 = merged-in branch

@@ -36,7 +36,7 @@ public class UnitTest1 {
         assertTrue(Main.HEAD.exists());
 
         // Check zero SHA1 commit is created
-        assertEquals(Commit.zeroSha1, Commit.getCurrentSha1());
+        assertEquals(Commit.zeroSha1, Commit.getCurrentID());
 
         // Check master branch is current branch
         assertEquals("master", Branch.getCurrent());
@@ -112,7 +112,7 @@ public class UnitTest1 {
         // Create and commit new file
         Utils.createEmptyFile("wug.txt");
         Main.main("add", "wug.txt");
-        Commit commit1 = new Commit("added wug", Commit.getCurrentSha1());
+        Commit commit1 = new Commit("added wug", Commit.getCurrentID());
         commit1.write();
 
         // Update and commit previous file

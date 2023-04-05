@@ -18,7 +18,7 @@ public class Blob implements GitletObject, Serializable {
     public Blob(File file) {
         this._name = file.getName();
         this._fileContent = Utils.readContentsAsString(file);
-        this._sha1 = createSha1();
+        this._sha1 = createHash();
     }
 
     /**
@@ -36,7 +36,7 @@ public class Blob implements GitletObject, Serializable {
     /**
      * Create sha1 of blob
      */
-    public String createSha1() {
+    public String createHash() {
         return Utils.sha1(_fileContent, _name);
     }
 }

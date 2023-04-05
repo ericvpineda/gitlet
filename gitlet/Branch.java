@@ -13,67 +13,66 @@ public class Branch implements Serializable {
     /**
      * Write new branch file to disk using branch name (if applicable).
      */
-    public static void save(String name) throws IOException {
+    public static void write(String name) throws IOException {
 
         // Verify that given name does not already exist
-        File newBranchFile = Utils.join(Main.BRANCH, name);
-        if (newBranchFile.exists()) {
+        File file = Utils.join(Main.BRANCH, name);
+        if (file.exists()) {
             System.out.print("A branch with that name already exists.");
             return;
         }
 
         // Create new branch file and write to disk
-        newBranchFile.createNewFile();
-        Utils.writeObject(newBranchFile, name);
+        file.createNewFile();
 
         // Update current commit with new branch file
-        update(Commit.getCurrentSha1(), name, Main.BRANCH);
+        String currentCommitID = Commit.getCurrentID();
+        update(currentCommitID, name, Main.BRANCH);
     }
 
     /**
-     * Update current branch with sha1
+     * Update current branch with commit id
      */
-    public static void update(String sha1, String branchName, File branch) {
-        File branchFile = Utils.join(branch, branchName);
-        Utils.writeObject(branchFile, sha1);
+    public static void update(String commitID, String branch, File file) {
+        Utils.writeContents(Utils.join(file, branch), commitID);
     }
 
     public static void saveRemote(String name, File file, String sha1) throws IOException {
-        File newBranchFile = Utils.join(file,name);
-        if (newBranchFile.exists()) {
+        File branch = Utils.join(file,name);
+        if (branch.exists()) {
             System.out.print("A file with that name already exists.");
             return;
         }
-        newBranchFile.createNewFile();
-        Utils.writeObject(newBranchFile, name);
+        branch.createNewFile();
+        Utils.writeContents(branch, name);
         update(sha1, name, file);
     }
 
     /**
-     * Saves the current branch name at Main.HEAD
+     * Saves the current branch name as HEAD pointer
      */
-    public static void savePointer(String name, File file)  {
-        File newBranchFile = Utils.join(file);
+    public static void writeHead(String name, File file)  {
+        File branch = Utils.join(file);
         if (name.contains("/")) {
             name = name.substring(name.indexOf("/") + 1);
         }
-        Utils.writeObject(newBranchFile, name);
+        Utils.writeContents(branch, name);
     }
 
     /**
      * Get current branch name
      */
     public static String getCurrent() {
-        return Utils.deserialize(Main.HEAD, String.class);
+        return Utils.readContentsAsString(Main.HEAD);
     }
 
     /**
-     * Custom method to get the current commit the branch is pointing at
+     * Get HEAD commit identifier of given branch
      */
     public static String read(String branchName) {
-        File branchFile = Utils.findFile(branchName, Main.BRANCH);
-        if (branchFile.exists()) {
-            return Utils.deserialize(branchFile, String.class);
+        File branchFile = Utils.createFilePath(branchName, Main.BRANCH);
+        if (branchFile != null) {
+            return Utils.readContentsAsString(branchFile);
         }
         return null;
 
@@ -83,8 +82,8 @@ public class Branch implements Serializable {
      * Removes branch from Main.HISTORY & branch history from Main.STAGE
      */
     public static void remove(String branchName) {
-        File branchFile = Utils.findFile(branchName, Main.BRANCH);
-        String currBranch = Utils.deserialize(Main.HEAD, String.class);
+        File branchFile = Utils.createFilePath(branchName, Main.BRANCH);
+        String currBranch = Utils.readContentsAsString(Main.HEAD);
         if (!branchFile.exists()) {
             System.out.print("A branch with that name does not exist.");
             return;

@@ -117,12 +117,12 @@ public class Status {
      */
     static void printUntracked() {
         System.out.print("=== Untracked Files ===");
-        ArrayList<String> ignoreFiles = Utils.getIgnoreArray();
+        ArrayList<String> filesToIgnore = Utils.IGNORE_FILES;
         HashMap<String, String> trackedFiles = Commit.getCurrentBlobs();
         // Note: iterating over user dir
         for (File file : Main.USERDIR.listFiles()) {
             String fileName = file.getName();
-            if (ignoreFiles.contains(fileName) ||
+            if (filesToIgnore.contains(fileName) ||
                 file.isDirectory()) {
                 continue;
             }

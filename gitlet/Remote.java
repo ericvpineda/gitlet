@@ -19,7 +19,7 @@ public class Remote implements Serializable {
     }
 
     public static Remote read() {
-        return Utils.deserialize(Main.CONFIG, Remote.class);
+        return Utils.readObject(Main.CONFIG, Remote.class);
     }
 
 
@@ -38,7 +38,7 @@ public class Remote implements Serializable {
     }
 
     public static void remove(String name) throws IOException {
-        Remote remote = Utils.deserialize(Main.CONFIG, Remote.class);
+        Remote remote = Utils.readObject(Main.CONFIG, Remote.class);
         if (remote == null || !remote._config.containsKey(name)) {
             System.out.println("A remote with that name does not exist.");
             return;
@@ -60,12 +60,12 @@ public class Remote implements Serializable {
         File rBranch = Utils.join(rGitlet,"refs","heads", branch);
 
         String branchSha1;
-        String currSha1 = Commit.getCurrentSha1();
+        String currSha1 = Commit.getCurrentID();
         if (!rBranch.exists()) {
             rBranch.createNewFile();
             branchSha1 = Commit.zeroSha1;
         } else {
-            branchSha1 = Utils.deserialize(rBranch, String.class);
+            branchSha1 = Utils.readContentsAsString(rBranch);
         }
 
         // Note: get the head branch
@@ -120,13 +120,13 @@ public class Remote implements Serializable {
             System.out.println("That remote does not have that branch.");
             return;
         }
-        String headSha1 = Utils.deserialize(remoteBranchFile, String.class);
+        String headSha1 = Utils.readContentsAsString(remoteBranchFile);
         if (!localBranch.exists()) {
             localBranch.createNewFile();
         }
         // Note: get head commit file
         File commitFile = Utils.join(rGitlet, "objects","commits", headSha1.substring(0,2), headSha1.substring(2));
-        Commit commit = Utils.deserialize(commitFile, Commit.class);
+        Commit commit = Utils.readObject(commitFile, Commit.class);
         // Note: get array of all commits
         ArrayList<Commit> remoteCommits = Utils.getCommitHistoryRemote(rGitlet, commit, new ArrayList<>());
         for (int i = remoteCommits.size() - 1; i > 0; i--) {
@@ -135,7 +135,7 @@ public class Remote implements Serializable {
             if (!curr.exists()) {
                 Utils.writeRemote(c._sha1, c._tree, Main.COMMITS);
                 File treeLoc = Utils.join(rGitlet, "objects", "trees", c._tree.substring(0,2), c._tree.substring(2));
-                Tree tree = Utils.deserialize(treeLoc, Tree.class);
+                Tree tree = Utils.readObject(treeLoc, Tree.class);
                 Utils.writeRemote(c._tree, tree, Main.TREE);
                 Utils.writeBlobsToDisk(rGitlet, c._tree);
             }

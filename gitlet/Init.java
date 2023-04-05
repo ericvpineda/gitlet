@@ -7,29 +7,18 @@ import java.io.IOException;
 public class Init {
 
     /**
-     * Initializes gitlet repo
+     * Initializes .gitlet repository
      */
     static void initialize() throws IOException {
+
+        // Check duplicate .gitlet folder exists
         if (Main.GITLET.exists()) {
             System.out.print("A Gitlet version-control system already exists in the current directory.");
             return;
         }
-        Main.GITLET.mkdir();
-        initContents();
-        Branch.save("master");
-        Branch.savePointer("master", Main.HEAD);
-        Commit initCommit = new Commit("initial commit", null);
-        initCommit.write();
-        Stage stage = new Stage();
-        Stage.write(stage);
-        Remote remote = new Remote();
-        Remote.write(remote);
-    }
 
-    /**
-     * Make associated files for repo
-     */
-    static void initContents() throws IOException {
+        // Create necessary folders (.gitlet, objects, commits, etc.)
+        Main.GITLET.mkdir();
         Main.OBJECTS.mkdir();
         Main.COMMITS.mkdir();
         Main.BLOB.mkdir();
@@ -39,8 +28,23 @@ public class Init {
         helper.mkdir();
         heads.mkdir();
 
+        // Create metadata files
         Main.CONFIG.createNewFile();
-        Main.INDEX.createNewFile();
+        Main.STAGE.createNewFile();
         Main.HEAD.createNewFile();
+
+        // Crate master branch
+        Branch.write("master");
+        Branch.writeHead("master", Main.HEAD);
+
+        // Create initial commit
+        Commit initCommit = new Commit("initial commit", null);
+
+        // Note: Will create new stage
+        initCommit.write();
+
+        // Create remote branch [TODO-LATER]
+//        Remote remote = new Remote();
+//        Remote.write(remote);
     }
 }

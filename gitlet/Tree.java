@@ -10,66 +10,49 @@ public class Tree implements GitletObject, Serializable {
     HashMap<String, String> _blobList;
     String _sha1;
 
-    /**
-     * Constructor
-     */
-    public Tree() throws IOException {
-        _blobList = getPreviousFiles();
-        _sha1 = createSha1();
-        write();
+    /** Constructor for general tree objects*/
+    public Tree() {
+        _blobList = getBlobList();
+        _sha1 = createHash();
     }
 
+    /** Constructor for given list of blobs */
+    public Tree(HashMap<String, String> blobList) {
+        _blobList = blobList;
+        _sha1 = createHash();
+    }
+
+    /** Constuctor for remote command implementation */
     public Tree(File remote) throws IOException {
         _blobList = new HashMap<>();
-        _sha1 = createSha1();
+        _sha1 = createHash();
         writeRemote(remote);
     }
 
-    public Tree(HashMap<String, String> blobList) throws IOException {
-        _blobList = blobList;
-        _sha1 = createSha1();
-        write();
-    }
-
-    // Note: will only create sha when there is something modified
-    // - already has files added to _bloblist from stage**
-    /**
-     * Create Tree sha1
-     */
-    public String createSha1() {
+    /** Create Tree identifier */
+    public String createHash() {
         return Utils.sha1(_blobList.toString());
     }
 
-    /**
-     * Get current files of index.txt
-     */
-    public HashMap<String, String> getPreviousFiles() {
-        if (Commit.getCurrent() == null) {
-            return new HashMap<>();
+    /** Get current files of index.txt */
+    public HashMap<String, String> getBlobList() {
+        HashMap<String,String> blobList = Commit.getCurrentBlobs();
+        Stage stage = Stage.read();
+        if (stage != null) {
+            blobList.putAll(stage._preStage);
+            blobList.keySet().removeAll(stage._deletion.keySet());
         }
-        HashMap<String,String> currBlobFiles = Commit.getCurrentBlobs();
-        Stage index = Stage.read();
-        if (index != null) {
-            currBlobFiles.putAll(index._preStage); // Note: map name, sha1
-            currBlobFiles.keySet().removeAll(index._deletion.keySet());
-        }
-        return currBlobFiles;
+        return blobList;
     }
 
-    /**
-     * Writes Tree object to disk
-     */
+    /** Write Tree object to disk */
     public void write() throws IOException {
-        Commit current = Commit.getCurrent();
-        if (current != null && current._tree.equals(_sha1)) {
-            return;
-        }
-        write(_sha1, this, Main.TREE);
-        }
+        writeToDisk(_sha1, this, Main.TREE);
+    }
 
     public void writeRemote(File remote) throws IOException {
         File tree = Utils.join(remote, "objects","trees");
-        write(_sha1, this, tree);
+        writeToDisk(_sha1, this, tree);
     }
 }
 

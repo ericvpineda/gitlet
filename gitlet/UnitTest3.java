@@ -1,315 +1,322 @@
-//package gitlet;
-//
-//import org.junit.Test;
-//
-//import java.io.IOException;
-//
-//import static org.junit.Assert.assertEquals;
-//
-//public class UnitTest3 {
-//
-//    // merging with item still in cwd
-//    @Test
-//    public void mergeConflictTest4() throws IOException {
-//
-//        Init.initialize();
-//        Utils.createRandomFile("cup.txt");
-//        Stage.add("cup.txt");
-//        Commit commit1 = new Commit("1. commit dog", Commit.getCurrentSha1());
-//        commit1.write();
-//
-//        Branch.save("serf");
-//
-//        Utils.createRandomFile("mag.txt");
-//        Stage.add("mag.txt");
-//        Commit commit2 = new Commit("2. commit scratch", Commit.getCurrentSha1());
-//        commit2.write();
-//
-//        Utils.randomChangeFileContents("mag.txt");
-//        new Merge().apply("serf");
-//    }
-//
-//    // Q35 - Check reset by:
-//    // 1. create 2 branch with 2 diff commits
-//    // 2. on master, introduce and add another file but reset to another commit on master
-//    //      - clear staging area and move master branch pointer (check log here)
-//    // 3. check out between master and other branch to make sure correct commit in log
-//    // 4. reset master back to original and ensure all original commits are there (log)
-//    @Test
-//    public void mergeRmConflictTest() throws IOException {
-//
-//        Init.initialize();
-//        Utils.createRandomFile("cup.txt");
-//        Stage.add("cup.txt");
-//        Commit commit1 = new Commit("1. added cup", Commit.getCurrentSha1());
-//        commit1.write();
-//
-//        Branch.save("serf");
+package gitlet;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+
+import static org.junit.Assert.assertEquals;
+
+/** Test cases with greater-depth testing (i.e. failure/conflict cases) [Contains tests 41-]
+ Tests commands: 
+ */
+public class UnitTest3 {
+
+    // Clear unnecessary files and initialize .gitlet repository
+    @Before
+    public void initialize() throws IOException {
+        Utils.clearCwdWithGitlet();
+        Main.main("init");
+    }
+
+    // 35. Test reset command by:
+    //  1. Create 2 branch with different commits
+    //  2. In master branch, create add new file, but reset to previous commit on master
+    //  3. Reset master back to original commit and verify original commit
+    @Test
+    public void resetBasicTest() throws IOException {
+
+        // Create and commit random file
+        Utils.createEmptyFile("cup.txt");
+        Main.main("add", "cup.txt");
+        Commit commit1 = new Commit("added cup.txt",Commit.getCurrentID());
+        commit1.write();
+
+        // Create and checkout new branch
+        Main.main("branch", "other-branch");
+        Main.main("checkout", "other-branch");
+
+        // Create and commit random file on new branch
+        Utils.createEmptyFile("beaver.txt");
+        Main.main("add", "beaver.txt");
+        Main.main("commit","added beaver.txt");
+
+        // Checkout master branch
+        Main.main("checkout", "master");
+
+        // Update contents of previous file in master branch
+        Utils.randomChangeFileContents("cup.txt");
+        Main.main("add", "cup.txt");
+
+        // Reset back to initial commit and verify initial commit
+        Main.main("reset", Commit.zeroSha1);
+        assertEquals(Commit.zeroSha1, Commit.getCurrentID());
+
+        // Reset to first commit and verity first commit
+        Main.main("reset", commit1._sha1);
+        assertEquals(commit1._sha1, Commit.getCurrentID());
+    }
+
+    // 36. Test reset command when with other branch with commits
+    @Test
+    public void resetWithOtherBranches() throws IOException {
+
+        // Create and commit random file
+        Utils.createEmptyFile("wug.txt");
+        Main.main("add", "wug.txt");
+        Commit commit1 = new Commit("added wug.txt",Commit.getCurrentID());
+        commit1.write();
+
+        // Create and checkout new branch
+        Main.main("branch", "other-branch");
+        Main.main("checkout", "other-branch");
+
+        // Create and commit random file
+        Utils.createEmptyFile("mug.txt");
+        Main.main("add", "mug.txt");
+        Main.main("commit","added mug.txt");
+
+        // Checkout master branch
+        Main.main("checkout", "master");
+
+        // Update and commit random file in master branch
+        Utils.randomChangeFileContents("wug.txt");
+        Main.main("add", "wug.txt");
+        Commit commit3 = new Commit("updated wug.txt", Commit.getCurrentID());
+        commit3.write();
+
+        // Create and stage random file in master branch
+        Utils.randomChangeFileContents("anotherFile.txt");
+        Main.main("add", "anotherFile.txt");
+
+        // Reset back to first commit and verity commit
+        Checkout.reset(commit1._sha1);
+        assertEquals(commit1._sha1, Commit.getCurrentID());
+
+        // Reset back to commit3 and verity commit
+        Checkout.reset(commit3._sha1);
+        assertEquals(commit3._sha1, Commit.getCurrentID());
+    }
+
+    // 37. Test reset command failure: non-existing commit
+    @Test
+    public void resetFailureCommitDNE() throws IOException {
+
+        // Create and commit new file
+        Utils.createEmptyFile("wug.txt");
+        Main.main("add", "wug.txt");
+        Main.main("commit", "added wug.txt");
+
+        // Reset to non-existing commit
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
+        Main.main("reset", "1234");
+        output.close();
+
+        assertEquals("No commit with that id exists.", output.toString());
+    }
+
+    // 38. Test checkout works with short SHA1 identifier
+    @Test
+    public void checkoutShortSHA1() throws IOException {
+
+        // Create and commit random file
+        Utils.createEmptyFile("wug.txt");
+        Main.main("add", "wug.txt");
+        Main.main("commit","added wug.txt");
+
+        // Reset to initial commit
+        Main.main("reset", "00000");
+        assertEquals(Commit.zeroSha1, Commit.getCurrentID());
+    }
+
+    // 39. Test special cases of merge: branch fast forward
+    // Note: current branch is ancestor of given branch
+    @Test
+    public void mergeBranchFastForward() throws IOException {
+
+        // Create and commit random file
+        Utils.createEmptyFile("wug.txt");
+        Main.main("add", "wug.txt");
+        Main.main("commit","added wug.txt");
+
+        // Create and checkout new branch
+        Main.main("branch", "other-branch");
+        Main.main("checkout", "other-branch");
+
+        // Create and commit another new file
+        Utils.createEmptyFile("beaver.txt");
+        Main.main("add", "beaver.txt");
+        Main.main("commit","added beaver.txt");
+
+        // Checkout master branch
+        Main.main("checkout", "master");
+
+        // Attempt to merge other-branch onto master branch
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
+        Main.main("merge", "other-branch");
+        output.close();
+
+        assertEquals("Current branch fast-forwarded.", output.toString());
+    }
+
+    // splitpoint is the current branch
+    // - do nothing, merge complete and ends with 'given branch is ancestor of current branch'
+
+    // 40. Merge failure case: Attempt to merge with ancestor
+    @Test
+    public void mergeConflictTest2() throws IOException {
+
+        // Create and commit random file
+        Utils.createEmptyFile("wug.txt");
+        Main.main("add", "wug.txt");
+        Main.main("commit","added wug.txt");
+
+        // Create new branch
+        Main.main("branch", "other-branch");
+
+        // Create and commit random file
+        Utils.createEmptyFile("mag.txt");
+        Main.main("add", "mag.txt");
+        Main.main("commit","added mag.txt");
+
+        // Attempt to merge other-branch onto master branch
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
+        Main.main("merge", "other-branch");
+        output.close();
+
+        assertEquals("Given branch is an ancestor of the current branch.", output.toString());
+    }
+
+    // 41. Reset failure case: Attempt to reset with untracked file in current working directory
+    @Test
+    public void badResetError() throws IOException {
+
+        // Create and commit random file
+        Utils.createEmptyFile("wug.txt");
+        Main.main("add", "wug.txt");
+        Main.main("commit","added wug.txt");
+
+        // Create and checkout new branch
+        Main.main("branch", "other-branch");
+        Main.main("checkout", "other-branch");
+
+        // Create random file
+        Utils.createEmptyFile("calendar.txt");
+
+        // Attempt to merge other-branch onto master branch
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
+        Main.main("reset", "0001");
+        output.close();
+
+        assertEquals("There is an untracked file in the way; delete it, or add and commit it first.", output.toString());
+    }
+
+    // 42. Test checkout file at specific commit using short SHA1 identifier
+    @Test
+    public void shortUidTest() throws IOException {
+
+        // Create and commit random file
+        Utils.createEmptyFile("wug.txt");
+        Main.main("add", "wug.txt");
+        Commit commit1 = new Commit("added wug", Commit.getCurrentID());
+        commit1.write();
+
+        // Update and commit random file in master branch
+        Utils.randomChangeFileContents("wug.txt");
+        Main.main("add", "wug.txt");
+        Main.main("commit","modified wug.txt");
+
+        // Checkout file at specific commit
+        Main.main("checkout", commit1._sha1.substring(0,5), "--", "wug.txt");
+
+        // Check file has same contents as specfic commit
+        File file = Utils.join(Main.USERDIR, "wug.txt");
+        assertEquals(file.length(), 0);
+    }
+
+    // 43. Merge special case: File modified in same way in both branches shows no change
+    @Test
+    public void specialMergeCases() throws IOException {
+
+        // Create and checkout new branch
+        Main.main("branch", "other-branch");
+        Main.main("checkout", "other-branch");
+
+        // Create and commit new file
+        Utils.createEmptyFile("wug.txt");
+        Main.main("add", "wug.txt");
+        Main.main("commit", "added wug.txt");
+
+        // Checkout master branch
+        Main.main("checkout", "master");
+
+        // Update and commit new file
+        Utils.sameChangeFileContents("wug.txt");
+        Main.main("add", "wug.txt");
+        Main.main("commit", "added wug.txt");
+
+        // Checkout other-branch
+        Main.main("checkout", "other-branch");
+
+        // Create and commit new file
+        Utils.sameChangeFileContents("wug.txt");
+        Main.main("add", "wug.txt");
+        Main.main("commit", "added wug.txt");
+
+        // Attempt to merge other-branch onto master branch
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
+        Main.main("merge", "master");
+        output.close();
+
+        assertEquals("No changes added to the commit.", output.toString());
+    }
+
+    // 44. Merge special case: File is removed in both branch, but file still in current working directory
+    @Test
+    public void specialMergeCases1() throws IOException {
+
+        // Create and commit random file
+        Utils.createEmptyFile("wug.txt");
+        Main.main("add", "wug.txt");
+        Commit commit1 = new Commit("added wug.txt",Commit.getCurrentID());
+        commit1.write();
+
+        // Create and checkout new branch
+        Main.main("branch", "other-branch");
+        Main.main("checkout", "other-branch");
+
+        // Remove file in new branch
+        Main.main("rm", "wug.txt");
+        Commit commit2 = new Commit("added wug.txt",Commit.getCurrentID());
+        commit2.write();
+
+        // Checkout back to master
+        Main.main("checkout", "master");
+
+        // Remove file in master branch
+        Main.main("rm", "wug.txt");
+        Commit commit3 = new Commit("added wug.txt",Commit.getCurrentID());
+        commit3.write();
+
+        // Create new file with identical name that was deleted
+        Utils.createEmptyFile("wug.txt");
+
+//        // Check split-point is first commit
+//        String splitPoint = Merge.splitPoint(commit2, commit3);
+//        assertEquals(commit1._sha1, splitPoint);
+
+        Main.main("merge", "other-branch");
 //        Checkout.overwriteBranch("serf");
-//        Utils.createRandomFile("mug.txt");
-//        Stage.add("mug.txt");
-//        Commit commit2 = new Commit("2. add mug", Commit.getCurrentSha1());
-//        commit2.write();
-//
-//        Checkout.overwriteBranch("master");
-//        Utils.randomChangeFileContents("box.txt");
-//
-//        Stage.add("box.txt");
-//        Checkout.reset(Commit.zeroSha1);
-//        assertEquals(Commit.zeroSha1, Commit.getCurrentSha1());
-//        Log.printLog();
-//
-//        Checkout.reset(commit1._sha1);
-//        assertEquals(commit1._sha1, Commit.getCurrentSha1());
-////        Log.printLog();
-//    }
-//
-//
-//    @Test
-//    public void mergeRmConflictTest2() throws IOException {
-//
-//        Init.initialize();
-//        Utils.createRandomFile("cup.txt");
-//        Stage.add("cup.txt");
-//        Commit commit1 = new Commit("1. added cup", Commit.getCurrentSha1());
-//        commit1.write();
-//
-//        Branch.save("serf");
-//        Checkout.overwriteBranch("serf");
-//        Utils.createRandomFile("mug.txt");
-//        Stage.add("mug.txt");
-//        Commit commit2 = new Commit("2. add mug", Commit.getCurrentSha1());
-//        commit2.write();
-//
-//        Checkout.overwriteBranch("master");
-//        Utils.randomChangeFileContents("box.txt");
-//        Stage.add("box.txt");
-//        Commit commit3 = new Commit("3. added box", Commit.getCurrentSha1());
-//        commit3.write();
-//
-//        Utils.randomChangeFileContents("anotherFile.txt");
-//        Stage.add("anotherFile.txt");
-////
-//        Checkout.reset(commit1._sha1);
-//        assertEquals(commit1._sha1, Commit.getCurrentSha1());
-//
-//        Checkout.reset(commit3._sha1);
-//        assertEquals(commit3._sha1, Commit.getCurrentSha1());
-//        Status.print();
-//        Log.printLog();
-//    }
-//
-//    // Q36 - reset to nonexistent comment failure message
-//    // - not sure what this error is
-//    @Test
-//    public void mergeErrTest() throws IOException {
-//
-//        Init.initialize();
-//        Utils.createRandomFile("wug.txt");
-//        Stage.add("wug.txt");
-//        Commit c = new Commit("added wug.txt", Commit.getCurrentSha1());
-//        c.write();
-//        Checkout.reset("00");
-//        Status.print();
-//    }
-//
-//    // Q36a - check that checkout works with short ID's
-//    @Test
-//    public void mergeParent2() throws IOException {
-//
-//        Init.initialize();
-//        Utils.createRandomFile("wug.txt");
-//        Utils.createRandomFile("wug2.txt");
-//        Stage.add("wug.txt");
-//        Stage.add("wug2.txt");
-//        Commit commit1 = new Commit("added wug and wug2", Commit.getCurrentSha1());
-//        commit1.write();
-//
-//        Branch.save("Serf");
-//        Checkout.overwriteBranch("Serf");
-//        Checkout.reset("00000");
-//        assertEquals(Commit.zeroSha1, Commit.getCurrentSha1());
-//    }
-//
-//    @Test
-//    public void mergeParent3() throws IOException {
-//
-//        Init.initialize();
-//        Utils.createRandomFile("wug.txt");
-//        Stage.add("wug.txt");
-//        Commit commit1 = new Commit("added wug and wug2", Commit.getCurrentSha1());
-//        commit1.write();
-//
-//        Utils.createRandomFile("iphone.txt");
-//        Utils.createRandomFile("horse.txt");
-//        Stage.add("iphone.txt");
-//        Stage.add("horse.txt");
-//        Commit commit2 = new Commit("added wug and wug2", Commit.getCurrentSha1());
-//        commit2.write();
-//
-//        Checkout.reset(commit1._sha1);
-//        Checkout.reset(commit2._sha1);
-//        Checkout.reset(commit1._sha1);
-//        assertEquals(commit1._sha1, Commit.getCurrentSha1());
-//    }
-//
-//    // Q37 - special cases of merge (fast forward and ancestor)
-//    // branch fast forward
-//    // - splitpoint is current branch
-//    // - current branch is ancestor of given branch
-//    @Test
-//    public void mergeConflictTest1() throws IOException {
-//
-//        Init.initialize();
-//        Utils.createRandomFile("cup.txt");
-//        Stage.add("cup.txt");
-//        Commit commit1 = new Commit("1. commit dog", Commit.getCurrentSha1());
-//        commit1.write();
-////
-//        Branch.save("serf");
-//        Checkout.overwriteBranch("serf");
-//        Utils.createRandomFile("mag.txt");
-//        Stage.add("mag.txt");
-//        Commit commit2 = new Commit("2. commit scratch", Commit.getCurrentSha1());
-//        commit2.write();
-//
-//        Utils.createRandomFile("fire.txt");
-//        Stage.add("fire.txt");
-//        Commit commit3 = new Commit( "3. commit fire", Commit.getCurrentSha1());
-//        commit3.write();
-//
-//        Checkout.overwriteBranch("master");
-//        new Merge().apply("serf");
-////        String commitSHA1 = Branch.read("master");
-////        assertEquals(commitSHA1,commit3._sha1);
-//    }
-//
-//    // splitpoint is the current branch
-//    // - do nothing, merge complete and ends with 'given branch is ancestor of current branch'
-//    @Test
-//    public void mergeConflictTest2() throws IOException {
-//
-//        Init.initialize();
-//        Utils.createRandomFile("cup.txt");
-//        Stage.add("cup.txt");
-//        Commit commit1 = new Commit("1. commit dog", Commit.getCurrentSha1());
-//        commit1.write();
-//
-//        Branch.save("serf");
-//
-//        Utils.createRandomFile("mag.txt");
-//        Stage.add("mag.txt");
-//        Commit commit2 = new Commit("2. commit scratch", Commit.getCurrentSha1());
-//        commit2.write();
-//
-//        new Merge().apply("serf");
-//
-//    }
-//
-//    // Q38 - bad reset error (file in the way)
-//    @Test
-//    public void badResetError() throws IOException {
-//
-//        Init.initialize();
-//        Utils.createRandomFile("wug.txt");
-//        Utils.createRandomFile("wug2.txt");
-//        Stage.add("wug.txt");
-//        Stage.add("wug2.txt");
-////        Stage.add("iphone.txt");
-//        Commit commit1 = new Commit("added wug and wug2", Commit.getCurrentSha1());
-//        commit1.write();
-//
-//        Branch.save("Serf");
-//        Checkout.overwriteBranch("Serf");
-//        Utils.createRandomFile("calendar.txt");
-//
-//        Checkout.reset("0001");
-//        assertEquals(commit1._sha1, Commit.getCurrentSha1());
-//    }
-//
-//    // Q39 - checkout file at specific commit using short uid
-//    @Test
-//    public void shortUidTest() throws IOException {
-//
-//        Init.initialize();
-//        Utils.createRandomFile("wug.txt");
-//        Stage.add("wug.txt");
-//        Commit commit1 = new Commit("added wug", Commit.getCurrentSha1());
-//        commit1.write();
-//
-//        Utils.randomChangeFileContents("wug.txt");
-//        Stage.add("wug.txt");
-//        Commit commit2 = new Commit("modified wug", Commit.getCurrentSha1());
-//        commit2.write();
-//
-//        Checkout.overwriteCommit("wug.txt",commit1._sha1.substring(0,5));
-//    }
-//
-//    // Q40 - merge special cases
-//    // - modified in current branch and given branch in same way
-//    // - Note: shows 'no changes added to the commit'
-//    @Test
-//    public void specialMergeCases() throws IOException {
-//
-//        Init.initialize();
-//        Utils.createRandomFile("cup.txt");
-//        Stage.add("cup.txt");
-//        Commit commit1 = new Commit("1. commit cup", Commit.getCurrentSha1());
-//        commit1.write();
-////
-//        Branch.save("serf");
-//        Checkout.overwriteBranch("serf");
-//        Utils.sameChangeFileContents("cup.txt");
-//        Stage.add("cup.txt");
-//        Commit commit2 = new Commit("2. modified cup", Commit.getCurrentSha1());
-//        commit2.write();
-//        String curr = Commit.getCurrentSha1();
-//        assertEquals(curr, commit2._sha1);
-//
-//
-//        Checkout.overwriteBranch("master");
-//        Utils.sameChangeFileContents("cup.txt");
-//        Stage.add("cup.txt");
-//        Commit commit3 = new Commit("3. modified cup", Commit.getCurrentSha1());
-//        commit3.write();
-//        curr = Commit.getCurrentSha1();
-//        assertEquals(curr, commit3._sha1);
-//
-//        String commit = Merge.splitPoint(commit1,commit2);
-//        assertEquals(commit,commit1._sha1);
-//
-//        new Merge().apply("serf");
-//        Checkout.overwriteBranch("serf");
-//        assertEquals(commit2._tree, commit3._tree); // Note: trees are the same
-//    }
-//
-//    // - file is removed in both branches, but name present in cwd -> file is not removed
-//    @Test
-//    public void specialMergeCases1() throws IOException {
-//
-//        Init.initialize();
-//        Utils.createRandomFile("cup.txt");
-//        Stage.add("cup.txt");
-//        Commit commit1 = new Commit("1. commit cup", Commit.getCurrentSha1());
-//        commit1.write();
-////
-//        Branch.save("serf");
-//        Checkout.overwriteBranch("serf");
-//        Stage.remove("cup.txt");
-//        Commit commit2 = new Commit("2. modified cup", Commit.getCurrentSha1());
-//        commit2.write();
-//
-//        Checkout.overwriteBranch("master");
-//        Stage.remove("cup.txt");
-//        Commit commit3 = new Commit( "3. modified cup", Commit.getCurrentSha1());
-//        commit3.write();
-//
-//        Utils.createRandomFile("cup.txt");
-//
-//        new Merge().apply("serf");
-////        Checkout.overwriteBranch("serf");
-////        assertEquals(commit2._tree,commit3._tree); // Note: trees are the same
-//    }
-//
-//
-//}
+//        assertEquals(commit2._tree,commit3._tree); // Note: trees are the same
+    }
+
+
+}

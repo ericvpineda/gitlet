@@ -129,7 +129,7 @@ public class Main {
             errorMessage();
             return;
         }
-        Commit commit = new Commit(args[1], Commit.getCurrentSha1());
+        Commit commit = new Commit(args[1], Commit.getCurrentID());
         commit.write();
     }
 
@@ -211,7 +211,7 @@ public class Main {
         if (args.length == 2 && args[1].equals("-a")) {
             Branch.listBranches();
         } else if (args.length == 2) {
-            Branch.save(args[1]);
+            Branch.write(args[1]);
         } else {
             errorMessage();
         }

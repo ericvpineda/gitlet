@@ -12,7 +12,7 @@
 //    public void specialMergeCases1() throws IOException {
 //
 //        Init.initialize();
-//        Utils.createRandomFile("cup.txt");
+//        Utils.createEmptyFile("cup.txt");
 //        Stage.add("cup.txt");
 //        Commit commit1 = new Commit("1. commit cup", Commit.getCurrentSha1());
 //        commit1.write();
@@ -24,7 +24,7 @@
 //        commit2.write();
 //
 //        Checkout.overwriteBranch("master");
-//        Utils.createRandomFile("mug.txt");
+//        Utils.createEmptyFile("mug.txt");
 //        Stage.add("mug.txt");
 //        Commit commit3 = new Commit( "3. modified cup", Commit.getCurrentSha1());
 //        commit3.write();
@@ -57,7 +57,7 @@
 //    @Test
 //    public void setUpDir() throws IOException {
 //        Init.initialize();
-//        Utils.createRandomFile("notwug.txt");
+//        Utils.createEmptyFile("notwug.txt");
 //        Stage.add("notwug.txt");
 //        Commit firstCommit = new Commit("version 1 wug", Commit.getCurrentSha1());
 //        firstCommit.write();
@@ -89,7 +89,7 @@
 //    @Test
 //    public void remoteFetchPush() throws IOException {
 //        Init.initialize();
-//        Utils.createRandomFile("notwug.txt");
+//        Utils.createEmptyFile("notwug.txt");
 //        Stage.add("notwug.txt");
 //        Commit firstCommit = new Commit("version 1 wug", Commit.getCurrentSha1());
 //        firstCommit.write();
@@ -100,7 +100,7 @@
 //
 //    @Test
 //    public void remoteFetchPush1() throws IOException {
-//        Utils.createRandomFile("phone.txt");
+//        Utils.createEmptyFile("phone.txt");
 //        Stage.add("phone.txt");
 //        Commit c2 = new Commit("version 1 wug", Commit.getCurrentSha1());
 //        c2.write();
@@ -111,7 +111,7 @@
 //        Remote.fetch("eric", "other-branch");
 //        Checkout.overwriteBranch("eric/other-branch");
 ////
-//        Utils.createRandomFile("box.txt");
+//        Utils.createEmptyFile("box.txt");
 //        Stage.add("box.txt");
 //        Commit c3 = new Commit("version 1 wug", Commit.getCurrentSha1());
 //        c3.write();

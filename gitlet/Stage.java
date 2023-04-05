@@ -95,7 +95,7 @@ public class Stage implements Serializable {
                  stage._deletion.containsKey(name)) {
             stage._preStage.remove(name);
             stage._deletion.remove(name);
-            Utils.writeObject(Main.INDEX, stage);
+            Utils.writeObject(Main.STAGE, stage);
             return true;
         }
         return false;
@@ -146,26 +146,37 @@ public class Stage implements Serializable {
         return false;
     }
 
-    /**
-     * Read Stage from disk
-     */
+    /** Read Stage from disk */
     public static Stage read() {
-        return Utils.deserialize(Main.INDEX, Stage.class);
+        // Note: Empty stage will error readObject function
+        if (Main.STAGE.length() > 0) {
+            return Utils.readObject(Main.STAGE, Stage.class);
+        }
+        return null;
     }
 
     /**
      * Write Stage to disk
      */
     public static void write(Stage stage) {
-        Utils.writeObject(Main.INDEX, stage);
+        Utils.writeObject(Main.STAGE, stage);
     }
 
     /**
-     * Clear current Stage and write to disk.
+     * Clear current Stage and write new stage to disk.
      */
     public static void clear() {
-        Stage stage = new Stage();
-        write(stage);
+        write(new Stage());
+    }
+
+    // Check if preStage hashmap is empty
+    public boolean isPreStageEmpty() {
+        return _preStage.isEmpty();
+    }
+
+    // Check if deletion stage hashmap is empty
+    public boolean isDeleteStageEmpty() {
+        return _deletion.isEmpty();
     }
 }
 

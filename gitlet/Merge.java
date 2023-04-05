@@ -4,63 +4,66 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-// Note:
-// - look over checkout reset
-// - look for bugs
-// - making conflict files?
-
 /* Class for merge command */
 public class Merge {
     String _currBranch;
     Boolean _conflict;
 
+    // Constructor
     public Merge() {
-        _currBranch = Branch.getCurrent();
-        _conflict = false;
+        _currBranch = Branch.getCurrent(); // Current branch
+        _conflict = false;                 // Boolean for any conflicts
     }
 
     /**
-     * Method call for merge
+     * Merge current branch with given branch
      */
-    public void apply(String branch) throws IOException {
+    public void apply(String givenBranch) throws IOException {
+
+        // Check for stage errors
         Stage stage = Stage.read();
         if (Utils.checkUntrackedCwd()) {
             System.out.print("There is an untracked file in the way; delete it, " +
                     "or add and commit it first.");
             return;
-        } else if (!stage._preStage.isEmpty() || !stage._deletion.isEmpty()) {
+        } else if (!stage.isPreStageEmpty() || !stage.isDeleteStageEmpty()) {
             System.out.print("You have uncommitted changes.");
             return;
-        } else if (!Utils.join(Main.BRANCH, branch).exists()) {
+        } else if (!Utils.join(Main.BRANCH, givenBranch).exists()) {
             System.out.print("A branch with that name does not exist.");
             return;
-        } else if (branch.equals(_currBranch)) {
+        } else if (givenBranch.equals(_currBranch)) {
             System.out.print("Cannot merge a branch with itself.");
             return;
         }
-        // Note: check for untracked files error
-        String currName = Branch.read(_currBranch);
-        String tarName = Branch.read(branch);
-        Commit currCom = Utils.deserializeCommit(currName);
-        Commit tarCom = Utils.deserializeCommit(tarName);
 
-        String splitPoint = splitPoint(currCom, tarCom);
-        Commit spCom = Utils.deserializeCommit(splitPoint);
-        // Note: check if branch is ancestor or fast forward merge
-        if (tarName.equals(splitPoint)) {
+        // Retrieve both branch names and HEAD commits
+        String currentBranchSHA1 = Branch.read(_currBranch);
+        String givenBranchSHA1 = Branch.read(givenBranch);
+        Commit currentCommit = Utils.deserializeCommit(currentBranchSHA1);
+        Commit givenCommit = Utils.deserializeCommit(givenBranchSHA1);
+
+        // Find split point SHA1
+        String splitPointSHA1 = splitPoint(currentCommit, givenCommit);
+
+        // Get split point commit
+        Commit splitPoint = Utils.deserializeCommit(splitPointSHA1);
+
+        // Check if given branch is ancestor (split-point is same commit as given branch)
+        if (givenBranchSHA1.equals(splitPointSHA1)) {
             System.out.print("Given branch is an ancestor of the current branch.");
             return;
-            // Note: If split point is current branch
-        } else if (currName.equals(splitPoint)) {
-            Checkout.reset(tarName);
+        // Check if current branch is split-point
+        } else if (currentBranchSHA1.equals(splitPointSHA1)) {
+            Checkout.reset(givenBranchSHA1);
             System.out.print("Current branch fast-forwarded.");
             return;
         }
 
         // Note: check modifications/removals between splitpoint,current branch, target branch history files
-        HashMap<String, String> spHM = Commit.getBlobs(spCom._tree);
-        HashMap<String, String> tarHM = Commit.getBlobs(tarCom._tree);
-        HashMap<String, String> currHM = Commit.getBlobs(currCom._tree);
+        HashMap<String, String> spHM = Commit.getBlobs(splitPoint._tree);
+        HashMap<String, String> tarHM = Commit.getBlobs(givenCommit._tree);
+        HashMap<String, String> currHM = Commit.getBlobs(currentCommit._tree);
 
         // 1. files modified in given branch since SP, not modified in currB since SP
         // -> changed to versions in branch
@@ -69,8 +72,8 @@ public class Merge {
         // -> removed??
         checkAbsentCurrentBranch(tarHM, currHM, spHM);
         // Check any merge conflicts
-        Commit mergeCommit = new Commit("Merged " + branch + " into " + _currBranch + ".", currCom._sha1);
-        mergeCommit._mergedId = currName.substring(0, 7) + " " + tarName.substring(0, 7);
+        Commit mergeCommit = new Commit("Merged " + givenBranch + " into " + _currBranch + ".", currentCommit._sha1);
+        mergeCommit._mergedId = currentBranchSHA1.substring(0, 7) + " " + givenBranchSHA1.substring(0, 7);
         mergeCommit.write();
         if (_conflict) {
             System.out.print("Encountered a merge conflict.");
@@ -155,15 +158,22 @@ public class Merge {
         }
     }
 
-    // Note: maybe use the face that merge commits differ ?
-    static String splitPoint(Commit currCom, Commit tarCom) {
-        ArrayList<String> tarHistory = Utils.getTotalSha1History(tarCom, new ArrayList<>());
-//        System.out.println("Given branch history = " + tarHistory);
-        HashMap<String, Integer> possible = splitPointHelper(currCom, tarHistory, new HashMap<>(), 0);
+    // Get split-point between two different commits
+    static String splitPoint(Commit currentCommit, Commit givenCommit) {
+
+        // Get given commit history
+        ArrayList<String> givenCommitHistory = Utils.getTotalSha1History(givenCommit, new ArrayList<>());
+//        System.out.println("Given branch history = " + givenCommitHistory);
+
+//        ArrayList<String> currentCommitHistory = Utils.getTotalSha1History(givenCommit, new ArrayList<>());
+//        System.out.println("Current branch history = " + currentCommitHistory);
+
+        // Get possible split points between current commit and given commit
+        HashMap<String, Integer> possible = splitPointHelper(currentCommit, givenCommitHistory, new HashMap<>(), 0);
 //        System.out.println("Possible splitpoints = " + possible);
-        String lca = Collections.min(possible.entrySet(), Map.Entry.comparingByValue()).getKey();
-//        System.out.println(lca);
-        return lca;
+//        System.out.println("\n");
+        // Get shortest distance split-point
+        return Collections.min(possible.entrySet(), Map.Entry.comparingByValue()).getKey();
     }
 
     private static HashMap<String, Integer> splitPointHelper(Commit commit, ArrayList<String> tarHistory,
@@ -182,10 +192,10 @@ public class Merge {
         }
         if (commit._mergedId != null) {
             String merge = commit._mergedId;
-            File c1 = Utils.findFile(merge.substring(0, 7), Main.COMMITS);
-            File c2 = Utils.findFile(merge.substring(8, 15), Main.COMMITS);
-            splitPointHelper(Utils.deserialize(c1, Commit.class), tarHistory, sp, distance + 1);
-            splitPointHelper(Utils.deserialize(c2, Commit.class), tarHistory, sp, distance + 1);
+            File c1 = Utils.createFilePath(merge.substring(0, 7), Main.COMMITS);
+            File c2 = Utils.createFilePath(merge.substring(8, 15), Main.COMMITS);
+            splitPointHelper(Utils.readObject(c1, Commit.class), tarHistory, sp, distance + 1);
+            splitPointHelper(Utils.readObject(c2, Commit.class), tarHistory, sp, distance + 1);
         } else {
             splitPointHelper(Utils.deserializeCommit(commit._parentSha1), tarHistory, sp, distance + 1);
         }
