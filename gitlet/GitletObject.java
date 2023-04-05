@@ -13,7 +13,7 @@ public interface GitletObject extends Serializable {
     /** Create SHA1 hash */
     String createHash();
 
-    /** Writes content into objects file in .gitlet folder */
+    /** Writes content into objects file in .gitlet folder using first two character of id as folder */
     default void writeToDisk(String sha1, Object contents, File location) throws IOException {
 
         // Create folder based on first two characters of file identifier

@@ -6,12 +6,12 @@ import java.util.*;
 
 /* Class for merge command */
 public class Merge {
-    String _currBranch;
+    String _currentBranch;
     Boolean _conflict;
 
     // Constructor
     public Merge() {
-        _currBranch = Branch.getCurrent(); // Current branch
+        _currentBranch = Branch.getCurrent(); // Current branch
         _conflict = false;                 // Boolean for any conflicts
     }
 
@@ -26,19 +26,19 @@ public class Merge {
             System.out.print("There is an untracked file in the way; delete it, " +
                     "or add and commit it first.");
             return;
-        } else if (!stage.isPreStageEmpty() || !stage.isDeleteStageEmpty()) {
+        } else if (!stage.isAdditionsEmpty() || !stage.isDeletionsEmpty()) {
             System.out.print("You have uncommitted changes.");
             return;
         } else if (!Utils.join(Main.BRANCH, givenBranch).exists()) {
             System.out.print("A branch with that name does not exist.");
             return;
-        } else if (givenBranch.equals(_currBranch)) {
+        } else if (givenBranch.equals(_currentBranch)) {
             System.out.print("Cannot merge a branch with itself.");
             return;
         }
 
         // Retrieve both branch names and HEAD commits
-        String currentBranchSHA1 = Branch.read(_currBranch);
+        String currentBranchSHA1 = Branch.read(_currentBranch);
         String givenBranchSHA1 = Branch.read(givenBranch);
         Commit currentCommit = Commit.getByID(currentBranchSHA1);
         Commit givenCommit = Commit.getByID(givenBranchSHA1);
@@ -72,7 +72,7 @@ public class Merge {
         // -> removed??
         checkAbsentCurrentBranch(tarHM, currHM, spHM);
         // Check any merge conflicts
-        Commit commit = new Commit("Merged " + givenBranch + " into " + _currBranch + ".", currentCommit._sha1);
+        Commit commit = new Commit("Merged " + givenBranch + " into " + _currentBranch + ".", currentCommit._sha1);
         commit._mergedId = currentBranchSHA1.substring(0, 7) + " " + givenBranchSHA1.substring(0, 7);
         commit.write();
 

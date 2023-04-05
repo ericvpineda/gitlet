@@ -139,11 +139,7 @@ public class Stage implements Serializable {
      */
     public static boolean isIdenticalBlob(Blob blob) {
         HashMap<String, String> curr = Commit.getCurrentBlobs();
-        if (curr.containsKey(blob._name) &&
-                curr.get(blob._name).equals(blob._sha1)) {
-            return true;
-        }
-        return false;
+        return curr.containsKey(blob._name) && curr.get(blob._name).equals(blob._sha1);
     }
 
     /** Read Stage from disk */
@@ -168,12 +164,12 @@ public class Stage implements Serializable {
     }
 
     // Check if preStage hashmap is empty
-    public boolean isPreStageEmpty() {
+    public boolean isAdditionsEmpty() {
         return _additions.isEmpty();
     }
 
     // Check if deletion stage hashmap is empty
-    public boolean isDeleteStageEmpty() {
+    public boolean isDeletionsEmpty() {
         return _deletions.isEmpty();
     }
 }
