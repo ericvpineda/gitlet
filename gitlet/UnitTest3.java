@@ -11,8 +11,8 @@ import java.io.PrintStream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/** Test cases with greater-depth testing (i.e. failure/conflict cases) [Contains tests 41-]
- Tests commands: 
+/** Test cases with greater-depth testing (i.e. failure/conflict cases) [Contains tests 35-44]
+ Tests commands: reset, checkout, merge
  */
 public class UnitTest3 {
 
@@ -326,6 +326,4 @@ public class UnitTest3 {
         File file = Utils.join(Main.USERDIR, "wug.txt");
         assertTrue(file.exists());
     }
-
-
 }
