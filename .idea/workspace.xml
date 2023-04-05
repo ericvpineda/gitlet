@@ -2,13 +2,37 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a070bca-0012-4399-9d5a-1db66cb80e8c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitlet/objects/blobs/a7/15efcd9d8824ec2636293f233b2462cea45359" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitlet/objects/blobs/e9/c8eebeda42b33ac35db5ffde6e032f1cfd65cb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitlet/objects/commits/00/00000000000000000000000000000000000000" beforeDir="false" afterPath="$PROJECT_DIR$/.gitlet/objects/commits/00/00000000000000000000000000000000000000" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitlet/objects/commits/4a/8f71c3942d427d93d494f531db2cbe26eddf2f" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitlet/objects/commits/6b/dc7e0d8671090bd12177fe9973afefca98d1b8" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitlet/objects/trees/83/0af10775febd41f2d65de7ad01cbdafd24658f" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitlet/objects/trees/a8/e8138ef22c2af8cf0e4fd99f1051ed29383a7c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitlet/refs/heads/master" beforeDir="false" afterPath="$PROJECT_DIR$/.gitlet/refs/heads/master" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitlet/refs/heads/other-branch" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gitlet/Init.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/Init.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gitlet/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gitlet/Rebase.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gitlet/Remote.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Merge.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/Merge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/Status.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/Status.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitlet/UnitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/UnitTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gitlet/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/gitlet/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/.gitlet/objects/blobs/00/d6bfccbe41b278fc8cfb21462a0737c0f37900" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/.gitlet/objects/blobs/9d/58dc5cacc8638f9967f64c248f2fdd374837da" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/.gitlet/objects/blobs/e3/36eb665fa0105ebad8d7da525067143cb70296" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/.gitlet/objects/commits/00/00000000000000000000000000000000000000" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/proj2/.gitlet/objects/commits/00/00000000000000000000000000000000000000" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/.gitlet/objects/commits/3f/c29cd350311a78baedb9379f9a388acbba80b4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/.gitlet/objects/commits/f5/d745aacece0d511ced3f8e2a4baa205d9c5145" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/.gitlet/objects/trees/70/2b9e77aeb9e619ff20efb43260653bf3ea8df6" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/.gitlet/objects/trees/fe/b4336bb9a0a6ec10eb10825f8f8165a58f88aa" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/.gitlet/refs/heads/master" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/proj2/.gitlet/refs/heads/master" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/.gitlet/refs/heads/other-branch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/cup.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/gitlet/Merge.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/proj2/gitlet/Merge.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/gitlet/Status.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/proj2/gitlet/Status.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/gitlet/UnitTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/proj2/gitlet/UnitTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/gitlet/Utils$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/proj2/gitlet/Utils$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/proj2/gitlet/Utils.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/proj2/gitlet/Utils.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wug.txt" beforeDir="false" afterPath="$PROJECT_DIR$/wug.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,10 +193,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.UnitTest2" />
-        <item itemvalue="JUnit.UnitTest3.resetBasicTest" />
+        <item itemvalue="JUnit.UnitTest3" />
         <item itemvalue="JUnit.UnitTest1" />
         <item itemvalue="JUnit.UnitTest" />
-        <item itemvalue="JUnit.UnitTest3" />
+        <item itemvalue="JUnit.UnitTest3.resetBasicTest" />
       </list>
     </recent_temporary>
   </component>
