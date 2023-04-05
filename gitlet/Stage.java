@@ -71,7 +71,7 @@ public class Stage implements Serializable {
     }
 
     /**
-     * rm (remove) file command
+     * Remove file command. Stages given file for removal.
      */
     public static void remove(String name) throws IOException {
         // Remove file from previous stage and deletion stage
@@ -102,7 +102,7 @@ public class Stage implements Serializable {
     }
 
     /**
-     * Helper method to mark file as deleted
+     * Helper method to mark file as deleted.
      */
     private static boolean markDeleted(String fileName, Stage stage) {
 
@@ -123,7 +123,7 @@ public class Stage implements Serializable {
         return false;
     }
 
-    /** Remove file from being staged for deletion */
+    /** Remove file from being staged for deletion. */
     public static boolean restore(String name) {
         Stage stage = read();
         if (stage._deletions.containsKey(name)) {
@@ -135,7 +135,7 @@ public class Stage implements Serializable {
     }
 
     /**
-     * Checks if given Blob is identical to that in current commit
+     * Checks if given Blob is identical to version in current commit.
      */
     public static boolean isIdenticalBlob(Blob blob) {
         HashMap<String, String> curr = Commit.getCurrentBlobs();
@@ -163,12 +163,12 @@ public class Stage implements Serializable {
         write(new Stage());
     }
 
-    // Check if preStage hashmap is empty
+    /** Check if preStage hashmap is empty */
     public boolean isAdditionsEmpty() {
         return _additions.isEmpty();
     }
 
-    // Check if deletion stage hashmap is empty
+    /** Check if deletion stage hashmap is empty */
     public boolean isDeletionsEmpty() {
         return _deletions.isEmpty();
     }
