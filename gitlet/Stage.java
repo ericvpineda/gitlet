@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.HashMap;
 
 
-/* Class for add command and rm (remove) command */
+/* Class for add command and remove command */
 public class Stage implements Serializable {
     HashMap<String, String> _additions;  // Files staged for addition
     HashMap<String, String> _deletions;  // Files staged for deletion
@@ -13,7 +13,7 @@ public class Stage implements Serializable {
      * Constructor
      */
     public Stage() {
-        // Note: Hashmap is configured as: {Name of file: SHA1}
+        // Note: Hashmap is configured as: {Name of file: SHA1 hash}
         _additions = new HashMap<>();    // Files staged for addition
         _deletions = new HashMap<>();    // Files staged for deletion
     }
@@ -126,8 +126,12 @@ public class Stage implements Serializable {
     /** Remove file from being staged for deletion. */
     public static boolean restore(String name) {
         Stage stage = read();
+
+        // Check if file is staged for deletion
         if (stage._deletions.containsKey(name)) {
             stage._deletions.remove(name);
+
+            // Update stage with file removed
             write(stage);
             return true;
         }
@@ -144,7 +148,7 @@ public class Stage implements Serializable {
 
     /** Read Stage from disk */
     public static Stage read() {
-        // Note: Never returns null since stage saved do disk during initialization
+        // Note: Never returns null since stage saved to disk during initialization
         return Utils.readObject(Main.STAGE, Stage.class);
 
     }
