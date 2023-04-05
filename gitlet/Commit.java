@@ -133,12 +133,7 @@ public class Commit implements GitletObject, Serializable {
         // Get current branch name and head commit branch is pointing to 
         String branch = Utils.readContentsAsString(Main.HEAD);
         File commitID = Utils.join(Main.BRANCH, branch);
-
-        // Else, find commit pointed to by HEAD pointer
-        if (branch != null && commitID.exists()) {
-            return Utils.readContentsAsString(commitID);
-        }
-        return null;
+        return Utils.readContentsAsString(commitID);
     }
 
     /** Get list of blobs from current commit */
