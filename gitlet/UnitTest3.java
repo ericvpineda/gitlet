@@ -8,8 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /** Test cases with greater-depth testing (i.e. failure/conflict cases) [Contains tests 35-44]
  Tests commands: reset, checkout, merge
@@ -282,7 +281,7 @@ public class UnitTest3 {
 
     // 44. Merge special case: File is removed in both branch, but file still in current working directory
     @Test
-    public void specialMergeCases1() throws IOException {
+    public void specialMergeCase1() throws IOException {
 
         // Create and commit random file
         Utils.createEmptyFile("wug.txt");
@@ -325,5 +324,37 @@ public class UnitTest3 {
         // Check file still exists
         File file = Utils.join(Main.USERDIR, "wug.txt");
         assertTrue(file.exists());
+    }
+
+    // Test merge special case: Files present at split-point, unmodified in current branch, absent in given branch is removed.
+    @Test
+    public void specialMergeCase2() throws IOException {
+
+        // Create and commit random file
+        Utils.createEmptyFile("cup.txt");
+        Main.main("add", "cup.txt");
+        Main.main("commit", "1. commit cup");
+
+        // Create and checkout new branch
+        Main.main("branch", "serf");
+        Main.main("checkout", "serf");
+
+        // Remove file in new branch
+        Main.main("rm", "cup.txt");
+        Main.main("commit", "removed cup.txt other-branch");
+
+        // Checkout back to master
+        Main.main("checkout", "master");
+
+        // Create and commit random file in master branch
+        Utils.createEmptyFile("mug.txt");
+        Main.main("add", "mug.txt");
+        Main.main("commit", "added mug.txt");
+
+        Main.main("merge", "serf");
+
+        // Check file is removed from current working directory
+        File file = Utils.join(Main.USERDIR, "cup.txt");
+        assertFalse(file.exists());
     }
 }
