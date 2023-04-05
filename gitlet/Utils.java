@@ -491,14 +491,12 @@ class Utils {
 
     /** Clear current working directory along with gitlet repository */
     public static void clearCwdWithGitlet() {
-        ArrayList<String> filesToIgnore = IGNORE_FILES;
-        filesToIgnore.remove(0);
         File[] userDirectory = Main.USERDIR.listFiles();
 
         if (userDirectory != null) {
             for (File file : userDirectory) {
                 String fileName = file.getName();
-                if (filesToIgnore.contains(fileName)) {
+                if (IGNORE_FILES.contains(fileName) && !fileName.equals(".gitlet")) {
                     continue;
                 }
                 if (file.isDirectory()) {
