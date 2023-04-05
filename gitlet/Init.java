@@ -36,14 +36,12 @@ public class Init {
         // Write empty stage to disk
         Stage.write(new Stage());
 
-        // Crate master branch
+        // Create master branch
         Branch.write("master");
         Branch.writeHead("master", Main.HEAD);
 
-        // Create initial commit
+        // Create and write initial commit
         Commit initCommit = new Commit("initial commit", null);
-
-        // Note: Will create new stage
         initCommit.write();
     }
 }
