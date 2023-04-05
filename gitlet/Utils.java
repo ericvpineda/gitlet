@@ -288,7 +288,7 @@ class Utils {
         return path;
     }
 
-    /** Check if file exists in current working directory */
+    /** Check if file exists in top level of current working directory */
     static boolean existsInCWD(String fileName) {
         return join(Main.USERDIR,fileName).exists();
     }
