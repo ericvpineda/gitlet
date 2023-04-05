@@ -6,16 +6,16 @@ import java.util.HashMap;
 
 /* Class for add command and rm (remove) command */
 public class Stage implements Serializable {
-    HashMap<String, String> _preStage;  // Current/previous stage contents
-    HashMap<String, String> _deletion;  // Files staged for deletion
+    HashMap<String, String> _additions;  // Files staged for addition
+    HashMap<String, String> _deletions;  // Files staged for deletion
 
     /**
      * Constructor
      */
     public Stage() {
         // Note: Hashmap is configured as: {Name of file: SHA1}
-        _preStage = new HashMap<>();    // Current/previous stage contents
-        _deletion = new HashMap<>();    // Files staged for deletion
+        _additions = new HashMap<>();    // Files staged for addition
+        _deletions = new HashMap<>();    // Files staged for deletion
     }
 
     /**
@@ -53,18 +53,18 @@ public class Stage implements Serializable {
 
         // Check if previous stage contains same copy of added file
         Stage previousStage = Stage.read();
-        if (previousStage._preStage.containsKey(newBlob._name) &&
-            previousStage._preStage.get(newBlob._name).equals(newBlob._sha1)) {
+        if (previousStage._additions.containsKey(newBlob._name) &&
+            previousStage._additions.get(newBlob._name).equals(newBlob._sha1)) {
             return;
         }
 
         // Check if file staged for deletion, remove form deletion hashmap
-        if (previousStage._deletion.containsValue(newBlob._sha1)) {
+        if (previousStage._deletions.containsValue(newBlob._sha1)) {
             restore(newBlob._name);
         }
 
         // Update previous stage with current stage contents
-        previousStage._preStage.putAll(newStage);
+        previousStage._additions.putAll(newStage);
 
         // Write update stage to disk
         write(previousStage);
@@ -91,10 +91,10 @@ public class Stage implements Serializable {
     private static boolean removeFromIndex(String name, Stage stage) {
 
         // If stage and deletion stage contains file, remove the file and update stage to disk.
-        if (stage._preStage.containsKey(name) ||
-                 stage._deletion.containsKey(name)) {
-            stage._preStage.remove(name);
-            stage._deletion.remove(name);
+        if (stage._additions.containsKey(name) ||
+                 stage._deletions.containsKey(name)) {
+            stage._additions.remove(name);
+            stage._deletions.remove(name);
             Utils.writeObject(Main.STAGE, stage);
             return true;
         }
@@ -116,7 +116,7 @@ public class Stage implements Serializable {
             Utils.join(Main.USERDIR,fileName).delete();
 
             // Stage file for deletion
-            stage._deletion.put(fileName,currentBlobList.get(fileName));
+            stage._deletions.put(fileName,currentBlobList.get(fileName));
             write(stage);
             return true;
         }
@@ -126,8 +126,8 @@ public class Stage implements Serializable {
     /** Remove file from being staged for deletion */
     public static boolean restore(String name) {
         Stage stage = read();
-        if (stage._deletion.containsKey(name)) {
-            stage._deletion.remove(name);
+        if (stage._deletions.containsKey(name)) {
+            stage._deletions.remove(name);
             write(stage);
             return true;
         }
@@ -148,11 +148,9 @@ public class Stage implements Serializable {
 
     /** Read Stage from disk */
     public static Stage read() {
-        // Note: Empty stage will error readObject function
-        if (Main.STAGE.length() > 0) {
-            return Utils.readObject(Main.STAGE, Stage.class);
-        }
-        return null;
+        // Note: Never returns null since stage saved do disk during initialization
+        return Utils.readObject(Main.STAGE, Stage.class);
+
     }
 
     /**
@@ -171,12 +169,12 @@ public class Stage implements Serializable {
 
     // Check if preStage hashmap is empty
     public boolean isPreStageEmpty() {
-        return _preStage.isEmpty();
+        return _additions.isEmpty();
     }
 
     // Check if deletion stage hashmap is empty
     public boolean isDeleteStageEmpty() {
-        return _deletion.isEmpty();
+        return _deletions.isEmpty();
     }
 }
 

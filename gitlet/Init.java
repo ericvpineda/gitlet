@@ -33,6 +33,9 @@ public class Init {
         Main.STAGE.createNewFile();
         Main.HEAD.createNewFile();
 
+        // Write empty stage to disk
+        Stage.write(new Stage());
+
         // Crate master branch
         Branch.write("master");
         Branch.writeHead("master", Main.HEAD);

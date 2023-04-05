@@ -182,13 +182,13 @@ public class UnitTest1 {
         assertTrue(Utils.join(Main.USERDIR, "beaver.txt").exists());
 
         // Check file is not staged for addition
-        assertFalse(Stage.read()._preStage.containsKey("beaver.txt"));
+        assertFalse(Stage.read()._additions.containsKey("beaver.txt"));
 
         // Check other file has not been altered
-        assertTrue(Stage.read()._preStage.containsKey("wug.txt"));
+        assertTrue(Stage.read()._additions.containsKey("wug.txt"));
 
         // Check no files staged for removal
-        assertTrue(Stage.read()._deletion.isEmpty());
+        assertTrue(Stage.read()._deletions.isEmpty());
 
         // Print status
         Main.main("status");
@@ -216,8 +216,8 @@ public class UnitTest1 {
         Main.main("checkout","--", "beaver.txt");
         Main.main("add","beaver.txt");
 
-        assertFalse(Stage.read()._deletion.containsKey("beaver.txt"));
-        assertFalse(Stage.read()._preStage.containsKey("beaver.txt"));
+        assertFalse(Stage.read()._deletions.containsKey("beaver.txt"));
+        assertFalse(Stage.read()._additions.containsKey("beaver.txt"));
 
         // Re-check status
         Main.main("status");
@@ -287,8 +287,8 @@ public class UnitTest1 {
         Main.main("commit", "first commit");
 
         // Check stage and deletion stage are empty
-        assertTrue(Stage.read()._preStage.isEmpty());
-        assertTrue(Stage.read()._deletion.isEmpty());
+        assertTrue(Stage.read()._additions.isEmpty());
+        assertTrue(Stage.read()._deletions.isEmpty());
     }
 
     // 21. Test remove untracked file correct err
@@ -323,7 +323,7 @@ public class UnitTest1 {
         Main.main("rm", "beaver.txt");
 
         // Check file is staged for deletion
-        HashMap<String, String> h = Stage.read()._deletion;
+        HashMap<String, String> h = Stage.read()._deletions;
         assertTrue(h.containsKey("beaver.txt"));
     }
 }

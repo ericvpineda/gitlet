@@ -40,8 +40,8 @@ public class Tree implements GitletObject, Serializable {
         HashMap<String,String> blobList = Commit.getCurrentBlobs();
         Stage stage = Stage.read();
         if (stage != null) {
-            blobList.putAll(stage._preStage);
-            blobList.keySet().removeAll(stage._deletion.keySet());
+            blobList.putAll(stage._additions);
+            blobList.keySet().removeAll(stage._deletions.keySet());
         }
         return blobList;
     }

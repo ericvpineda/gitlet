@@ -165,10 +165,6 @@ public class Merge {
 
         // Get given commit history
         ArrayList<String> givenCommitHistory = Utils.getTotalSha1History(givenCommit, new ArrayList<>());
-//        System.out.println("Given branch history = " + givenCommitHistory);
-//
-//        ArrayList<String> currentCommitHistory = Utils.getTotalSha1History(currentCommit, new ArrayList<>());
-//        System.out.println("Current branch history = " + currentCommitHistory);
 
         // Get possible split points between current commit and given commit
         HashMap<String, Integer> possible = splitPointHelper(currentCommit, givenCommitHistory, new HashMap<>(), 0);

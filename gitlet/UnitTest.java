@@ -61,13 +61,13 @@ public class UnitTest {
 
         Utils.createEmptyFile("cube.txt");
         Stage stage = Stage.read();
-        assertTrue(stage._preStage.isEmpty());
-        assertTrue(stage._deletion.isEmpty());
+        assertTrue(stage._additions.isEmpty());
+        assertTrue(stage._deletions.isEmpty());
 
         // Check if news files added to stage
         Main.main("add","cube.txt");
         stage = Stage.read();
-        assertTrue(stage._preStage.containsKey("cube.txt"));
+        assertTrue(stage._additions.containsKey("cube.txt"));
 
         // Check adding file that DNE
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -85,15 +85,15 @@ public class UnitTest {
 
         Utils.createEmptyFile("cube.txt");
         Stage stage = Stage.read();
-        assertTrue(stage._preStage.isEmpty());
-        assertTrue(stage._deletion.isEmpty());
+        assertTrue(stage._additions.isEmpty());
+        assertTrue(stage._deletions.isEmpty());
 
         // User manually adds file to stage
         Main.main("add","cube.txt");
 
         // Check file in staging
         stage = Stage.read();
-        assertTrue(stage._preStage.containsKey("cube.txt"));
+        assertTrue(stage._additions.containsKey("cube.txt"));
     }
 
 
@@ -148,8 +148,8 @@ public class UnitTest {
         Main.main("add", "notwug.txt");
 
         // Check wug.txt not in stage, notwug.txt in stage
-        assertFalse(Stage.read()._preStage.containsKey("wug.txt"));
-        assertTrue(Stage.read()._preStage.containsKey("notwug.txt"));
+        assertFalse(Stage.read()._additions.containsKey("wug.txt"));
+        assertTrue(Stage.read()._additions.containsKey("notwug.txt"));
 
         // Check if stage cleared, current commit pointer updated
         Commit currentCommit = new Commit("added not wug.txt", Commit.getCurrentID());
@@ -182,14 +182,14 @@ public class UnitTest {
         Stage stage = Stage.read();
 
         // Check stage does not have file
-        assertFalse(stage._preStage.containsKey("cube.txt"));
+        assertFalse(stage._additions.containsKey("cube.txt"));
 
         // Re-stage same file again
         Main.main("add","cube.txt");
         stage = Stage.read();
 
         // Check file is not staged since not changes have been made
-        assertFalse(stage._preStage.containsKey("cube.txt"));
+        assertFalse(stage._additions.containsKey("cube.txt"));
     }
 
     // Test commit failure cases
@@ -231,8 +231,8 @@ public class UnitTest {
         // Check file is removed from stage and is in deletion hashmap
         Stage.remove("wug.txt");
         Stage stage = Stage.read();
-        assertTrue(stage._preStage.isEmpty());
-        assertTrue(stage._deletion.containsKey("wug.txt"));
+        assertTrue(stage._additions.isEmpty());
+        assertTrue(stage._deletions.containsKey("wug.txt"));
 
         // Commit removal of file
         Commit second = new Commit("removed wug.txt", Commit.getCurrentID());
@@ -240,8 +240,8 @@ public class UnitTest {
 
         // Check stage is empty and deletion hashmap does not have file
         stage = Stage.read();
-        assertTrue(stage._preStage.isEmpty());
-        assertFalse(stage._deletion.containsKey("wug.txt"));
+        assertTrue(stage._additions.isEmpty());
+        assertFalse(stage._deletions.containsKey("wug.txt"));
 
         // Check file untracked in current commit
         HashMap<String, String> secondCommit = Commit.getBlobs(second._tree);
@@ -320,9 +320,9 @@ public class UnitTest {
 
         // Check stage has new added files
         Stage stage = Stage.read();
-        assertTrue(stage._preStage.containsKey("wug.txt"));
-        assertTrue(stage._preStage.containsKey("wug2.txt"));
-        assertTrue(stage._deletion.containsKey("goodbye.txt"));
+        assertTrue(stage._additions.containsKey("wug.txt"));
+        assertTrue(stage._additions.containsKey("wug2.txt"));
+        assertTrue(stage._deletions.containsKey("goodbye.txt"));
 
         // Delete previously committed file
         Utils.join(Main.USERDIR, "junk.txt").delete();
@@ -330,7 +330,7 @@ public class UnitTest {
 
         // Check stage has deleted file in correct mapping
         stage = Stage.read();
-        assertFalse(stage._deletion.containsKey("junk.txt"));
+        assertFalse(stage._deletions.containsKey("junk.txt"));
 
         // Initiate status command
         Status.print();
@@ -348,15 +348,15 @@ public class UnitTest {
         // Remove random file
         Stage.remove("goodbye.txt");
         Stage stage = Stage.read();
-        assertTrue(stage._deletion.containsKey("goodbye.txt"));
+        assertTrue(stage._deletions.containsKey("goodbye.txt"));
 
         // Re-add random file
         Main.main("add","goodbye.txt");
 
         // Random file should be in staged hashmap and should not exist in deletion hashmap
         stage = Stage.read();
-        assertFalse(stage._deletion.containsKey("goodbye.txt"));
-        assertFalse(stage._preStage.containsKey("goodbye.txt"));
+        assertFalse(stage._deletions.containsKey("goodbye.txt"));
+        assertFalse(stage._additions.containsKey("goodbye.txt"));
 
         // Print status command
         Status.print();

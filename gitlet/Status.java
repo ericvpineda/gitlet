@@ -43,8 +43,8 @@ public class Status {
      */
     private static void printStagedFiles() {
         System.out.println("=== Staged Files ===");
-        if (!stage._preStage.isEmpty()) {
-            Iterator iter = stage._preStage.entrySet().iterator();
+        if (!stage._additions.isEmpty()) {
+            Iterator iter = stage._additions.entrySet().iterator();
             for (Iterator it = iter; it.hasNext(); ) {
                 Map.Entry obj = (Map.Entry) it.next();
                 System.out.println(obj.getKey());
@@ -58,9 +58,9 @@ public class Status {
      */
     private static void printRemovedFiles() {
         System.out.println("=== Removed Files ===");
-        if (!stage._deletion.isEmpty()) {
+        if (!stage._deletions.isEmpty()) {
             // Note: iterate through Main.HISTORY of branch
-            Iterator iter = stage._deletion.entrySet().iterator();
+            Iterator iter = stage._deletions.entrySet().iterator();
             for (Iterator it = iter; it.hasNext(); ) {
                 Map.Entry obj = (Map.Entry) it.next();
                 if (!Utils.existsInCWD((String) obj.getKey())) {
@@ -86,15 +86,15 @@ public class Status {
             String cwdSha1 = Utils.findFileCWDsha1(blobName);
             // 1. Tracked currCom, changed in CWD, not staged
             if (cwdSha1 != null && !blobSHA1.equals(cwdSha1) &&
-                !stage._preStage.containsValue(cwdSha1)) {
+                !stage._additions.containsValue(cwdSha1)) {
                 System.out.println(blobName + " (modified)");
                 // 2. tracked currCom, not staged for removal, deleted in CWD
             }
-            if (cwdSha1 == null && !stage._deletion.containsKey(blobName)){
+            if (cwdSha1 == null && !stage._deletions.containsKey(blobName)){
                 System.out.println(blobName + " (deleted)");
             }
         }
-        iter = stage._preStage.entrySet().iterator();
+        iter = stage._additions.entrySet().iterator();
         for (Iterator it = iter; it.hasNext(); ) {
             Map.Entry obj = (Map.Entry) it.next();
             String blobName = (String) obj.getKey();
@@ -128,11 +128,11 @@ public class Status {
             }
             Blob temp = new Blob(file);
             // Note: file staged for removal by recreated without gitlet knowledge
-            // && !stage._deletion.containsKey(fileName)
+            // && !stage._deletions.containsKey(fileName)
             if (trackedFiles.containsKey(temp._name)) {
                 continue;
             }
-            if (stage._preStage.containsValue(temp._sha1)) {
+            if (stage._additions.containsValue(temp._sha1)) {
                 continue;
             }
             System.out.println();

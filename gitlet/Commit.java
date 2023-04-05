@@ -123,13 +123,13 @@ public class Commit implements GitletObject, Serializable {
      */
     public static String getCurrentID() {
 
+        // Get current branch name and head commit branch is pointing to
+        String branch = Utils.readContentsAsString(Main.HEAD);
+
         // Edge case: no commits created yet
-        if (Main.STAGE.length() == 0) {
+        if (branch.length() == 0) {
             return zeroSha1;
         }
-
-        // Get current branch name and head commit branch is pointing to 
-        String branch = Utils.readContentsAsString(Main.HEAD);
         File commitID = Utils.join(Main.BRANCH, branch);
         return Utils.readContentsAsString(commitID);
     }
