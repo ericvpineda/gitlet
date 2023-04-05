@@ -41,6 +41,7 @@ public class Log {
      * Global-log command. Shows all commits in random order.
      */
     public static void printGlobal() {
+        // Note: commitList will never be null since initial commit always created
         File[] commitList = Main.COMMITS.listFiles();
         for (int i = 0; i < commitList.length; i++) {
             for (File file : commitList[i].listFiles()) {
