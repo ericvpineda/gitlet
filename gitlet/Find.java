@@ -6,9 +6,8 @@ import java.util.ArrayList;
 /* Class for find command */
 public class Find {
 
-    // Question: have a commit folder to improve runtime?
     /**
-     * Finds Commit with given message
+     * Find Commit with given message
      */
     static void find(String message) {
         ArrayList<String> commits = new ArrayList<>();

@@ -5,9 +5,8 @@ import java.io.File;
 /* Class for log and global-log command */
 public class Log {
 
-    // Note: issue with long list of commits??
     /**
-     * Gitlet command for Log
+     * Log command. Shows commit history starting with HEAD commit.
      */
     public static void printLog() {
         Commit headCommit = Commit.getCurrent();
@@ -39,7 +38,7 @@ public class Log {
     }
 
     /**
-     * Global-log command
+     * Global-log command. Shows all commits in random order.
      */
     public static void printGlobal() {
         File[] commitList = Main.COMMITS.listFiles();
