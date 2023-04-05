@@ -1,7 +1,5 @@
 ## Gitlet
 
-![Gitlet status command example](./img/gitlet_example.png)
-
 ## Description
 Version Control System (VCS) for user files. The main functionality includes:
 
@@ -17,7 +15,7 @@ Note: This project was a class project completed in Summer 2020 and received 100
 init
 - Description: Creates new gitlet VCS in current directory
 - Runtime: O(1)
-- Terminal command: java gitlet.Main init
+- Terminal command: java gitlet.Main
 
 add
 - Description: Stages files for addition
@@ -43,7 +41,7 @@ log
 global-log
 - Description: Like log command, but displays all commits ever made. Not specific ordering.
 - Runtime: O(n)
-- Terminal command: java gitlet.Main global-log
+- Terminal command: global-log
 
 find
 - Description: Prints all commit ids for given commit message.
@@ -63,7 +61,7 @@ checkout
 - Runtime:
     1. O(n) w.r.t sizes of file checked out
     2. O(n) w.r.t total size of files in commit snapshot.
-- Terminal s:
+- Terminal command:
     1. java gitlet.Main checkout -- [file name]
     2. java gitlet.Main checkout [commit id] -- [file name]
     3. java gitlet.Main checkout [branch name]
@@ -76,11 +74,13 @@ branch
 rm-branch
 - Description: Deletes branch with given name.
 - Runtime: O(1)
+- Memory:
 - Terminal command: java gitlet.Main rm-branch [branch name]
 
 reset
 - Description: Check out all files tracked by given commit and removes tracked files not present in commit. Also, moves branch head to given commit node.
 - Runtime: O(n) w.r.t total size of files tracked by given commit snapshot.
+- Memory:
 - Terminal command: java gitlet.Main reset [commit id]
 
 merge
@@ -88,20 +88,10 @@ merge
 - Runtime: O(n log(n) + D) s.t. N is total number ancestors for merging 2 branches, D is total amount data in all files under commit.
 - Terminal command: java gitlet.Main merge [branch name]
 
-## Using Gitlet in local terminal:
-1. Clone this repository to local desktop
-2. Go to top level of proj2 folder
-3. Enter in commands below:
-   - mkdir ~/test-gitlet
-   - mkdir ~/test-gitlet/gitlet
-   - cp -r out/production/proj2/gitlet ~/test-gitlet/gitlet/ 
-   - cd ~/test-gitlet
-4. Enter any gitlet commands above.
-
 ## API
 - Backend: Java
 - SDK: Java Eclipse Adoptium v17.0.6
-- IDE: Intellij v2020.2.4
+- IDE: Intellij 2020.2.4
 - Testing Library: Junit v4.12 
 
 ## Future Improvements 

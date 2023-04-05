@@ -236,7 +236,8 @@ class Utils {
             "out",
             ".git",
             "readme.md",
-            "notes.md"
+            "notes.md",
+            "img"
     ));
 
     /** Create time stamp for commits */
